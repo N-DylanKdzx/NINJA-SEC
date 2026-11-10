@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 7 | 3 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 29 | 24 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 27 | 26 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **231** | **27** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **229** | **29** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -402,7 +402,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **B4.1** | `[x] Completado` | DB System Always Free (50 GB) en subred privada | — | F2 | P2 | Núcleo | OCI GetDbSystem: ninjasec-mysql-private ACTIVE, MySQL.Free, 50 GiB, AD-3, subred privada 10.20.10.0/24, endpoint privado 10.20.10.191:3306. OCID ocid1.mysqldbsystem.oc1.iad.aaaaaaaaqvrwleeienvokku6d5uuymx5cyxzpy5vqfbtpdvufs3jwskw3spa. |
-| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo | Esquema ninjasec creado y consultado en OCI. Sigue bloqueada la comparación del DDL de incidents hasta disponer del esquema de RDS (A9.7). |
+| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo | Se creó incidents en MySQL de OCI con portal/schema.sql y se verificó su uso mediante CRUD. Sigue pendiente comparar su DDL con RDS cuando se implemente A9.7. |
 | **B4.3** | `[x] Completado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo | SHOW GRANTS confirmó SELECT, INSERT, UPDATE y DELETE sobre ninjasec.* para ninjasec_app@10.20.10.36. SELECT CURRENT_USER(), DATABASE(), 1 devolvió ninjasec_app@10.20.10.36, ninjasec, 1. Cuenta limitada a la Micro de OCI y con TLS obligatorio. El acceso de AWS se validará en su integración. |
 | **B4.4** | `[x] Completado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo | OCI Work Request de asociación del NSG SUCCEEDED. GetDbSystem y ListNetworkSecurityGroupSecurityRules confirmaron que ninjasec-nsg-db permite TCP 3306 solo desde 10.20.10.36/32. La política IAM está limitada al principal del DB System. OCID de política ocid1.policy.oc1..aaaaaaaaecb5ohnondn574cvtjgxxjkl6xt5i5dm4wwvinarsmhoubbnzxxa. El acceso del backend AWS sigue pendiente en B1.9. |
 | **B4.5** | `[-] Bloqueado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo | Prueba provisional desde bastion-utility-01 (10.20.10.36), vía OCI Bastion: SELECT VERSION() devolvió 26.10.0-u1-cloud y la cuenta de aplicación ejecutó SELECT con TLS_AES_128_GCM_SHA256. Sigue pendiente la prueba contra monitor-01 por capacidad A1 (B2.1). |
@@ -417,10 +417,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **B5.1** | `[x] Completado` | LB Flexible 10 Mbps en subred pública | — | F2 | P3b | Núcleo | OCI GetLoadBalancer: ninjasec-oci-lb ACTIVE y público, Flexible 10/10 Mbps, asociado a la subred regional pública 10.20.1.0/24. IP 129.159.170.148. OCID ocid1.loadbalancer.oc1.iad.aaaaaaaahzdbqrm4x6y2jlunz26wjwc5rcv6ujcyhvq342pvg4d6t4whe67a. |
-| **B5.2** | `[x] Completado` | Backend set con health check | — | F2 | P3b | Núcleo | OCI GetHealthChecker verificó el backend set ninjasec-standby: HTTP GET /health, puerto 8080 y estado esperado 200. Sin servidores registrados hasta disponer del portal (B5.3). |
-| **B5.3** | `[-] Bloqueado` | Backend standby que sirve el portal NINJA-SEC desde OCI | — | F2 | P3b | Núcleo | El repositorio main no contiene código del portal ni un enlace al artefacto en README. Falta disponer del backend standby de NINJA-SEC, desplegarlo y comprobar que el health check quede OK. |
-| **B5.4** | `[x] Completado` | Listener HTTP/HTTPS configurado | — | F2 | P3b | Núcleo | OCI GetLoadBalancer verificó listeners en HTTP 80 y HTTPS 443 con TLS 1.2/1.3. El NSG permite entrada pública solo en esos dos puertos. Prueba desde la Micro OCI: HTTPS 502 con TLS 1.3 y verificación del certificado temporal autofirmado para la IP. HTTP 80 también respondió 502 sin backend. |
-| **B5.5** | `[-] Bloqueado` | Portal accesible vía IP del LB OCI | — | F2 | P3b | Núcleo | La IP responde en HTTP y HTTPS, pero ambos devuelven 502 por falta de backend. Falta registrar el servidor del portal y comprobar la respuesta 200 del portal real. |
+| **B5.2** | `[x] Completado` | Backend set con health check | — | F2 | P3b | Núcleo | GetHealthChecker: ninjasec-standby usa HTTP /health en 8080 y espera 200. OCI GetBackendHealth confirmó OK en 10.20.10.36:8080; /health también respondió 200 por el LB. |
+| **B5.3** | `[x] Completado` | Backend standby que sirve el portal NINJA-SEC desde OCI | — | F2 | P3b | Núcleo | Portal de incidentes en portal/, desplegado como servicio systemd habilitado en bastion-utility-01 (10.20.10.36:8080), con MySQL privado y backend OCI OK. Prueba HTTPS confirmó creación 201, lectura y edición 200, borrado 204 y consulta posterior 404. Se eliminó el registro temporal. |
+| **B5.4** | `[x] Completado` | Listener HTTP/HTTPS configurado | — | F2 | P3b | Núcleo | Listeners HTTP 80 y HTTPS 443. La regla ninjasec_force_https devolvió 301 a HTTPS. El NSG público admite 80/443. La prueba HTTPS desde OCI validó el certificado temporal autofirmado para la IP y el listener mantiene TLS 1.2/1.3. |
+| **B5.5** | `[x] Completado` | Portal accesible vía IP del LB OCI | — | F2 | P3b | Núcleo | GET https://129.159.170.148/ desde la Micro de OCI con certificado temporal validado: portal 200 con autenticación y 401 sin credenciales. /portal.js y /health respondieron 200. CRUD de prueba completado por el mismo endpoint. |
 
 
 <a id="comp-b6"></a>

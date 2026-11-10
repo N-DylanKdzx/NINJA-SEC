@@ -1,0 +1,19 @@
+[Unit]
+Description=NINJA-SEC incident portal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+EnvironmentFile=/etc/ninjasec-portal.env
+WorkingDirectory=/opt/ninjasec-portal
+ExecStart=/usr/bin/python3 /opt/ninjasec-portal/app.py
+Restart=on-failure
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+
+[Install]
+WantedBy=multi-user.target
