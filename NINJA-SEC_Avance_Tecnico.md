@@ -110,7 +110,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **G3.3** | `[-] Bloqueado` | AWS WAF verificado (disponible o descartado → ModSecurity primario) | — | F0 | — | Núcleo |  |
 | **G3.4** | `[-] Bloqueado` | binlog_format=ROW configurable en RDS vía parameter group | Si ❌ → dual-write como mecanismo principal | F0 | — | Núcleo |  |
 | **G3.5** | `[x] Completado` | Capacidad A1 Flex confirmada en OCI (o decidido fallback 2×E2.1.Micro) | — | F0 | — | Núcleo | OCI LaunchInstance devolvió Out of host capacity para VM.Standard.A1.Flex en AD-1, AD-2 y AD-3. Se adoptó la alternativa de dos E2.1.Micro verificada en B2.4. |
-| **G3.6** | `[-] Bloqueado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo |  |
+| **G3.6** | `[-] Bloqueado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo | OCI Limits confirmó mysql-free-count=1 en US-ASHBURN-AD-3. La cuota disponible no confirma capacidad efectiva. Pendiente que el DB System llegue a ACTIVE. |
 
 
 ---
@@ -401,12 +401,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B4.1** | `[-] Bloqueado` | DB System Always Free (50 GB) en subred privada | — | F2 | P2 | Núcleo |  |
-| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo |  |
-| **B4.3** | `[-] Bloqueado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo |  |
-| **B4.4** | `[-] Bloqueado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo |  |
-| **B4.5** | `[-] Bloqueado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo |  |
-| **B4.6** | `[-] Bloqueado` | Backup automático habilitado | — | F2 | P2 | Núcleo |  |
+| **B4.1** | `[-] Bloqueado` | DB System Always Free (50 GB) en subred privada | — | F2 | P2 | Núcleo | OCI GetDbSystem: ninjasec-mysql-private, MySQL.Free, 50 GiB, subred privada, estado CREATING y sin endpoint. OCID ocid1.mysqldbsystem.oc1.iad.aaaaaaaaqvrwleeienvokku6d5uuymx5cyxzpy5vqfbtpdvufs3jwskw3spa. Se mantienen las reglas de subred sin ingreso TCP 3306. |
+| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo | Pendiente de una base activa y del esquema de referencia de RDS (A9.7) para comparar incidents. |
+| **B4.3** | `[-] Bloqueado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo | Pendiente de endpoint MySQL operativo y acceso por la red privada para crear y verificar los permisos de la aplicación. |
+| **B4.4** | `[-] Bloqueado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo | Creación con ninjasec-nsg-db terminó FAILED. OCI Work Request registró AuthorizationFailed (OCID ocid1.mysqlworkrequest.oc1.iad.b10749fe-3019-440c-ba84-43330d5a8a10.aaaaaaaanulnnz63iuyso54b3zc2ftma6jmk7xulp6routphvqebhfdozo5a). No se encontró una política IAM para el principal mysqldbsystem. La prueba sin NSG conserva la subred sin ingreso TCP 3306. |
+| **B4.5** | `[-] Bloqueado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo | Pendiente de endpoint activo y NSG. monitor-01 continúa bloqueada por capacidad A1 (B2.1). La Micro alternativa aún no se ha probado contra MySQL. |
+| **B4.6** | `[-] Bloqueado` | Backup automático habilitado | — | F2 | P2 | Núcleo | GetDbSystem reporta backup automático habilitado y retención de 1 día, con la base aún en CREATING. Falta verificar la política en un sistema activo. |
 
 
 <a id="comp-b5"></a>
