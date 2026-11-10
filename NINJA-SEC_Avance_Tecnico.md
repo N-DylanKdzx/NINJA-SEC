@@ -35,9 +35,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 9 | 1 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 8 | 2 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 42 | 11 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 38 | 15 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **246** | **12** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **241** | **17** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -109,7 +109,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **G3.2** | `[-] Bloqueado` | Route 53 verificado (disponible o descartado → Cloudflare primario) | — | F0 | — | Núcleo |  |
 | **G3.3** | `[-] Bloqueado` | AWS WAF verificado (disponible o descartado → ModSecurity primario) | — | F0 | — | Núcleo |  |
 | **G3.4** | `[-] Bloqueado` | binlog_format=ROW configurable en RDS vía parameter group | Si ❌ → dual-write como mecanismo principal | F0 | — | Núcleo |  |
-| **G3.5** | `[-] Bloqueado` | Capacidad A1 Flex confirmada en OCI (o decidido fallback 2×E2.1.Micro) | — | F0 | — | Núcleo |  |
+| **G3.5** | `[x] Completado` | Capacidad A1 Flex confirmada en OCI (o decidido fallback 2×E2.1.Micro) | — | F0 | — | Núcleo | OCI LaunchInstance devolvió Out of host capacity para VM.Standard.A1.Flex en AD-1, AD-2 y AD-3. Se adoptó la alternativa de dos E2.1.Micro verificada en B2.4. |
 | **G3.6** | `[-] Bloqueado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo |  |
 
 
@@ -374,12 +374,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B2.1** | `[-] Bloqueado` | monitor-01: VM A1 Flex 2 OCPU / 12 GB en subred privada | — | F2 | — | Núcleo |  |
-| **B2.2** | `[-] Bloqueado` | VM E2.1.Micro bastion/utility | — | F2 | — | Núcleo |  |
-| **B2.3** | `[-] Bloqueado` | VM E2.1.Micro replica-agent-01 | — | F2 | — | Núcleo |  |
-| **B2.4** | `[-] Bloqueado` | Fallback 2×E2.1.Micro si A1 Flex sin capacidad | — | F2 | — | Secundario |  |
-| **B2.5** | `[-] Bloqueado` | Cron anti-reclamación (actividad cada 3 min) activo | Evita que OCI reclame instancias idle | F2 | — | Núcleo |  |
-| **B2.6** | `[-] Bloqueado` | Boot volumes cifrados | — | F2 | — | Núcleo |  |
+| **B2.1** | `[-] Bloqueado` | monitor-01: VM A1 Flex 2 OCPU / 12 GB en subred privada | — | F2 | — | Núcleo | OCI LaunchInstance para monitor-01 (2 OCPU, 12 GB) devolvió Out of host capacity en los tres dominios de Ashburn. Se mantiene bloqueada por capacidad. Alternativa en B2.4. |
+| **B2.2** | `[x] Completado` | VM E2.1.Micro bastion/utility | — | F2 | — | Núcleo | OCI GetInstance y GetVnic: bastion-utility-01, VM.Standard.E2.1.Micro, RUNNING en US-ASHBURN-AD-3, subred privada 10.20.10.0/24 sin IP pública. OCID ocid1.instance.oc1.iad.anuwcljt3nxgmgacays7ij4hje7tqwebsgo6wm3mkpwy2cl3veji2ncwaaea. Acceso por OCI Bastion se verifica en B3. |
+| **B2.3** | `[x] Completado` | VM E2.1.Micro replica-agent-01 | — | F2 | — | Núcleo | OCI GetInstance y GetVnic: replica-agent-01, VM.Standard.E2.1.Micro, RUNNING en US-ASHBURN-AD-3, subred privada 10.20.10.0/24 sin IP pública. OCID ocid1.instance.oc1.iad.anuwcljt3nxgmgacy6ljbmb5iateotxlcnh5x4hl43o3ywricnav6kav3qla. El agente de replicación se valida en su componente. |
+| **B2.4** | `[x] Completado` | Fallback 2×E2.1.Micro si A1 Flex sin capacidad | — | F2 | — | Secundario | OCI GetInstance confirmó dos VM.Standard.E2.1.Micro RUNNING como alternativa: bastion-utility-01 (también destinada a monitoreo) y replica-agent-01. El software de monitoreo queda en B9. |
+| **B2.5** | `[-] Bloqueado` | Cron anti-reclamación (actividad cada 3 min) activo | Evita que OCI reclame instancias idle | F2 | — | Núcleo | Cron no instalado ni verificado. Revisar este requisito al habilitar el acceso al sistema operativo en B3. |
+| **B2.6** | `[x] Completado` | Boot volumes cifrados | — | F2 | — | Núcleo | OCI GetBootVolume verificó los dos volúmenes de 50 GB cifrados en reposo con claves gestionadas por Oracle (kms_key_id=null). GetBootVolumeAttachment confirmó cifrado paravirtualizado en tránsito habilitado en ambos. OCID ocid1.bootvolume.oc1.iad.abuwcljtvs6vnm6g7n7lgvbdtrpcblrq7ugatsj3duc2yyhan3edsryt2qua y ocid1.bootvolume.oc1.iad.abuwcljt6faenvrxsrz3wnzv6uzvypvaqva3jja3y367rga2k7ze5locjjda. |
 
 
 <a id="comp-b3"></a>
