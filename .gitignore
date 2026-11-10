@@ -1,0 +1,25 @@
+# Informes y documentos originales de trabajo
+*.docx
+*.xlsx
+*.txt
+*.png
+
+# Archivos de configuración sensible y credenciales
+*.tfvars
+*.tfvars.json
+*.pem
+*.key
+*.id_rsa
+*.pub
+credentials*
+
+# Estado y binarios de Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Sistema y logs
+*.log
+.DS_Store
+Thumbs.db

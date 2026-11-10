@@ -1,0 +1,886 @@
+# NINJA-SEC · Checklist Técnico de Avance del Centro de Datos Multicloud
+
+> **Documento de Contexto y Control de Tareas Técnicas**  
+> **Fuente:** `NINJA-SEC_Avance_Tecnico.xlsx`  
+
+## 1. Guía de Uso del Checklist
+
+Este documento refleja el checklist técnico del proyecto NINJA-SEC estructurado a partir del archivo Excel maestro. Se ha preparado como un checklist de seguimiento donde todas las tareas inician en estado **Pendiente** o **Bloqueado** (tareas dependientes de componentes aplazados como AWS), disponiendo de un apartado específico al costado de cada tarea para consignar su **justificación y sustento de evidencia** a medida que pasen a estado completado.
+
+### Convenciones de Estado
+- `[ ] Pendiente`: Tarea planificada lista para ejecución técnica.
+- `[-] Bloqueado`: Tarea bloqueada o aplazada por decisión del proyecto (ej. entorno AWS).
+- `[x] Completado`: Tarea ejecutada y verificada (al marcar, consignar la evidencia en el apartado correspondiente).
+
+### Registro de Justificación y Evidencia (Uso Futuro)
+La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialmente vacía y lista para documentar el respaldo técnico cuando una tarea se complete:
+- **Identificador del recurso:** OCID, Resource ID de Azure, ARN o endpoint.
+- **Comando ejecutado / Verificación:** Comando CLI (`oci`, `az`, `terraform`, etc.) y salida de validación.
+- **Ruta o prueba:** Archivo de salida, log o prueba de aceptación.
+
+### Referencia de Pilares
+| Pilar | Descripción |
+| :---: | :--- |
+| **P1** | Conectividad e Interconexión |
+| **P2** | Base de Datos y Replicación |
+| **P3a** | Seguridad Perimetral y WAF |
+| **P3b** | Resiliencia y Alta Disponibilidad |
+| **P3c** | Auditoría y Almacenamiento Inmutable |
+| **P4** | Observabilidad y Monitoreo |
+| **P5** | Infraestructura como Código (IaC) |
+| **—** | Base y Preparación |
+
+## 2. Resumen Ejecutivo por Dominio
+
+| Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 10 | 9 | 0 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 18 | 44 | 0 |
+| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
+| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
+| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
+| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
+| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
+| **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **56** | **248** | **0** |
+
+### Índice de Dominios
+- [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
+- [Dominio A: AWS · us-east-1 (VPC 10.10.0.0/16)](#dominio-a---aws-us-east-1-vpc-10100016) (95 tareas)
+- [Dominio B: OCI · Home Region (VCN 10.20.0.0/16)](#dominio-b---oci-home-region-vcn-10200016) (62 tareas)
+- [Dominio C: Azure · East US (cumplimiento y forense)](#dominio-c---azure-east-us-cumplimiento-y-forense) (17 tareas)
+- [Dominio D: Cloudflare · DNS y borde](#dominio-d---cloudflare-dns-y-borde) (7 tareas)
+- [Dominio M: Integraciones Multicloud](#dominio-m---integraciones-multicloud) (55 tareas)
+- [Dominio T: Seguridad transversal](#dominio-t---seguridad-transversal) (20 tareas)
+- [Dominio R: Continuidad: Backup y DR](#dominio-r---continuidad-backup-y-dr) (8 tareas)
+- [Dominio P: Ensayo técnico de sustentación](#dominio-p---ensayo-técnico-de-sustentación) (13 tareas)
+- [Dominio K: Operación y control de costos](#dominio-k---operación-y-control-de-costos) (8 tareas)
+
+---
+
+## 3. Checklist Técnico Detallado
+
+<a id="dominio-g---preparación-de-cuentas-y-herramientas"></a>
+
+## Dominio G: Preparación de cuentas y herramientas
+
+<a id="comp-g1"></a>
+
+### Componente G1: Cuentas y accesos
+- **Fase:** F0 | **Pilar:** — | **Total Tareas:** 7
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **G1.1** | `[-] Bloqueado` | AWS Academy Learner Lab iniciado (lab activo en us-east-1) | — | F0 | — | Núcleo |  |
+| **G1.2** | `[ ] Pendiente` | Cuenta OCI creada con home region elegida | — | F0 | — | Núcleo |  |
+| **G1.3** | `[ ] Pendiente` | OCI Free Trial activado (US$300 / 30 días) si hay tarjeta disponible | Opcional: solo si se quiere probar OCI WAF u otros servicios de pago | F0 | — | Secundario |  |
+| **G1.4** | `[ ] Pendiente` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo |  |
+| **G1.5** | `[ ] Pendiente` | Cuenta Cloudflare Free creada | — | F0 | — | Núcleo |  |
+| **G1.6** | `[ ] Pendiente` | Dominio real registrado y delegado a Cloudflare | Cloudflare requiere un dominio que controles; un subdominio de nip.io no se puede delegar | F0 | — | Núcleo |  |
+| **G1.7** | `[-] Bloqueado` | Llaves SSH generadas (key pair AWS + llave OCI) | — | F0 | — | Núcleo |  |
+
+
+<a id="comp-g2"></a>
+
+### Componente G2: Herramientas locales y repositorio
+- **Fase:** F0 | **Pilar:** P5 | **Total Tareas:** 6
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **G2.1** | `[ ] Pendiente` | Terraform instalado (terraform --version responde) | — | F0 | P5 | Núcleo |  |
+| **G2.2** | `[-] Bloqueado` | AWS CLI configurado con credenciales del Lab | — | F0 | P5 | Núcleo |  |
+| **G2.3** | `[ ] Pendiente` | OCI CLI configurado con API key | — | F0 | P5 | Núcleo |  |
+| **G2.4** | `[ ] Pendiente` | Azure CLI autenticado (az login) | — | F0 | P5 | Núcleo |  |
+| **G2.5** | `[ ] Pendiente` | Repositorio Git creado con estructura terraform/ (environments/prod + modules) | — | F0 | P5 | Núcleo |  |
+| **G2.6** | `[ ] Pendiente` | .gitignore protege terraform.tfvars, llaves y credenciales | — | F0 | P5 | Núcleo |  |
+
+
+<a id="comp-g3"></a>
+
+### Componente G3: Verificación de servicios disponibles (decide Plan A / Plan B)
+- **Fase:** F0 | **Pilar:** — | **Total Tareas:** 6
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **G3.1** | `[-] Bloqueado` | VPN Connection / Virtual Private Gateway disponible en Academy | Si ❌ → Plan B: WireGuard en EC2 | F0 | — | Núcleo |  |
+| **G3.2** | `[-] Bloqueado` | Route 53 verificado (disponible o descartado → Cloudflare primario) | — | F0 | — | Núcleo |  |
+| **G3.3** | `[-] Bloqueado` | AWS WAF verificado (disponible o descartado → ModSecurity primario) | — | F0 | — | Núcleo |  |
+| **G3.4** | `[-] Bloqueado` | binlog_format=ROW configurable en RDS vía parameter group | Si ❌ → dual-write como mecanismo principal | F0 | — | Núcleo |  |
+| **G3.5** | `[-] Bloqueado` | Capacidad A1 Flex confirmada en OCI (o decidido fallback 2×E2.1.Micro) | — | F0 | — | Núcleo |  |
+| **G3.6** | `[-] Bloqueado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo |  |
+
+
+---
+
+<a id="dominio-a---aws-us-east-1-vpc-10100016"></a>
+
+## Dominio A: AWS · us-east-1 (VPC 10.10.0.0/16)
+
+<a id="comp-a1"></a>
+
+### Componente A1: Red VPC y segmentación
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 11
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A1.1** | `[-] Bloqueado` | VPC 10.10.0.0/16 creada | — | F1 | — | Núcleo |  |
+| **A1.2** | `[-] Bloqueado` | Subred pública Web-01 10.10.1.0/24 (AZ-1a) | — | F1 | — | Núcleo |  |
+| **A1.3** | `[-] Bloqueado` | Subred pública Web-02 10.10.2.0/24 (AZ-1b) | — | F1 | — | Núcleo |  |
+| **A1.4** | `[-] Bloqueado` | Subred privada APP 10.10.10.0/24 (AZ-1a) | — | F1 | — | Núcleo |  |
+| **A1.5** | `[-] Bloqueado` | Subred privada BD 10.10.20.0/24 (AZ-1a) | — | F1 | — | Núcleo |  |
+| **A1.6** | `[-] Bloqueado` | Subred privada BD secundaria 10.10.21.0/24 (AZ-1b) | RDS exige un DB Subnet Group con subredes en al menos 2 AZ | F1 | — | Núcleo |  |
+| **A1.7** | `[-] Bloqueado` | Internet Gateway creado y adjunto a la VPC | — | F1 | — | Núcleo |  |
+| **A1.8** | `[-] Bloqueado` | Route Table pública (0.0.0.0/0 → IGW) asociada a subredes públicas | — | F1 | — | Núcleo |  |
+| **A1.9** | `[-] Bloqueado` | Route Table privada (0.0.0.0/0 → NAT Instance) asociada a subredes privadas | — | F1 | — | Núcleo |  |
+| **A1.10** | `[-] Bloqueado` | NACLs por capa configuradas | — | F1 | — | Secundario |  |
+| **A1.11** | `[-] Bloqueado` | VPC Flow Logs hacia CloudWatch Logs | — | F1 | — | Secundario |  |
+
+
+<a id="comp-a2"></a>
+
+### Componente A2: NAT Instance (salida de subredes privadas)
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A2.1** | `[-] Bloqueado` | EC2 t2.nano lanzada en subred pública con Elastic IP | — | F1 | — | Núcleo |  |
+| **A2.2** | `[-] Bloqueado` | Source/Dest check deshabilitado | — | F1 | — | Núcleo |  |
+| **A2.3** | `[-] Bloqueado` | iptables MASQUERADE + net.ipv4.ip_forward persistentes tras reinicio | — | F1 | — | Núcleo |  |
+| **A2.4** | `[-] Bloqueado` | Instancia privada sale a Internet por la NAT (traceroute/curl verificado) | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-a3"></a>
+
+### Componente A3: Security Groups por capa
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 7
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A3.1** | `[-] Bloqueado` | alb-sg: 80/443 desde 0.0.0.0/0 (única regla abierta al mundo) | — | F1 | — | Núcleo |  |
+| **A3.2** | `[-] Bloqueado` | web-sg: 80/443 solo desde alb-sg | — | F1 | — | Núcleo |  |
+| **A3.3** | `[-] Bloqueado` | app-sg: 8080 solo desde web-sg | — | F1 | — | Núcleo |  |
+| **A3.4** | `[-] Bloqueado` | db-sg: 3306 solo desde app-sg | — | F1 | — | Núcleo |  |
+| **A3.5** | `[-] Bloqueado` | nat-sg: tráfico solo desde subredes privadas | — | F1 | — | Núcleo |  |
+| **A3.6** | `[-] Bloqueado` | SSH sin 0.0.0.0/0 (acceso restringido a origen conocido) | — | F1 | — | Núcleo |  |
+| **A3.7** | `[-] Bloqueado` | Revisión final: ninguna regla 0.0.0.0/0 salvo alb-sg | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-a4"></a>
+
+### Componente A4: Cómputo: capa web (web-01 / web-02)
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 8
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A4.1** | `[-] Bloqueado` | Launch Template de web tier creado (AMI, t2.micro, SG, User Data) | — | F1 | — | Núcleo |  |
+| **A4.2** | `[-] Bloqueado` | web-01 t2.micro en AZ-1a operativo | — | F1 | — | Núcleo |  |
+| **A4.3** | `[-] Bloqueado` | web-02 t2.micro en AZ-1b operativo | — | F1 | — | Núcleo |  |
+| **A4.4** | `[-] Bloqueado` | Nginx instalado y sirviendo el frontend del portal | — | F1 | — | Núcleo |  |
+| **A4.5** | `[-] Bloqueado` | Frontend del portal NINJA-SEC desplegado | — | F1 | — | Núcleo |  |
+| **A4.6** | `[-] Bloqueado` | Proxy inverso /api → app-backend:8080 funcionando | — | F1 | — | Núcleo |  |
+| **A4.7** | `[-] Bloqueado` | User Data: servicios arrancan solos al reiniciar la instancia | — | F1 | — | Núcleo |  |
+| **A4.8** | `[-] Bloqueado` | Volúmenes EBS cifrados | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-a5"></a>
+
+### Componente A5: WAF nginx + ModSecurity (OWASP CRS)
+- **Fase:** F1 | **Pilar:** P3a | **Total Tareas:** 9
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A5.1** | `[-] Bloqueado` | ModSecurity v3 + conector nginx instalados | — | F1 | P3a | Núcleo |  |
+| **A5.2** | `[-] Bloqueado` | OWASP Core Rule Set instalado y cargado | — | F1 | P3a | Núcleo |  |
+| **A5.3** | `[-] Bloqueado` | Motor en modo bloqueo (SecRuleEngine On, no DetectionOnly) | — | F1 | P3a | Núcleo |  |
+| **A5.4** | `[-] Bloqueado` | Mismo WAF activo en web-01 y web-02 | — | F1 | P3a | Núcleo |  |
+| **A5.5** | `[-] Bloqueado` | Payload SQLi → HTTP 403 (regla 942xxx en log) | — | F1 | P3a | Núcleo |  |
+| **A5.6** | `[-] Bloqueado` | Payload XSS → HTTP 403 | — | F1 | P3a | Núcleo |  |
+| **A5.7** | `[-] Bloqueado` | Log de ModSecurity enviado a CloudWatch Logs (/ninjasec/waf/blocked) | — | F1 | P3a | Núcleo |  |
+| **A5.8** | `[-] Bloqueado` | Metric filter + alarma sobre bloqueos WAF | — | F1 | P3a | Secundario |  |
+| **A5.9** | `[-] Bloqueado` | AWS WAF delante del ALB (solo si Academy lo permite) | — | F1 | P3a | Secundario |  |
+
+
+<a id="comp-a6"></a>
+
+### Componente A6: Backend: API Flask y portal de incidentes
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 8
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A6.1** | `[-] Bloqueado` | EC2 app-backend t2.micro en subred privada APP | — | F1 | — | Núcleo |  |
+| **A6.2** | `[-] Bloqueado` | API REST Flask con CRUD de incidentes | — | F1 | — | Núcleo |  |
+| **A6.3** | `[-] Bloqueado` | Servicio systemd con arranque automático | — | F1 | — | Núcleo |  |
+| **A6.4** | `[-] Bloqueado` | Endpoint /health respondiendo | — | F1 | — | Núcleo |  |
+| **A6.5** | `[-] Bloqueado` | Acceso al backend solo desde web-sg (verificado) | — | F1 | — | Núcleo |  |
+| **A6.6** | `[-] Bloqueado` | Credenciales leídas desde Secrets Manager (sin texto plano) | — | F1 | — | Núcleo |  |
+| **A6.7** | `[-] Bloqueado` | Portal: crear / leer / actualizar / eliminar incidente funciona de extremo a extremo | — | F1 | — | Núcleo |  |
+| **A6.8** | `[-] Bloqueado` | Logs de aplicación enviados a CloudWatch Logs | — | F1 | — | Secundario |  |
+
+
+<a id="comp-a7"></a>
+
+### Componente A7: Application Load Balancer + HTTPS
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 7
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A7.1** | `[-] Bloqueado` | ALB creado en las 2 subredes públicas | — | F1 | — | Núcleo |  |
+| **A7.2** | `[-] Bloqueado` | Target Group web con health check configurado | — | F1 | — | Núcleo |  |
+| **A7.3** | `[-] Bloqueado` | web-01 y web-02 registrados como targets saludables | — | F1 | — | Núcleo |  |
+| **A7.4** | `[-] Bloqueado` | Listener HTTPS 443 con certificado (ACM o autofirmado) | — | F1 | — | Núcleo |  |
+| **A7.5** | `[-] Bloqueado` | Listener HTTP 80 redirige a HTTPS | — | F1 | — | Núcleo |  |
+| **A7.6** | `[-] Bloqueado` | Balanceo verificado (tráfico llega a ambas instancias) | — | F1 | — | Núcleo |  |
+| **A7.7** | `[-] Bloqueado` | Falla simulada de web-01 → servicio continúa por web-02 | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-a8"></a>
+
+### Componente A8: Auto Scaling Group (web tier)
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A8.1** | `[-] Bloqueado` | ASG creado: mín 2 / máx 4, repartido en 2 AZ | — | F1 | — | Núcleo |  |
+| **A8.2** | `[-] Bloqueado` | ASG asociado al Target Group del ALB | — | F1 | — | Núcleo |  |
+| **A8.3** | `[-] Bloqueado` | Política de escalado por CPU configurada | — | F1 | — | Núcleo |  |
+| **A8.4** | `[-] Bloqueado` | Prueba de carga dispara una instancia nueva | — | F1 | — | Núcleo |  |
+| **A8.5** | `[-] Bloqueado` | Instancia terminada manualmente es reemplazada | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-a9"></a>
+
+### Componente A9: RDS MySQL (BD primaria)
+- **Fase:** F1 | **Pilar:** P2 | **Total Tareas:** 8
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A9.1** | `[-] Bloqueado` | DB Subnet Group con subredes privadas de 2 AZ | — | F1 | P2 | Núcleo |  |
+| **A9.2** | `[-] Bloqueado` | RDS MySQL db.t2.micro desplegado en subred privada | — | F1 | P2 | Núcleo |  |
+| **A9.3** | `[-] Bloqueado` | Publicly accessible = No | — | F1 | P2 | Núcleo |  |
+| **A9.4** | `[-] Bloqueado` | Cifrado en reposo habilitado | — | F1 | P2 | Núcleo |  |
+| **A9.5** | `[-] Bloqueado` | Backups automáticos con retención de 7 días | — | F1 | P2 | Núcleo |  |
+| **A9.6** | `[-] Bloqueado` | Parameter group con binlog_format=ROW aplicado | — | F1 | P2 | Núcleo |  |
+| **A9.7** | `[-] Bloqueado` | Esquema de NINJA-SEC (tabla incidents) y usuario de aplicación creados | — | F1 | P2 | Núcleo |  |
+| **A9.8** | `[-] Bloqueado` | Conexión solo desde app-backend (intento desde Internet rechazado) | — | F1 | P2 | Núcleo |  |
+
+
+<a id="comp-a10"></a>
+
+### Componente A10: KMS y Secrets Manager
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 6
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A10.1** | `[-] Bloqueado` | Clave KMS propia creada | — | F1 | — | Núcleo |  |
+| **A10.2** | `[-] Bloqueado` | Secreto: credenciales de RDS | — | F1 | — | Núcleo |  |
+| **A10.3** | `[-] Bloqueado` | Secreto: endpoint/credenciales de MySQL HeatWave (OCI) | — | F1 | — | Núcleo |  |
+| **A10.4** | `[-] Bloqueado` | Secreto: SAS token de Azure Blob | — | F1 | — | Núcleo |  |
+| **A10.5** | `[-] Bloqueado` | Backend obtiene secretos por ARN (get-secret-value funciona) | — | F1 | — | Núcleo |  |
+| **A10.6** | `[-] Bloqueado` | Política de recurso limita quién lee cada secreto | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-a11"></a>
+
+### Componente A11: S3 y estado remoto
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 8
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A11.1** | `[-] Bloqueado` | Bucket de assets estáticos | — | F1 | — | Núcleo |  |
+| **A11.2** | `[-] Bloqueado` | Bucket de auditoría (ninjasec-audit) para CloudTrail | — | F1 | — | Núcleo |  |
+| **A11.3** | `[-] Bloqueado` | Versionado habilitado | — | F1 | — | Núcleo |  |
+| **A11.4** | `[-] Bloqueado` | Lifecycle policy configurada | — | F1 | — | Núcleo |  |
+| **A11.5** | `[-] Bloqueado` | Cifrado SSE-KMS en buckets | — | F1 | — | Núcleo |  |
+| **A11.6** | `[-] Bloqueado` | Block Public Access activo | — | F1 | — | Núcleo |  |
+| **A11.7** | `[-] Bloqueado` | Bucket de estado Terraform (ninjasec-terraform-state) | — | F1 | — | Núcleo |  |
+| **A11.8** | `[-] Bloqueado` | Tabla DynamoDB de lock (ninjasec-tfstate-lock) | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-a12"></a>
+
+### Componente A12: CloudTrail (auditoría)
+- **Fase:** F1 | **Pilar:** P3c | **Total Tareas:** 2
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A12.1** | `[-] Bloqueado` | Trail activo entregando logs al bucket de auditoría | — | F1 | P3c | Núcleo |  |
+| **A12.2** | `[-] Bloqueado` | Evento buscado y encontrado (ej. StartInstances / cambio de SG) | — | F1 | P3c | Núcleo |  |
+
+
+<a id="comp-a13"></a>
+
+### Componente A13: Monitoreo AWS: CloudWatch y SNS
+- **Fase:** F1 | **Pilar:** P4 | **Total Tareas:** 8
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A13.1** | `[-] Bloqueado` | Dashboard CloudWatch (CPU, red, requests ALB, 5xx) | — | F1 | P4 | Núcleo |  |
+| **A13.2** | `[-] Bloqueado` | Alarma: CPU alta en web tier | — | F1 | P4 | Núcleo |  |
+| **A13.3** | `[-] Bloqueado` | Alarma: conexiones RDS | — | F1 | P4 | Núcleo |  |
+| **A13.4** | `[-] Bloqueado` | Alarma: ALB 5xx | — | F1 | P4 | Núcleo |  |
+| **A13.5** | `[-] Bloqueado` | Tópico SNS con suscripción de correo confirmada | — | F1 | P4 | Núcleo |  |
+| **A13.6** | `[-] Bloqueado` | Alarma disparada de verdad (carga CPU) y correo recibido | — | F1 | P4 | Núcleo |  |
+| **A13.7** | `[-] Bloqueado` | CloudWatch Agent en EC2 (memoria y disco) | — | F1 | P4 | Secundario |  |
+| **A13.8** | `[-] Bloqueado` | Log groups de nginx y aplicación | — | F1 | P4 | Secundario |  |
+
+
+<a id="comp-a14"></a>
+
+### Componente A14: IaC AWS (CloudFormation / módulo Terraform aws_infra)
+- **Fase:** F1 | **Pilar:** P5 | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **A14.1** | `[-] Bloqueado` | Stack 1 vpc-stack.yaml (VPC, subredes, SG) desplegado | — | F1 | P5 | Núcleo |  |
+| **A14.2** | `[-] Bloqueado` | Stack 2 compute-stack.yaml (EC2, RDS, ALB, ASG) desplegado | — | F1 | P5 | Núcleo |  |
+| **A14.3** | `[-] Bloqueado` | Módulo Terraform aws_infra con variables y outputs | — | F1 | P5 | Núcleo |  |
+| **A14.4** | `[-] Bloqueado` | terraform apply del módulo aws_infra crea la infraestructura | — | F1 | P5 | Núcleo |  |
+
+
+---
+
+<a id="dominio-b---oci-home-region-vcn-10200016"></a>
+
+## Dominio B: OCI · Home Region (VCN 10.20.0.0/16)
+
+<a id="comp-b1"></a>
+
+### Componente B1: Red VCN y segmentación
+- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 12
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B1.1** | `[ ] Pendiente` | VCN 10.20.0.0/16 creada | — | F2 | — | Núcleo |  |
+| **B1.2** | `[ ] Pendiente` | Subred pública 10.20.1.0/24 | — | F2 | — | Núcleo |  |
+| **B1.3** | `[ ] Pendiente` | Subred privada 10.20.10.0/24 | — | F2 | — | Núcleo |  |
+| **B1.4** | `[-] Bloqueado` | Internet Gateway | — | F2 | — | Núcleo |  |
+| **B1.5** | `[-] Bloqueado` | NAT Gateway para subred privada | — | F2 | — | Núcleo |  |
+| **B1.6** | `[ ] Pendiente` | Route Tables pública y privada | — | F2 | — | Núcleo |  |
+| **B1.7** | `[ ] Pendiente` | Security Lists configuradas | — | F2 | — | Núcleo |  |
+| **B1.8** | `[ ] Pendiente` | NSG lb-nsg / monitor-nsg / db-nsg creados | — | F2 | — | Núcleo |  |
+| **B1.9** | `[-] Bloqueado` | db-nsg: 3306 solo desde 10.10.10.0/24 (backend AWS) | — | F2 | — | Núcleo |  |
+| **B1.10** | `[ ] Pendiente` | DRG creado y adjunto a la VCN | — | F2 | — | Núcleo |  |
+| **B1.11** | `[ ] Pendiente` | Service Gateway | — | F2 | — | Secundario |  |
+| **B1.12** | `[ ] Pendiente` | VCN Flow Logs habilitados | — | F2 | — | Secundario |  |
+
+
+<a id="comp-b2"></a>
+
+### Componente B2: Cómputo OCI Always Free
+- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 6
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B2.1** | `[-] Bloqueado` | monitor-01: VM A1 Flex 2 OCPU / 12 GB en subred privada | — | F2 | — | Núcleo |  |
+| **B2.2** | `[-] Bloqueado` | VM E2.1.Micro bastion/utility | — | F2 | — | Núcleo |  |
+| **B2.3** | `[-] Bloqueado` | VM E2.1.Micro replica-agent-01 | — | F2 | — | Núcleo |  |
+| **B2.4** | `[-] Bloqueado` | Fallback 2×E2.1.Micro si A1 Flex sin capacidad | — | F2 | — | Secundario |  |
+| **B2.5** | `[-] Bloqueado` | Cron anti-reclamación (actividad cada 3 min) activo | Evita que OCI reclame instancias idle | F2 | — | Núcleo |  |
+| **B2.6** | `[-] Bloqueado` | Boot volumes cifrados | — | F2 | — | Núcleo |  |
+
+
+<a id="comp-b3"></a>
+
+### Componente B3: OCI Bastion Service
+- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 3
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B3.1** | `[-] Bloqueado` | Bastion creado en la VCN | — | F2 | — | Núcleo |  |
+| **B3.2** | `[-] Bloqueado` | Sesión SSH a monitor-01 solo a través del Bastion | — | F2 | — | Núcleo |  |
+| **B3.3** | `[-] Bloqueado` | Instancias privadas sin IP pública | — | F2 | — | Núcleo |  |
+
+
+<a id="comp-b4"></a>
+
+### Componente B4: MySQL HeatWave (BD standby)
+- **Fase:** F2 | **Pilar:** P2 | **Total Tareas:** 6
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B4.1** | `[-] Bloqueado` | DB System Always Free (50 GB) en subred privada | — | F2 | P2 | Núcleo |  |
+| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo |  |
+| **B4.3** | `[-] Bloqueado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo |  |
+| **B4.4** | `[-] Bloqueado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo |  |
+| **B4.5** | `[-] Bloqueado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo |  |
+| **B4.6** | `[-] Bloqueado` | Backup automático habilitado | — | F2 | P2 | Núcleo |  |
+
+
+<a id="comp-b5"></a>
+
+### Componente B5: OCI Flexible Load Balancer (endpoint de failover)
+- **Fase:** F2 | **Pilar:** P3b | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B5.1** | `[-] Bloqueado` | LB Flexible 10 Mbps en subred pública | — | F2 | P3b | Núcleo |  |
+| **B5.2** | `[-] Bloqueado` | Backend set con health check | — | F2 | P3b | Núcleo |  |
+| **B5.3** | `[-] Bloqueado` | Backend standby que sirve el portal NINJA-SEC desde OCI | — | F2 | P3b | Núcleo |  |
+| **B5.4** | `[-] Bloqueado` | Listener HTTP/HTTPS configurado | — | F2 | P3b | Núcleo |  |
+| **B5.5** | `[-] Bloqueado` | Portal accesible vía IP del LB OCI | — | F2 | P3b | Núcleo |  |
+
+
+<a id="comp-b6"></a>
+
+### Componente B6: OCI Vault
+- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 3
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B6.1** | `[ ] Pendiente` | Vault y master key creados | — | F2 | — | Núcleo |  |
+| **B6.2** | `[ ] Pendiente` | Secreto de MySQL HeatWave almacenado | — | F2 | — | Núcleo |  |
+| **B6.3** | `[ ] Pendiente` | Scripts referencian el OCID del secreto (sin credenciales en texto) | — | F2 | — | Núcleo |  |
+
+
+<a id="comp-b7"></a>
+
+### Componente B7: OCI Object Storage (staging de backups)
+- **Fase:** F2 | **Pilar:** P3c | **Total Tareas:** 3
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B7.1** | `[ ] Pendiente` | Bucket de staging de backups creado | — | F2 | P3c | Núcleo |  |
+| **B7.2** | `[ ] Pendiente` | Bucket privado y cifrado | — | F2 | P3c | Núcleo |  |
+| **B7.3** | `[-] Bloqueado` | Backup de MySQL depositado en el bucket | — | F2 | P3c | Núcleo |  |
+
+
+<a id="comp-b8"></a>
+
+### Componente B8: Monitoreo OCI
+- **Fase:** F2 | **Pilar:** P4 | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B8.1** | `[-] Bloqueado` | OCI Monitoring con métricas de compute visibles | — | F2 | P4 | Núcleo |  |
+| **B8.2** | `[-] Bloqueado` | Alarma CPU > 80% | — | F2 | P4 | Núcleo |  |
+| **B8.3** | `[-] Bloqueado` | Topic de Notifications con correo suscrito | — | F2 | P4 | Núcleo |  |
+| **B8.4** | `[-] Bloqueado` | Alarma disparada y correo recibido | — | F2 | P4 | Núcleo |  |
+| **B8.5** | `[ ] Pendiente` | Logging habilitado (VCN Flow Logs / audit) | — | F2 | P4 | Secundario |  |
+
+
+<a id="comp-b9"></a>
+
+### Componente B9: SOC Dashboard: Grafana + Prometheus (monitor-01)
+- **Fase:** F3 | **Pilar:** P4 | **Total Tareas:** 15
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B9.1** | `[-] Bloqueado` | Prometheus instalado y scrapeando | — | F3 | P4 | Núcleo |  |
+| **B9.2** | `[-] Bloqueado` | node_exporter activo | — | F3 | P4 | Núcleo |  |
+| **B9.3** | `[-] Bloqueado` | Grafana 10 instalado y accesible de forma segura (no expuesto sin control) | — | F3 | P4 | Núcleo |  |
+| **B9.4** | `[-] Bloqueado` | Datasource Prometheus | — | F3 | P4 | Núcleo |  |
+| **B9.5** | `[-] Bloqueado` | Datasource CloudWatch (credenciales del Lab) | — | F3 | P4 | Núcleo |  |
+| **B9.6** | `[-] Bloqueado` | Plugin / datasource OCI Metrics | — | F3 | P4 | Núcleo |  |
+| **B9.7** | `[-] Bloqueado` | Datasource Azure Monitor | — | F3 | P4 | Núcleo |  |
+| **B9.8** | `[-] Bloqueado` | Panel 1: requests/seg del ALB | — | F3 | P4 | Núcleo |  |
+| **B9.9** | `[-] Bloqueado` | Panel 2: CPU promedio EC2 | — | F3 | P4 | Núcleo |  |
+| **B9.10** | `[-] Bloqueado` | Panel 3: conexiones MySQL (OCI) | — | F3 | P4 | Núcleo |  |
+| **B9.11** | `[-] Bloqueado` | Panel 4: replication lag | — | F3 | P4 | Núcleo |  |
+| **B9.12** | `[-] Bloqueado` | Panel 5: bloqueos del WAF | — | F3 | P4 | Núcleo |  |
+| **B9.13** | `[-] Bloqueado` | Panel 6: últimos logs de Azure Log Analytics | — | F3 | P4 | Núcleo |  |
+| **B9.14** | `[-] Bloqueado` | Chequeo de estado del túnel VPN (ping checker) en Prometheus | — | F3 | P4 | Núcleo |  |
+| **B9.15** | `[-] Bloqueado` | Alarma visible en Grafana | — | F3 | P4 | Núcleo |  |
+
+
+<a id="comp-b10"></a>
+
+### Componente B10: IaC OCI (módulo Terraform oci_infra / Resource Manager)
+- **Fase:** F2 | **Pilar:** P5 | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **B10.1** | `[ ] Pendiente` | Módulo oci_infra con variables y outputs | — | F2 | P5 | Núcleo |  |
+| **B10.2** | `[ ] Pendiente` | Autenticación OCI vía API key fuera del repositorio | — | F2 | P5 | Núcleo |  |
+| **B10.3** | `[ ] Pendiente` | terraform apply crea VCN + NSG + compute + HeatWave + LB | — | F2 | P5 | Núcleo |  |
+| **B10.4** | `[-] Bloqueado` | Stack equivalente en OCI Resource Manager | — | F2 | P5 | Secundario |  |
+
+
+---
+
+<a id="dominio-c---azure-east-us-cumplimiento-y-forense"></a>
+
+## Dominio C: Azure · East US (cumplimiento y forense)
+
+<a id="comp-c1"></a>
+
+### Componente C1: Azure Blob Storage con inmutabilidad WORM
+- **Fase:** F2 | **Pilar:** P3c | **Total Tareas:** 10
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **C1.1** | `[ ] Pendiente` | Resource Group rg-ninjasec-compliance | — | F2 | P3c | Núcleo |  |
+| **C1.2** | `[ ] Pendiente` | Storage Account creada | — | F2 | P3c | Núcleo |  |
+| **C1.3** | `[ ] Pendiente` | Container audit-logs-aws | — | F2 | P3c | Núcleo |  |
+| **C1.4** | `[ ] Pendiente` | Container audit-logs-oci | — | F2 | P3c | Núcleo |  |
+| **C1.5** | `[ ] Pendiente` | Container db-backups | — | F2 | P3c | Núcleo |  |
+| **C1.6** | `[ ] Pendiente` | Immutability Policy 365 días bloqueada en audit-logs-aws | — | F2 | P3c | Núcleo |  |
+| **C1.7** | `[ ] Pendiente` | Immutability Policy 365 días bloqueada en audit-logs-oci | — | F2 | P3c | Núcleo |  |
+| **C1.8** | `[ ] Pendiente` | Immutability Policy 30 días bloqueada en db-backups | — | F2 | P3c | Núcleo |  |
+| **C1.9** | `[ ] Pendiente` | Intento de borrar un blob → error 409 BlobImmutableDueToPolicy | — | F2 | P3c | Núcleo |  |
+| **C1.10** | `[-] Bloqueado` | SAS token de mínimo privilegio con expiración | — | F2 | P3c | Núcleo |  |
+
+
+<a id="comp-c2"></a>
+
+### Componente C2: Log Analytics (panel de cumplimiento)
+- **Fase:** F3 | **Pilar:** P3c | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **C2.1** | `[ ] Pendiente` | Workspace de Log Analytics creado | — | F3 | P3c | Núcleo |  |
+| **C2.2** | `[-] Bloqueado` | Ingesta de eventos de CloudTrail (AWS) | — | F3 | P3c | Núcleo |  |
+| **C2.3** | `[-] Bloqueado` | Ingesta de OCI Audit logs | — | F3 | P3c | Núcleo |  |
+| **C2.4** | `[-] Bloqueado` | Consulta KQL forense (ej. SG modificados en 24 h) devuelve resultados | — | F3 | P3c | Núcleo |  |
+| **C2.5** | `[ ] Pendiente` | Workbook/dashboard de cumplimiento | — | F3 | P3c | Secundario |  |
+
+
+<a id="comp-c3"></a>
+
+### Componente C3: IaC Azure (módulo Terraform azure_storage)
+- **Fase:** F2 | **Pilar:** P5 | **Total Tareas:** 2
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **C3.1** | `[ ] Pendiente` | Módulo azure_storage con variables y outputs | — | F2 | P5 | Núcleo |  |
+| **C3.2** | `[ ] Pendiente` | terraform apply crea RG + Blob + WORM + Log Analytics | — | F2 | P5 | Núcleo |  |
+
+
+---
+
+<a id="dominio-d---cloudflare-dns-y-borde"></a>
+
+## Dominio D: Cloudflare · DNS y borde
+
+<a id="comp-d1"></a>
+
+### Componente D1: DNS y failover
+- **Fase:** F3 | **Pilar:** P3b | **Total Tareas:** 7
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **D1.1** | `[ ] Pendiente` | Zona del dominio activa en Cloudflare | — | F3 | P3b | Núcleo |  |
+| **D1.2** | `[-] Bloqueado` | Registro primario (CNAME) hacia el ALB de AWS | — | F3 | P3b | Núcleo |  |
+| **D1.3** | `[-] Bloqueado` | Registro secundario hacia el LB de OCI | — | F3 | P3b | Núcleo |  |
+| **D1.4** | `[ ] Pendiente` | Proxy y TLS de Cloudflare configurados | — | F3 | P3b | Núcleo |  |
+| **D1.5** | `[-] Bloqueado` | Mecanismo de failover definido (health check o cambio manual) | — | F3 | P3b | Núcleo |  |
+| **D1.6** | `[-] Bloqueado` | portal.<dominio> resuelve y sirve el portal por HTTPS | — | F3 | P3b | Núcleo |  |
+| **D1.7** | `[-] Bloqueado` | Route 53 Health Check + Failover (solo si Academy lo permite) | — | F3 | P3b | Secundario |  |
+
+
+---
+
+<a id="dominio-m---integraciones-multicloud"></a>
+
+## Dominio M: Integraciones Multicloud
+
+<a id="comp-m1"></a>
+
+### Componente M1: Backbone VPN IPSec AWS ↔ OCI
+- **Fase:** F3 | **Pilar:** P1 | **Total Tareas:** 11
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M1.1** | `[-] Bloqueado` | Virtual Private Gateway creado y adjunto a la VPC | — | F3 | P1 | Núcleo |  |
+| **M1.2** | `[-] Bloqueado` | Customer Gateway apuntando a la IP pública del DRG de OCI | — | F3 | P1 | Núcleo |  |
+| **M1.3** | `[-] Bloqueado` | Site-to-Site VPN en OCI con CPE = AWS | — | F3 | P1 | Núcleo |  |
+| **M1.4** | `[-] Bloqueado` | Túnel IPSec en estado UP (ambos lados) | — | F3 | P1 | Núcleo |  |
+| **M1.5** | `[-] Bloqueado` | AWS: 10.20.0.0/16 → VGW en route tables privadas | — | F3 | P1 | Núcleo |  |
+| **M1.6** | `[-] Bloqueado` | OCI: 10.10.0.0/16 → DRG en route tables | — | F3 | P1 | Núcleo |  |
+| **M1.7** | `[-] Bloqueado` | SG/NSG permiten 3306 entre 10.10.10.0/24 y 10.20.10.0/24 | — | F3 | P1 | Núcleo |  |
+| **M1.8** | `[-] Bloqueado` | ping 10.20.10.20 desde app-backend responde | — | F3 | P1 | Núcleo |  |
+| **M1.9** | `[-] Bloqueado` | ip route en app-backend muestra la ruta hacia 10.20.x.x | — | F3 | P1 | Núcleo |  |
+| **M1.10** | `[-] Bloqueado` | Plan B: WireGuard en EC2 (si no hay VGW) | — | F3 | P1 | Secundario |  |
+| **M1.11** | `[-] Bloqueado` | Segundo túnel de redundancia | — | F3 | P1 | Secundario |  |
+
+
+<a id="comp-m2"></a>
+
+### Componente M2: Replicación de BD RDS → MySQL HeatWave
+- **Fase:** F3 | **Pilar:** P2 | **Total Tareas:** 7
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M2.1** | `[-] Bloqueado` | Usuario de replicación creado en RDS | — | F3 | P2 | Núcleo |  |
+| **M2.2** | `[-] Bloqueado` | binlog ROW activo con retención suficiente | — | F3 | P2 | Núcleo |  |
+| **M2.3** | `[-] Bloqueado` | Carga inicial consistente importada en HeatWave | — | F3 | P2 | Núcleo |  |
+| **M2.4** | `[-] Bloqueado` | Replicación configurada (RDS como fuente, vía VPN) | — | F3 | P2 | Núcleo |  |
+| **M2.5** | `[-] Bloqueado` | Replicación en ejecución (hilos IO/SQL activos) | — | F3 | P2 | Núcleo |  |
+| **M2.6** | `[-] Bloqueado` | Replication lag < 2 s medido | — | F3 | P2 | Núcleo |  |
+| **M2.7** | `[-] Bloqueado` | INSERT en AWS → SELECT en OCI verificado | — | F3 | P2 | Núcleo |  |
+
+
+<a id="comp-m3"></a>
+
+### Componente M3: Dual-write de la aplicación
+- **Fase:** F2 | **Pilar:** P2 | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M3.1** | `[-] Bloqueado` | Lógica dual-write en app-backend (RDS + HeatWave) | — | F2 | P2 | Núcleo |  |
+| **M3.2** | `[-] Bloqueado` | Etapa interina: escritura a HeatWave con TLS por IP pública | — | F2 | P2 | Núcleo |  |
+| **M3.3** | `[-] Bloqueado` | Migrado a IP privada 10.20.10.20 vía VPN | — | F2 | P2 | Núcleo |  |
+| **M3.4** | `[-] Bloqueado` | Manejo de fallo parcial (si una BD falla, la app no se cae) | — | F2 | P2 | Núcleo |  |
+| **M3.5** | `[-] Bloqueado` | Ticket creado en el portal visible en OCI en < 1 s | — | F2 | P2 | Núcleo |  |
+
+
+<a id="comp-m4"></a>
+
+### Componente M4: Failover de base de datos
+- **Fase:** F4 | **Pilar:** P2 | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M4.1** | `[-] Bloqueado` | Connection string conmutable (secreto/variable de entorno) | — | F4 | P2 | Núcleo |  |
+| **M4.2** | `[-] Bloqueado` | Detección de falla de RDS en la aplicación | — | F4 | P2 | Núcleo |  |
+| **M4.3** | `[-] Bloqueado` | Conmutación a HeatWave ejecutada | — | F4 | P2 | Núcleo |  |
+| **M4.4** | `[-] Bloqueado` | Con RDS detenido el portal sigue operativo con los datos | — | F4 | P2 | Núcleo |  |
+
+
+<a id="comp-m5"></a>
+
+### Componente M5: Failover de tráfico AWS ↔ OCI
+- **Fase:** F3 | **Pilar:** P3b | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M5.1** | `[-] Bloqueado` | Portal standby operativo en OCI | — | F3 | P3b | Núcleo |  |
+| **M5.2** | `[-] Bloqueado` | Cloudflare redirige al LB de OCI al caer el endpoint AWS | — | F3 | P3b | Núcleo |  |
+| **M5.3** | `[-] Bloqueado` | Prueba real: AWS fuera de servicio → portal servido desde OCI | — | F3 | P3b | Núcleo |  |
+| **M5.4** | `[-] Bloqueado` | Retorno a AWS verificado | — | F3 | P3b | Núcleo |  |
+
+
+<a id="comp-m6"></a>
+
+### Componente M6: Pipeline de backups hacia Azure
+- **Fase:** F2 | **Pilar:** P3c | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M6.1** | `[ ] Pendiente` | Script mysqldump programado (cron) | — | F2 | P3c | Núcleo |  |
+| **M6.2** | `[ ] Pendiente` | Dump depositado en OCI Object Storage | — | F2 | P3c | Núcleo |  |
+| **M6.3** | `[-] Bloqueado` | Copia subida a Azure container db-backups (WORM) | — | F2 | P3c | Núcleo |  |
+| **M6.4** | `[-] Bloqueado` | Archivos visibles en ambos destinos | — | F2 | P3c | Núcleo |  |
+| **M6.5** | `[-] Bloqueado` | Restauración desde el dump verificada | — | F2 | P3c | Núcleo |  |
+
+
+<a id="comp-m7"></a>
+
+### Componente M7: Pipeline forense CloudTrail → Azure
+- **Fase:** F3 | **Pilar:** P3c | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M7.1** | `[-] Bloqueado` | Script boto3 lee logs de CloudTrail desde S3 | — | F3 | P3c | Núcleo |  |
+| **M7.2** | `[-] Bloqueado` | Cron diario (02:00) sube a audit-logs-aws | — | F3 | P3c | Núcleo |  |
+| **M7.3** | `[-] Bloqueado` | Blob queda bloqueado por política WORM | — | F3 | P3c | Núcleo |  |
+| **M7.4** | `[-] Bloqueado` | Eventos enviados a Log Analytics | — | F3 | P3c | Núcleo |  |
+
+
+<a id="comp-m8"></a>
+
+### Componente M8: Pipeline forense OCI Audit → Azure
+- **Fase:** F3 | **Pilar:** P3c | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M8.1** | `[ ] Pendiente` | Script OCI CLI exporta OCI Audit logs | — | F3 | P3c | Núcleo |  |
+| **M8.2** | `[-] Bloqueado` | Cron diario (02:30) sube a audit-logs-oci | — | F3 | P3c | Núcleo |  |
+| **M8.3** | `[-] Bloqueado` | Blob queda bloqueado por política WORM | — | F3 | P3c | Núcleo |  |
+| **M8.4** | `[-] Bloqueado` | Eventos enviados a Log Analytics | — | F3 | P3c | Núcleo |  |
+
+
+<a id="comp-m9"></a>
+
+### Componente M9: Observabilidad cruzada (Grafana)
+- **Fase:** F3 | **Pilar:** P4 | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M9.1** | `[-] Bloqueado` | Métricas de CloudWatch (AWS) visibles en Grafana OCI | — | F3 | P4 | Núcleo |  |
+| **M9.2** | `[-] Bloqueado` | Métricas de OCI visibles en Grafana | — | F3 | P4 | Núcleo |  |
+| **M9.3** | `[-] Bloqueado` | Datos de Azure Log Analytics visibles en Grafana | — | F3 | P4 | Núcleo |  |
+| **M9.4** | `[-] Bloqueado` | Dashboard unificado de las 3 nubes con datos en vivo | — | F3 | P4 | Núcleo |  |
+
+
+<a id="comp-m10"></a>
+
+### Componente M10: Terraform multi-provider (repo único)
+- **Fase:** F2 | **Pilar:** P5 | **Total Tareas:** 7
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **M10.1** | `[ ] Pendiente` | providers.tf con AWS + OCI + AzureRM | — | F2 | P5 | Núcleo |  |
+| **M10.2** | `[-] Bloqueado` | Backend remoto S3 + lock DynamoDB funcionando | — | F2 | P5 | Núcleo |  |
+| **M10.3** | `[ ] Pendiente` | main.tf invoca los 3 módulos | — | F2 | P5 | Núcleo |  |
+| **M10.4** | `[ ] Pendiente` | terraform plan sin errores | — | F2 | P5 | Núcleo |  |
+| **M10.5** | `[-] Bloqueado` | terraform apply despliega las 3 nubes | — | F2 | P5 | Núcleo |  |
+| **M10.6** | `[-] Bloqueado` | terraform destroy elimina los recursos | — | F2 | P5 | Núcleo |  |
+| **M10.7** | `[-] Bloqueado` | Re-apply recrea la infraestructura (~10 min) | — | F2 | P5 | Núcleo |  |
+
+
+---
+
+<a id="dominio-t---seguridad-transversal"></a>
+
+## Dominio T: Seguridad transversal
+
+<a id="comp-t1"></a>
+
+### Componente T1: Cifrado
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 7
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **T1.1** | `[-] Bloqueado` | En reposo: EBS cifrado | — | F1 | — | Núcleo |  |
+| **T1.2** | `[-] Bloqueado` | En reposo: RDS cifrado | — | F1 | — | Núcleo |  |
+| **T1.3** | `[-] Bloqueado` | En reposo: S3 con SSE-KMS | — | F1 | — | Núcleo |  |
+| **T1.4** | `[-] Bloqueado` | En reposo: volúmenes OCI cifrados | — | F1 | — | Núcleo |  |
+| **T1.5** | `[-] Bloqueado` | En tránsito: HTTPS en ALB / Cloudflare | — | F1 | — | Núcleo |  |
+| **T1.6** | `[-] Bloqueado` | En tránsito: tráfico AWS↔OCI por túnel IPSec | — | F1 | — | Núcleo |  |
+| **T1.7** | `[-] Bloqueado` | En tránsito: TLS en conexiones BD interinas | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-t2"></a>
+
+### Componente T2: Higiene de secretos
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **T2.1** | `[-] Bloqueado` | grep -r "password | secret | key" sobre el repositorio sin hallazgos | — | Núcleo |  |
+| **T2.2** | `[ ] Pendiente` | terraform.tfvars y llaves fuera de Git | — | F1 | — | Núcleo |  |
+| **T2.3** | `[-] Bloqueado` | Credenciales de datasources de Grafana fuera del repositorio | — | F1 | — | Núcleo |  |
+| **T2.4** | `[-] Bloqueado` | Procedimiento de refresco de credenciales del Lab (CLI, Terraform, Grafana) | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-t3"></a>
+
+### Componente T3: Hardening y acceso administrativo
+- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **T3.1** | `[-] Bloqueado` | SSH solo por llave (sin contraseña) en todas las VMs | — | F2 | — | Núcleo |  |
+| **T3.2** | `[-] Bloqueado` | Administración de OCI solo vía Bastion Service | — | F2 | — | Núcleo |  |
+| **T3.3** | `[ ] Pendiente` | Servidores sin puertos de administración abiertos a Internet | — | F2 | — | Núcleo |  |
+| **T3.4** | `[-] Bloqueado` | Paquetes del SO actualizados | — | F2 | — | Núcleo |  |
+| **T3.5** | `[-] Bloqueado` | fail2ban o equivalente en hosts expuestos | — | F2 | — | Secundario |  |
+
+
+<a id="comp-t4"></a>
+
+### Componente T4: Identidad y políticas
+- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 4
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **T4.1** | `[-] Bloqueado` | AWS: LabRole con políticas de recurso (bucket, secreto, KMS) | — | F2 | — | Núcleo |  |
+| **T4.2** | `[ ] Pendiente` | OCI: grupo de operación creado | — | F2 | — | Núcleo |  |
+| **T4.3** | `[ ] Pendiente` | OCI: políticas de mínimo privilegio aplicadas | — | F2 | — | Núcleo |  |
+| **T4.4** | `[ ] Pendiente` | Azure: RBAC mínimo sobre la Storage Account | — | F2 | — | Núcleo |  |
+
+
+---
+
+<a id="dominio-r---continuidad-backup-y-dr"></a>
+
+## Dominio R: Continuidad: Backup y DR
+
+<a id="comp-r1"></a>
+
+### Componente R1: Respaldos operativos
+- **Fase:** F4 | **Pilar:** P2 | **Total Tareas:** 3
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **R1.1** | `[-] Bloqueado` | Backup automático de RDS (7 días) verificado en consola | — | F4 | P2 | Núcleo |  |
+| **R1.2** | `[-] Bloqueado` | Snapshot manual de RDS tomado | — | F4 | P2 | Núcleo |  |
+| **R1.3** | `[-] Bloqueado` | Versionado de S3 verificado (recuperar objeto previo) | — | F4 | P2 | Núcleo |  |
+
+
+<a id="comp-r2"></a>
+
+### Componente R2: Recuperaciones probadas
+- **Fase:** F4 | **Pilar:** P2 | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **R2.1** | `[-] Bloqueado` | Restauración de RDS desde snapshot probada | — | F4 | P2 | Núcleo |  |
+| **R2.2** | `[-] Bloqueado` | Restauración del dump en HeatWave probada | — | F4 | P2 | Núcleo |  |
+| **R2.3** | `[-] Bloqueado` | Recuperación de web tier por Auto Scaling probada | — | F4 | P2 | Núcleo |  |
+| **R2.4** | `[-] Bloqueado` | RTO medido < 5 min en failover de BD | — | F4 | P2 | Núcleo |  |
+| **R2.5** | `[-] Bloqueado` | RPO medido < 1 s con dual-write / replicación | — | F4 | P2 | Núcleo |  |
+
+
+---
+
+<a id="dominio-p---ensayo-técnico-de-sustentación"></a>
+
+## Dominio P: Ensayo técnico de sustentación
+
+<a id="comp-p1"></a>
+
+### Componente P1: Demos del guion (15 min)
+- **Fase:** F4 | **Pilar:** — | **Total Tareas:** 8
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **P1.1** | `[-] Bloqueado` | Demo 1: portal por HTTPS con respuesta 200 | — | F4 | — | Núcleo |  |
+| **P1.2** | `[-] Bloqueado` | Demo 2: ip route muestra la VPN hacia OCI | — | F4 | — | Núcleo |  |
+| **P1.3** | `[-] Bloqueado` | Demo 3: crear incidente → SELECT en OCI | — | F4 | — | Núcleo |  |
+| **P1.4** | `[-] Bloqueado` | Demo 4: terminar web-01 → portal sigue → Auto Scaling repone | — | F4 | — | Núcleo |  |
+| **P1.5** | `[-] Bloqueado` | Demo 5: Grafana SOC con alarma activa | — | F4 | — | Núcleo |  |
+| **P1.6** | `[ ] Pendiente` | Demo 6: Azure WORM rechaza el borrado (409) | — | F4 | — | Núcleo |  |
+| **P1.7** | `[-] Bloqueado` | Demo 7: terraform destroy → apply en vivo | — | F4 | — | Núcleo |  |
+| **P1.8** | `[-] Bloqueado` | Ensayo completo cronometrado ≤ 15 min | — | F4 | — | Núcleo |  |
+
+
+<a id="comp-p2"></a>
+
+### Componente P2: Entorno listo para la demo
+- **Fase:** F4 | **Pilar:** — | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **P2.1** | `[-] Bloqueado` | Dashboard Grafana precargado con los 6 paneles | — | F4 | — | Núcleo |  |
+| **P2.2** | `[ ] Pendiente` | Payloads SQLi/XSS preparados | — | F4 | — | Núcleo |  |
+| **P2.3** | `[-] Bloqueado` | Consolas listas (RDS y HeatWave en paralelo) | — | F4 | — | Núcleo |  |
+| **P2.4** | `[-] Bloqueado` | Infraestructura levantada tras reinicio de sesión del Lab | — | F4 | — | Núcleo |  |
+| **P2.5** | `[-] Bloqueado` | Credenciales del Lab refrescadas en Grafana y Terraform | — | F4 | — | Núcleo |  |
+
+
+---
+
+<a id="dominio-k---operación-y-control-de-costos"></a>
+
+## Dominio K: Operación y control de costos
+
+<a id="comp-k1"></a>
+
+### Componente K1: Control de presupuesto AWS
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 5
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **K1.1** | `[-] Bloqueado` | AWS Budget con alarma a US$80 | — | F1 | — | Núcleo |  |
+| **K1.2** | `[-] Bloqueado` | Revisión periódica de Cost Explorer | — | F1 | — | Núcleo |  |
+| **K1.3** | `[-] Bloqueado` | Procedimiento de apagado de EC2/RDS fuera de horario | — | F1 | — | Núcleo |  |
+| **K1.4** | `[-] Bloqueado` | VPN Gateway activo solo en la ventana de integración y eliminado después | — | F1 | — | Núcleo |  |
+| **K1.5** | `[-] Bloqueado` | Confirmado: no existe NAT Gateway gestionado (se usa NAT Instance) | — | F1 | — | Núcleo |  |
+
+
+<a id="comp-k2"></a>
+
+### Componente K2: Resiliencia ante cierre de sesión del Lab (4 h)
+- **Fase:** F1 | **Pilar:** — | **Total Tareas:** 3
+
+| Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
+| **K2.1** | `[-] Bloqueado` | Tras reinicio, web-01/web-02 levantan Nginx solos | — | F1 | — | Núcleo |  |
+| **K2.2** | `[-] Bloqueado` | Tras reinicio, app-backend levanta la API sola | — | F1 | — | Núcleo |  |
+| **K2.3** | `[-] Bloqueado` | Tras reinicio, los scripts y cron quedan activos | — | F1 | — | Núcleo |  |
+
+
+---
