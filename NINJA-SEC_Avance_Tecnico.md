@@ -2,6 +2,7 @@
 
 > **Documento de Contexto y Control de Tareas Técnicas**  
 > **Fuente:** `NINJA-SEC_Avance_Tecnico.xlsx`  
+> **Hoja de Ruta y Dependencias:** Consulta [`FLUJO_DE_TRABAJO_Y_DESBLOQUEO.md`](FLUJO_DE_TRABAJO_Y_DESBLOQUEO.md) para conocer la secuencia de ejecución nivel por nivel y los criterios de desbloqueo.  
 
 ## 1. Guía de Uso del Checklist
 
