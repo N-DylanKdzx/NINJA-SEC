@@ -35,9 +35,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 8 | 2 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 7 | 3 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 36 | 17 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 32 | 21 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **239** | **19** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **234** | **24** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -110,7 +110,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **G3.3** | `[-] Bloqueado` | AWS WAF verificado (disponible o descartado → ModSecurity primario) | — | F0 | — | Núcleo |  |
 | **G3.4** | `[-] Bloqueado` | binlog_format=ROW configurable en RDS vía parameter group | Si ❌ → dual-write como mecanismo principal | F0 | — | Núcleo |  |
 | **G3.5** | `[x] Completado` | Capacidad A1 Flex confirmada en OCI (o decidido fallback 2×E2.1.Micro) | — | F0 | — | Núcleo | OCI LaunchInstance devolvió Out of host capacity para VM.Standard.A1.Flex en AD-1, AD-2 y AD-3. Se adoptó la alternativa de dos E2.1.Micro verificada en B2.4. |
-| **G3.6** | `[-] Bloqueado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo | OCI Limits confirmó mysql-free-count=1 en US-ASHBURN-AD-3. La cuota disponible no confirma capacidad efectiva. Pendiente que el DB System llegue a ACTIVE. |
+| **G3.6** | `[x] Completado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo | OCI Limits confirmó mysql-free-count=1 en AD-3. GetDbSystem y SELECT VERSION() confirmaron MySQL.Free activo y operativo en Ashburn. |
 
 
 ---
@@ -401,12 +401,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B4.1** | `[-] Bloqueado` | DB System Always Free (50 GB) en subred privada | — | F2 | P2 | Núcleo | OCI GetDbSystem: ninjasec-mysql-private, MySQL.Free, 50 GiB, subred privada, estado CREATING y sin endpoint. OCID ocid1.mysqldbsystem.oc1.iad.aaaaaaaaqvrwleeienvokku6d5uuymx5cyxzpy5vqfbtpdvufs3jwskw3spa. Se mantienen las reglas de subred sin ingreso TCP 3306. |
-| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo | Pendiente de una base activa y del esquema de referencia de RDS (A9.7) para comparar incidents. |
-| **B4.3** | `[-] Bloqueado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo | Pendiente de endpoint MySQL operativo y acceso por la red privada para crear y verificar los permisos de la aplicación. |
-| **B4.4** | `[-] Bloqueado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo | Creación con ninjasec-nsg-db terminó FAILED. OCI Work Request registró AuthorizationFailed (OCID ocid1.mysqlworkrequest.oc1.iad.b10749fe-3019-440c-ba84-43330d5a8a10.aaaaaaaanulnnz63iuyso54b3zc2ftma6jmk7xulp6routphvqebhfdozo5a). No se encontró una política IAM para el principal mysqldbsystem. La prueba sin NSG conserva la subred sin ingreso TCP 3306. |
-| **B4.5** | `[-] Bloqueado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo | Pendiente de endpoint activo y NSG. monitor-01 continúa bloqueada por capacidad A1 (B2.1). La Micro alternativa aún no se ha probado contra MySQL. |
-| **B4.6** | `[-] Bloqueado` | Backup automático habilitado | — | F2 | P2 | Núcleo | GetDbSystem reporta backup automático habilitado y retención de 1 día, con la base aún en CREATING. Falta verificar la política en un sistema activo. |
+| **B4.1** | `[x] Completado` | DB System Always Free (50 GB) en subred privada | — | F2 | P2 | Núcleo | OCI GetDbSystem: ninjasec-mysql-private ACTIVE, MySQL.Free, 50 GiB, AD-3, subred privada 10.20.10.0/24, endpoint privado 10.20.10.191:3306. OCID ocid1.mysqldbsystem.oc1.iad.aaaaaaaaqvrwleeienvokku6d5uuymx5cyxzpy5vqfbtpdvufs3jwskw3spa. |
+| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo | Esquema ninjasec creado y consultado en OCI. Sigue bloqueada la comparación del DDL de incidents hasta disponer del esquema de RDS (A9.7). |
+| **B4.3** | `[x] Completado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo | SHOW GRANTS confirmó SELECT, INSERT, UPDATE y DELETE sobre ninjasec.* para ninjasec_app@10.20.10.36. SELECT CURRENT_USER(), DATABASE(), 1 devolvió ninjasec_app@10.20.10.36, ninjasec, 1. Cuenta limitada a la Micro de OCI y con TLS obligatorio. El acceso de AWS se validará en su integración. |
+| **B4.4** | `[x] Completado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo | OCI Work Request de asociación del NSG SUCCEEDED. GetDbSystem y ListNetworkSecurityGroupSecurityRules confirmaron que ninjasec-nsg-db permite TCP 3306 solo desde 10.20.10.36/32. La política IAM está limitada al principal del DB System. OCID de política ocid1.policy.oc1..aaaaaaaaecb5ohnondn574cvtjgxxjkl6xt5i5dm4wwvinarsmhoubbnzxxa. El acceso del backend AWS sigue pendiente en B1.9. |
+| **B4.5** | `[-] Bloqueado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo | Prueba provisional desde bastion-utility-01 (10.20.10.36), vía OCI Bastion: SELECT VERSION() devolvió 26.10.0-u1-cloud y la cuenta de aplicación ejecutó SELECT con TLS_AES_128_GCM_SHA256. Sigue pendiente la prueba contra monitor-01 por capacidad A1 (B2.1). |
+| **B4.6** | `[x] Completado` | Backup automático habilitado | — | F2 | P2 | Núcleo | OCI GetDbSystem en estado ACTIVE confirmó backupPolicy.isEnabled=true y retentionInDays=1 (MySQL.Free). |
 
 
 <a id="comp-b5"></a>
