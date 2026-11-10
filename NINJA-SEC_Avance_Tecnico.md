@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 7 | 3 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 32 | 21 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 29 | 24 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **234** | **24** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **231** | **27** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -416,11 +416,11 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B5.1** | `[-] Bloqueado` | LB Flexible 10 Mbps en subred pública | — | F2 | P3b | Núcleo |  |
-| **B5.2** | `[-] Bloqueado` | Backend set con health check | — | F2 | P3b | Núcleo |  |
-| **B5.3** | `[-] Bloqueado` | Backend standby que sirve el portal NINJA-SEC desde OCI | — | F2 | P3b | Núcleo |  |
-| **B5.4** | `[-] Bloqueado` | Listener HTTP/HTTPS configurado | — | F2 | P3b | Núcleo |  |
-| **B5.5** | `[-] Bloqueado` | Portal accesible vía IP del LB OCI | — | F2 | P3b | Núcleo |  |
+| **B5.1** | `[x] Completado` | LB Flexible 10 Mbps en subred pública | — | F2 | P3b | Núcleo | OCI GetLoadBalancer: ninjasec-oci-lb ACTIVE y público, Flexible 10/10 Mbps, asociado a la subred regional pública 10.20.1.0/24. IP 129.159.170.148. OCID ocid1.loadbalancer.oc1.iad.aaaaaaaahzdbqrm4x6y2jlunz26wjwc5rcv6ujcyhvq342pvg4d6t4whe67a. |
+| **B5.2** | `[x] Completado` | Backend set con health check | — | F2 | P3b | Núcleo | OCI GetHealthChecker verificó el backend set ninjasec-standby: HTTP GET /health, puerto 8080 y estado esperado 200. Sin servidores registrados hasta disponer del portal (B5.3). |
+| **B5.3** | `[-] Bloqueado` | Backend standby que sirve el portal NINJA-SEC desde OCI | — | F2 | P3b | Núcleo | El repositorio main no contiene código del portal ni un enlace al artefacto en README. Falta disponer del backend standby de NINJA-SEC, desplegarlo y comprobar que el health check quede OK. |
+| **B5.4** | `[x] Completado` | Listener HTTP/HTTPS configurado | — | F2 | P3b | Núcleo | OCI GetLoadBalancer verificó listeners en HTTP 80 y HTTPS 443 con TLS 1.2/1.3. El NSG permite entrada pública solo en esos dos puertos. Prueba desde la Micro OCI: HTTPS 502 con TLS 1.3 y verificación del certificado temporal autofirmado para la IP. HTTP 80 también respondió 502 sin backend. |
+| **B5.5** | `[-] Bloqueado` | Portal accesible vía IP del LB OCI | — | F2 | P3b | Núcleo | La IP responde en HTTP y HTTPS, pero ambos devuelven 502 por falta de backend. Falta registrar el servidor del portal y comprobar la respuesta 200 del portal real. |
 
 
 <a id="comp-b6"></a>
