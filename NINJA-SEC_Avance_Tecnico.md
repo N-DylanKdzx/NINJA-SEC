@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 9 | 1 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 15 | 44 | 3 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 11 | 42 | 9 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **52** | **248** | **4** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **48** | **246** | **10** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -354,17 +354,17 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **B1.1** | `[x] Completado` | VCN 10.20.0.0/16 creada | — | F2 | — | Núcleo |OCI network vcn list: ninjasec-vcn AVAILABLE, 10.20.0.0/16. OCID: ocid1.vcn.oc1.iad.amaaaaaa3nxgmgaaxc45vda6zodcagfq2sa2uliasla75ray67di4t4gtqca. |
-| **B1.2** | `[ ] Pendiente` | Subred pública 10.20.1.0/24 | — | F2 | — | Núcleo |ninjasec-subnet-edge existe con 10.20.1.0/24, pero prohibit-public-ip-on-vnic=true. Falta resolver la subred pública. |
+| **B1.2** | `[ ] Pendiente` | Subred pública 10.20.1.0/24 | — | F2 | — | Núcleo | OCI GetSubnet: 10.20.1.0/24 sigue privada; ListPrivateIps devuelve 0. La API UpdateSubnet no admite cambiar el tipo de acceso. Para conservar el CIDR se debe reemplazar la subred de borde. |
 | **B1.3** | `[x] Completado` | Subred privada 10.20.10.0/24 | — | F2 | — | Núcleo |OCI network subnet list: ninjasec-subnet-private AVAILABLE, 10.20.10.0/24, prohibit-public-ip-on-vnic=true. OCID: ocid1.subnet.oc1.iad.aaaaaaaazpxp43ofolxis2j6cawsqajxpzqtezchvqpbqjii25ojl3lwv4rq. |
-| **B1.4** | `[-] Bloqueado` | Internet Gateway | — | F2 | — | Núcleo |  |
-| **B1.5** | `[-] Bloqueado` | NAT Gateway para subred privada | — | F2 | — | Núcleo |  |
-| **B1.6** | `[ ] Pendiente` | Route Tables pública y privada | — | F2 | — | Núcleo |ninjasec-rt-edge y ninjasec-rt-private están asociadas a sus subredes y no tienen reglas. Falta configurar y verificar el enrutamiento. |
-| **B1.7** | `[ ] Pendiente` | Security Lists configuradas | — | F2 | — | Núcleo |  |
-| **B1.8** | `[ ] Pendiente` | NSG lb-nsg / monitor-nsg / db-nsg creados | — | F2 | — | Núcleo |  |
+| **B1.4** | `[x] Completado` | Internet Gateway | — | F2 | — | Núcleo | OCI GetInternetGateway: ninjasec-igw AVAILABLE y habilitado. OCID: ocid1.internetgateway.oc1.iad.aaaaaaaa4syvjzl6zou3mfzhahotaora3k67w5z23b57nmsotkz2sc7nys2q. |
+| **B1.5** | `[x] Completado` | NAT Gateway para subred privada | — | F2 | — | Núcleo | OCI GetNatGateway: ninjasec-nat AVAILABLE, block-traffic=false. GetRouteTable confirma 0.0.0.0/0 hacia el NAT desde la tabla privada. OCID: ocid1.natgateway.oc1.iad.aaaaaaaajziwatcgix2vmz56wssa7o6oznc7gsuxibvieakfmdem64hh76ba. |
+| **B1.6** | `[ ] Pendiente` | Route Tables pública y privada | — | F2 | — | Núcleo | OCI GetRouteTable: ninjasec-rt-edge tiene ruta por defecto al IGW; ninjasec-rt-private tiene ruta por defecto al NAT y ruta a servicios regionales por el SGW. Falta que la subred de borde sea pública (B1.2). |
+| **B1.7** | `[x] Completado` | Security Lists configuradas | — | F2 | — | Núcleo | OCI GetSecurityList y GetSubnet: ninjasec-sl-edge y ninjasec-sl-private asociadas. Solo ingreso ICMP IPv4 tipo 3/código 4 para PMTU; sin salida por lista. El tráfico de aplicaciones se autoriza mediante NSG. |
+| **B1.8** | `[x] Completado` | NSG lb-nsg / monitor-nsg / db-nsg creados | — | F2 | — | Núcleo | OCI ListNetworkSecurityGroups: lb-nsg, ninjasec-nsg-soc (monitor) y ninjasec-nsg-db en estado AVAILABLE en la VCN. lb-nsg: ocid1.networksecuritygroup.oc1.iad.aaaaaaaanasaxkrlu4szysqwp37sz4hwj5hac2gvo27awryyxyfaaf4x5ipa. |
 | **B1.9** | `[-] Bloqueado` | db-nsg: 3306 solo desde 10.10.10.0/24 (backend AWS) | — | F2 | — | Núcleo |  |
-| **B1.10** | `[ ] Pendiente` | DRG creado y adjunto a la VCN | — | F2 | — | Núcleo |  |
+| **B1.10** | `[x] Completado` | DRG creado y adjunto a la VCN | — | F2 | — | Núcleo | OCI GetDrg y GetDrgAttachment: ninjasec-drg AVAILABLE y ninjasec-drg-vcn ATTACHED a la VCN. Adjunción: ocid1.drgattachment.oc1.iad.aaaaaaaajzqsyqbh2z3pevuxatdpbglcynbggrajisjvjhsubcss2bkjddtq. |
 | **B1.11** | `[x] Completado` | Service Gateway | — | F2 | — | Secundario |OCI GetServiceGateway: ninjasec-sgw AVAILABLE, block-traffic=false, servicio regional habilitado. OCID: ocid1.servicegateway.oc1.iad.aaaaaaaakrtor7thqphnupo5sneyumimnkmyc4jryscdyr6arljqfdrlr5vq. |
-| **B1.12** | `[ ] Pendiente` | VCN Flow Logs habilitados | — | F2 | — | Secundario |  |
+| **B1.12** | `[x] Completado` | VCN Flow Logs habilitados | — | F2 | — | Secundario | OCI Logging GetLog: ninjasec-vcn-flow ACTIVE y habilitado para la VCN. Retención 30 días y muestreo 1 de 10; captura de tráfico aún sin probar. OCID: ocid1.log.oc1.iad.amaaaaaa3nxgmgaagx5ewsulncrjjcvl3kvciosfhylga2eqqypksmzeitnq. |
 
 
 <a id="comp-b2"></a>
