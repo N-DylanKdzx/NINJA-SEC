@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 7 | 19 | 35 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 5 | 18 | 38 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **43** | **221** | **39** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **41** | **220** | **42** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -441,9 +441,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B7.1** | `[ ] Pendiente` | Bucket de staging de backups creado | — | F2 | P3c | Núcleo |  |
-| **B7.2** | `[ ] Pendiente` | Bucket privado y cifrado | — | F2 | P3c | Núcleo |  |
-| **B7.3** | `[-] Bloqueado` | Backup de MySQL depositado en el bucket | — | F2 | P3c | Núcleo |  |
+| **B7.1** | `[x] Completado` | Bucket de staging de backups creado | — | F2 | P3c | Núcleo | OCI GetBucket confirmó ninjasec-backup-staging, clase Standard. OCID ocid1.bucket.oc1.iad.aaaaaaaanxtwvfzjolyk36p7iubykkpheqxwxrhyhwrquklcm5b2d5m6eo2a. |
+| **B7.2** | `[x] Completado` | Bucket privado y cifrado | — | F2 | P3c | Núcleo | OCI GetBucket confirmó publicAccessType=NoPublicAccess y cifrado AES-256 de Object Storage con clave gestionada por Oracle. |
+| **B7.3** | `[x] Completado` | Backup de MySQL depositado en el bucket | — | F2 | P3c | Núcleo | Respaldo lógico de ninjasec.incidents depositado en ninjasec-backup-staging/mysql/ninjasec-20261111T070855Z-cf90ae215883.sql.gz (392 bytes). Se descargó, descomprimió y verificó el SHA-256 cf90ae215883e35699362711bf074394ca4d559e8f35e2f0e01f30531e78bd27. La tabla tenía 0 filas. No se realizó restauración. |
 
 
 <a id="comp-b8"></a>
