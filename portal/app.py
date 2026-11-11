@@ -5,6 +5,7 @@ import os
 import re
 import ssl
 from datetime import date, datetime
+from functools import lru_cache
 from pathlib import Path
 from wsgiref.simple_server import make_server
 
@@ -16,14 +17,30 @@ STATUSES = {'abierto', 'en_progreso', 'resuelto'}
 FIELDS = 'id, title, description, status, created_at, updated_at'
 
 
+@lru_cache(maxsize=1)
+def vault_credentials(secret_ocid):
+    from oci.exceptions import RequestException, ServiceError
+    from vault_credentials import read_mysql_credentials
+
+    try:
+        return read_mysql_credentials(secret_ocid)
+    except (RequestException, ServiceError, ValueError, OSError) as error:
+        raise RuntimeError('No se pudo obtener la credencial de Vault.') from error
+
+
 def connect():
+    secret_ocid = os.environ.get('DB_SECRET_OCID')
+    if secret_ocid:
+        user, password = vault_credentials(secret_ocid)
+    else:
+        user, password = os.environ['DB_USER'], os.environ['DB_PASSWORD']
     context = ssl.create_default_context(cafile=os.environ['DB_CA_FILE'])
     if os.environ.get('DB_PIN_CERT') == '1':
         context.check_hostname = False
         context.verify_flags |= getattr(ssl, 'VERIFY_X509_PARTIAL_CHAIN', 0x80000)
     return pymysql.connect(
-        host=os.environ['DB_HOST'], user=os.environ['DB_USER'],
-        password=os.environ['DB_PASSWORD'], database=os.environ.get('DB_NAME', 'ninjasec'),
+        host=os.environ['DB_HOST'], user=user,
+        password=password, database=os.environ.get('DB_NAME', 'ninjasec'),
         ssl=context, autocommit=True, connect_timeout=4, read_timeout=5, write_timeout=5,
         cursorclass=pymysql.cursors.DictCursor,
     )
@@ -89,7 +106,7 @@ def application(environ, start):
             with connect() as db, db.cursor() as cur:
                 cur.execute('SELECT id FROM incidents LIMIT 1')
             return respond(start, '200 OK', {'status': 'ok'})
-        except (pymysql.MySQLError, OSError):
+        except (pymysql.MySQLError, OSError, ValueError, RuntimeError):
             return respond(start, '503 Service Unavailable', {'status': 'unavailable'})
 
     if not authorized(environ):
@@ -137,12 +154,15 @@ def application(environ, start):
         return respond(start, '404 Not Found', {'error': 'Incidente no encontrado.'})
     except (ValueError, UnicodeError) as error:
         return respond(start, '400 Bad Request', {'error': str(error)})
-    except (pymysql.MySQLError, OSError):
+    except (pymysql.MySQLError, OSError, RuntimeError):
         return respond(start, '503 Service Unavailable', {'error': 'Base de datos no disponible.'})
 
 
 if __name__ == '__main__':
-    for variable in ('PORTAL_USER', 'PORTAL_PASSWORD', 'DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_CA_FILE'):
+    required = ('PORTAL_USER', 'PORTAL_PASSWORD', 'DB_HOST', 'DB_CA_FILE')
+    if not os.environ.get('DB_SECRET_OCID'):
+        required += ('DB_USER', 'DB_PASSWORD')
+    for variable in required:
         if not os.environ.get(variable):
             raise SystemExit(f'Falta la variable {variable}')
     with make_server(os.environ.get('PORTAL_BIND', '127.0.0.1'), 8080, application) as server:
