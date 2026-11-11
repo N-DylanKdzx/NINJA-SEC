@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 4 | 14 | 43 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 4 | 11 | 46 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **40** | **216** | **47** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **40** | **213** | **50** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -472,16 +472,16 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **B9.3** | `[x] Completado` | Grafana 10 instalado y accesible de forma segura (no expuesto sin control) | — | F3 | P4 | Núcleo | Grafana 10.4.19+security-01 activo por systemd, ligado solo a 127.0.0.1:3000 en bastion-utility-01. Por túnel OCI Bastion, GET /api/health devolvió 200 con base local OK y GET /api/datasources sin credenciales devolvió 401. Sin listener público. |
 | **B9.4** | `[x] Completado` | Datasource Prometheus | — | F3 | P4 | Núcleo | Grafana datasource Prometheus OCI (UID ninjasec-oci-prom) usa 127.0.0.1:9090. Su API autenticada devolvió up{job=node}=1. Con Grafana, Prometheus, Node Exporter y portal activos, /health del portal devolvió 200 y la Micro reportó 422648 kB de MemAvailable durante la prueba. |
 | **B9.5** | `[-] Bloqueado` | Datasource CloudWatch (credenciales del Lab) | — | F3 | P4 | Núcleo |  |
-| **B9.6** | `[-] Bloqueado` | Plugin / datasource OCI Metrics | — | F3 | P4 | Núcleo |  |
+| **B9.6** | `[x] Completado` | Plugin / datasource OCI Metrics | — | F3 | P4 | Núcleo | Grafana cargó el plugin Oracle OCI Metrics 6.5.6 con firma valid. El datasource ninjasec-oci-native usa identidad de instancia y política de solo lectura. POST /api/ds/query devolvió 6 puntos de CpuUtilization en oci_vmi_resource_utilization, sin errores. |
 | **B9.7** | `[-] Bloqueado` | Datasource Azure Monitor | — | F3 | P4 | Núcleo |  |
 | **B9.8** | `[-] Bloqueado` | Panel 1: requests/seg del ALB | — | F3 | P4 | Núcleo |  |
 | **B9.9** | `[-] Bloqueado` | Panel 2: CPU promedio EC2 | — | F3 | P4 | Núcleo |  |
-| **B9.10** | `[-] Bloqueado` | Panel 3: conexiones MySQL (OCI) | — | F3 | P4 | Núcleo |  |
+| **B9.10** | `[x] Completado` | Panel 3: conexiones MySQL (OCI) | — | F3 | P4 | Núcleo | Panel 3 Conexiones MySQL (OCI), tablero UID ninjasec-oci-overview. Exportador local consulta Threads_connected con TLS. Grafana consultó ninjasec_mysql_threads_connected mediante Prometheus y devolvió 3 conexiones. El portal respondió HTTP 200. |
 | **B9.11** | `[-] Bloqueado` | Panel 4: replication lag | — | F3 | P4 | Núcleo |  |
 | **B9.12** | `[-] Bloqueado` | Panel 5: bloqueos del WAF | — | F3 | P4 | Núcleo |  |
 | **B9.13** | `[-] Bloqueado` | Panel 6: últimos logs de Azure Log Analytics | — | F3 | P4 | Núcleo |  |
 | **B9.14** | `[-] Bloqueado` | Chequeo de estado del túnel VPN (ping checker) en Prometheus | — | F3 | P4 | Núcleo |  |
-| **B9.15** | `[-] Bloqueado` | Alarma visible en Grafana | — | F3 | P4 | Núcleo |  |
+| **B9.15** | `[x] Completado` | Alarma visible en Grafana | — | F3 | P4 | Núcleo | Regla nativa de Grafana ninjasec-oci-cpu-grafana: CPU > 80 %, visible en el panel 15 del tablero ninjasec-oci-overview. GET /api/prometheus/grafana/api/v1/rules confirmó evaluación con health=ok, state=inactive, sin error. Las alarmas de correo de OCI se verificaron en B8. |
 
 
 <a id="comp-b10"></a>
