@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 5 | 18 | 38 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 4 | 15 | 42 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **41** | **220** | **42** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **40** | **217** | **46** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -453,11 +453,11 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B8.1** | `[-] Bloqueado` | OCI Monitoring con métricas de compute visibles | — | F2 | P4 | Núcleo |  |
-| **B8.2** | `[-] Bloqueado` | Alarma CPU > 80% | — | F2 | P4 | Núcleo |  |
-| **B8.3** | `[-] Bloqueado` | Topic de Notifications con correo suscrito | — | F2 | P4 | Núcleo |  |
+| **B8.1** | `[x] Completado` | OCI Monitoring con métricas de compute visibles | — | F2 | P4 | Núcleo | OCI SummarizeMetricsData devolvió puntos reales de CpuUtilization en oci_vmi_resource_utilization para bastion-utility-01 y replica-agent-01. La muestra de las 07:14 UTC devolvió 1.48 % y 1.37 %, respectivamente. |
+| **B8.2** | `[x] Completado` | Alarma CPU > 80% | — | F2 | P4 | Núcleo | OCI GetAlarm confirmó dos alarmas habilitadas con CpuUtilization[5m].mean() > 80, filtradas por OCID de instancia y dirigidas al topic ninjasec-monitoring-alerts. Monitor: ocid1.alarm.oc1.iad.amaaaaaa3nxgmgaaynhesiwqvbzkxny4432igfamrjl6uwvcxjvmv25v6y2q. Réplica: ocid1.alarm.oc1.iad.amaaaaaa3nxgmgaamd5ilwa2wivvzzvk4doixzt7nqts74uhc2uuykahjzta. |
+| **B8.3** | `[x] Completado` | Topic de Notifications con correo suscrito | — | F2 | P4 | Núcleo | OCI GetTopic y GetSubscription confirmaron topic y suscripción EMAIL en estado ACTIVE después de la confirmación del destinatario. Topic ocid1.onstopic.oc1.iad.amaaaaaa3nxgmgaaxikr6t2szrwyitk7eicxdiuhkncemdewzhlm6qropqlq. |
 | **B8.4** | `[-] Bloqueado` | Alarma disparada y correo recibido | — | F2 | P4 | Núcleo |  |
-| **B8.5** | `[ ] Pendiente` | Logging habilitado (VCN Flow Logs / audit) | — | F2 | P4 | Secundario |  |
+| **B8.5** | `[x] Completado` | Logging habilitado (VCN Flow Logs / audit) | — | F2 | P4 | Secundario | OCI Logging GetLog confirmó ninjasec-vcn-flow ACTIVE y habilitado para la VCN. OCI Audit ListEvents devolvió 78 eventos en una ventana de dos horas. Log ocid1.log.oc1.iad.amaaaaaa3nxgmgaagx5ewsulncrjjcvl3kvciosfhylga2eqqypksmzeitnq. |
 
 
 <a id="comp-b9"></a>
