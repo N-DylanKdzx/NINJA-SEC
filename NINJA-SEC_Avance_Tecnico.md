@@ -38,14 +38,14 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 5 | 6 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 10 | 51 |
-| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 10 | -0 | 15 |
+| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 10 | --1 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **33** | **198** | **72** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **33** | **197** | **73** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -544,7 +544,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **C3.1** | `[x] Completado` | Módulo azure_storage con variables y outputs | — | F2 | P5 | Núcleo | Módulo terraform/modules/azure_storage con variables y outputs. Terraform 1.13.5 y AzureRM 4.81.0: terraform validate devolvió Success en replica-agent-01 con el proveedor Linux firmado por HashiCorp. |
-| **C3.2** | `[ ] Pendiente` | terraform apply crea RG + Blob + WORM + Log Analytics | — | F2 | P5 | Núcleo | Módulo validado en Linux. Falta plan, apply y verificación de recursos en Azure. El proveedor de Terraform local en Windows falla en el handshake mTLS con x509: certificate signed by unknown authority. |
+| **C3.2** | `[x] Completado` | terraform apply crea RG + Blob + WORM + Log Analytics | — | F2 | P5 | Núcleo | 11-nov-2026. Azure Cloud Shell, AzureRM 4.81.0, módulo 0dff08034e533165a9694427954f92060d92cd71. terraform apply: 9 added, 0 changed, 0 destroyed en rg-ninjasec-c32-8f210d4e (West US), Storage ninjac328f210d4e y Log Analytics ninjasec-c32-8f210d4e. Azure CLI confirmó retenciones Unlocked de 365/365/30 días en audit-logs-aws/audit-logs-oci/db-backups. Se usó features.storage.data_plane_available=false para evitar la consulta de sitio estático incompatible con el token de Cloud Shell. Plan de limpieza aplicado: 9 destroyed; az group exists devolvió false para ambos grupos temporales. |
 
 
 ---
