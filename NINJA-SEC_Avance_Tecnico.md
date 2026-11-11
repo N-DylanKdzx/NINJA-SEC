@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 9 | 19 | 33 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 7 | 19 | 35 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **45** | **221** | **37** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **43** | **221** | **39** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -429,9 +429,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B6.1** | `[ ] Pendiente` | Vault y master key creados | — | F2 | — | Núcleo |  |
-| **B6.2** | `[ ] Pendiente` | Secreto de MySQL HeatWave almacenado | — | F2 | — | Núcleo |  |
-| **B6.3** | `[ ] Pendiente` | Scripts referencian el OCID del secreto (sin credenciales en texto) | — | F2 | — | Núcleo |  |
+| **B6.1** | `[x] Completado` | Vault y master key creados | — | F2 | — | Núcleo | OCI GetVault confirmó DEFAULT ACTIVE (ocid1.vault.oc1.iad.ejvpiepoaafcs.abuwcljtj6lxek3efr77dudlguntvnyctszx5yjnfdihfuh5ivm4mqw6p7ra). GetKey confirmó AES-256 SOFTWARE ENABLED (ocid1.key.oc1.iad.ejvpiepoaafcs.abuwcljr56kcgdgzeyxjfwsapkrozwwwlul3o4pnvd6khryledvawlpipgoa). |
+| **B6.2** | `[x] Completado` | Secreto de MySQL HeatWave almacenado | — | F2 | — | Núcleo | OCI GetSecret confirmó ACTIVE (ocid1.vaultsecret.oc1.iad.amaaaaaa3nxgmgaax2asqrwadm6ll3uq47bzykuef263eyz3zlw6cksjv4ca) y GetSecretBundle CURRENT coincidió con la credencial de aplicación protegida localmente. No se imprimió el contenido. |
+| **B6.3** | `[ ] Pendiente` | Scripts referencian el OCID del secreto (sin credenciales en texto) | — | F2 | — | Núcleo | portal/vault_credentials.py recuperó CURRENT por OCID y validó sus campos con sesión temporal sin imprimir la credencial. Falta verificar el acceso mediante identidad de instancia y migrar el servicio del portal. |
 
 
 <a id="comp-b7"></a>
