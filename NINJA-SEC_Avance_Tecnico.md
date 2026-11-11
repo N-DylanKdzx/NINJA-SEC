@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 25 | 28 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 23 | 30 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **45** | **227** | **32** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **45** | **225** | **34** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -470,8 +470,8 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **B9.1** | `[x] Completado` | Prometheus instalado y scrapeando | — | F3 | P4 | Núcleo | Prometheus 3.13.5 activo por systemd en bastion-utility-01, escuchando solo en 127.0.0.1:9090. GET /api/v1/targets confirmó node=up y prometheus=up. El portal continuó con /health=200 durante la prueba. |
 | **B9.2** | `[x] Completado` | node_exporter activo | — | F3 | P4 | Núcleo | Node Exporter 1.12.1 activo por systemd en 127.0.0.1:9100. GET /metrics devolvió node_memory_MemAvailable_bytes y Prometheus confirmó node=up. La Micro reportó 375800 kB de MemAvailable durante la prueba. |
-| **B9.3** | `[-] Bloqueado` | Grafana 10 instalado y accesible de forma segura (no expuesto sin control) | — | F3 | P4 | Núcleo |  |
-| **B9.4** | `[-] Bloqueado` | Datasource Prometheus | — | F3 | P4 | Núcleo |  |
+| **B9.3** | `[x] Completado` | Grafana 10 instalado y accesible de forma segura (no expuesto sin control) | — | F3 | P4 | Núcleo | Grafana 10.4.19+security-01 activo por systemd, ligado solo a 127.0.0.1:3000 en bastion-utility-01. Por túnel OCI Bastion, GET /api/health devolvió 200 con base local OK y GET /api/datasources sin credenciales devolvió 401. Sin listener público. |
+| **B9.4** | `[x] Completado` | Datasource Prometheus | — | F3 | P4 | Núcleo | Grafana datasource Prometheus OCI (UID ninjasec-oci-prom) usa 127.0.0.1:9090. Su API autenticada devolvió up{job=node}=1. Con Grafana, Prometheus, Node Exporter y portal activos, /health del portal devolvió 200 y la Micro reportó 422648 kB de MemAvailable durante la prueba. |
 | **B9.5** | `[-] Bloqueado` | Datasource CloudWatch (credenciales del Lab) | — | F3 | P4 | Núcleo |  |
 | **B9.6** | `[-] Bloqueado` | Plugin / datasource OCI Metrics | — | F3 | P4 | Núcleo |  |
 | **B9.7** | `[-] Bloqueado` | Datasource Azure Monitor | — | F3 | P4 | Núcleo |  |
