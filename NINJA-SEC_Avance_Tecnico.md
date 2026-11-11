@@ -38,14 +38,14 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 5 | 6 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 10 | 51 |
-| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 12 | -2 | 11 |
+| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 10 | -1 | 14 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **35** | **200** | **68** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **33** | **199** | **71** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -531,9 +531,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **C2.1** | `[x] Completado` | Workspace de Log Analytics creado | — | F3 | P3c | Núcleo | az monitor log-analytics workspace show: ninjasec-law, westus, Succeeded, retención 30 días. |
 | **C2.2** | `[-] Bloqueado` | Ingesta de eventos de CloudTrail (AWS) | — | F3 | P3c | Núcleo |  |
-| **C2.3** | `[-] Bloqueado` | Ingesta de OCI Audit logs | — | F3 | P3c | Núcleo |  |
-| **C2.4** | `[-] Bloqueado` | Consulta KQL forense (ej. SG modificados en 24 h) devuelve resultados | — | F3 | P3c | Núcleo |  |
-| **C2.5** | `[ ] Pendiente` | Workbook/dashboard de cumplimiento | — | F3 | P3c | Secundario | az resource show confirma ninjasec-compliance-workbook (5ec9a0d2-1a5a-4e81-a7a4-698f9e43b035) asociado a ninjasec-law. Falta verificar las visualizaciones con eventos reales. |
+| **C2.3** | `[x] Completado` | Ingesta de OCI Audit logs | — | F3 | P3c | Núcleo | OCI Audit → Logs Ingestion API mediante DCR ninjasec-oci-audit (dcr-2d321bc72d694883ab54e51b61710966) → ninjasec-law / NINJASECOCIAudit_CL. Dos lotes aceptados HTTP 204; consulta HTTP 200 confirmó 38 EventId únicos. Prueba manual. |
+| **C2.4** | `[x] Completado` | Consulta KQL forense (ej. SG modificados en 24 h) devuelve resultados | — | F3 | P3c | Núcleo | KQL sobre NINJASECOCIAudit_CL con ventana de 24 h y deduplicación por EventId devolvió 38 cambios de red, incluidos CreateNetworkSecurityGroup, UpdateRouteTable y UpdateSecurityList. Variante OCI del ejemplo forense. |
+| **C2.5** | `[x] Completado` | Workbook/dashboard de cumplimiento | — | F3 | P3c | Secundario | Workbook 5ec9a0d2-1a5a-4e81-a7a4-698f9e43b035, panel ninjasec-oci-network-audit guardado y releído por ARM; consulta fuente comprobada con eventos reales de OCI. |
 
 
 <a id="comp-c3"></a>
