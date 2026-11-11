@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 23 | 30 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 21 | 32 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **45** | **225** | **34** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **45** | **223** | **36** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -390,7 +390,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **B3.1** | `[x] Completado` | Bastion creado en la VCN | — | F2 | — | Núcleo | OCI GetBastion confirmó ninjasec-bastion ACTIVE en la subred privada de la VCN. Endpoint privado 10.20.10.105, acceso limitado a una IP de origen (/32), sesiones de hasta 1800 s. OCID ocid1.bastion.oc1.iad.amaaaaaa3nxgmgaaa6fbn3e4bcmrbb2akgog6jawbjgnoyhdamlgiyznfnwq. |
-| **B3.2** | `[-] Bloqueado` | Sesión SSH a monitor-01 solo a través del Bastion | — | F2 | — | Núcleo | Prueba de acceso provisional por OCI Bastion a 10.20.10.36:22: SSH ejecutó hostname -s e id -un y devolvió bastion-utility-01 y opc. Sesión temporal ocid1.bastionsession.oc1.iad.amaaaaaa3nxgmgaafpobo2qpgnlatlfg673uxpt6i6i34s4m3wpfjcqhz7sq. El NSG limita TCP 22 al endpoint privado del Bastion. Queda bloqueada la verificación contra monitor-01 por falta de capacidad A1 (B2.1). |
+| **B3.2** | `[x] Completado` | Sesión SSH a monitor-01 solo a través del Bastion | — | F2 | — | Núcleo | Host de monitoreo adoptado por el titular: bastion-utility-01. SSH por OCI Bastion a 10.20.10.36:22 devolvió bastion-utility-01 y opc. Sin IP pública; el NSG limita TCP 22 al endpoint privado del Bastion. |
 | **B3.3** | `[x] Completado` | Instancias privadas sin IP pública | — | F2 | — | Núcleo | OCI GetVnic confirmó las dos VM RUNNING en la subred privada 10.20.10.0/24, sin IP pública: bastion-utility-01 (10.20.10.36) y replica-agent-01 (10.20.10.212). |
 
 
@@ -405,7 +405,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo | Se creó incidents en MySQL de OCI con portal/schema.sql y se verificó su uso mediante CRUD. Sigue pendiente comparar su DDL con RDS cuando se implemente A9.7. |
 | **B4.3** | `[x] Completado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo | SHOW GRANTS confirmó SELECT, INSERT, UPDATE y DELETE sobre ninjasec.* para ninjasec_app@10.20.10.36. SELECT CURRENT_USER(), DATABASE(), 1 devolvió ninjasec_app@10.20.10.36, ninjasec, 1. Cuenta limitada a la Micro de OCI y con TLS obligatorio. El acceso de AWS se validará en su integración. |
 | **B4.4** | `[x] Completado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo | OCI Work Request de asociación del NSG SUCCEEDED. GetDbSystem y ListNetworkSecurityGroupSecurityRules confirmaron que ninjasec-nsg-db permite TCP 3306 solo desde 10.20.10.36/32. La política IAM está limitada al principal del DB System. OCID de política ocid1.policy.oc1..aaaaaaaaecb5ohnondn574cvtjgxxjkl6xt5i5dm4wwvinarsmhoubbnzxxa. El acceso del backend AWS sigue pendiente en B1.9. |
-| **B4.5** | `[-] Bloqueado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo | Prueba provisional desde bastion-utility-01 (10.20.10.36), vía OCI Bastion: SELECT VERSION() devolvió 26.10.0-u1-cloud y la cuenta de aplicación ejecutó SELECT con TLS_AES_128_GCM_SHA256. Sigue pendiente la prueba contra monitor-01 por capacidad A1 (B2.1). |
+| **B4.5** | `[x] Completado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo | Desde el host de monitoreo adoptado bastion-utility-01, SELECT VERSION() devolvió 26.10.0-u1-cloud y la cuenta de aplicación ejecutó SELECT con TLS_AES_128_GCM_SHA256. |
 | **B4.6** | `[x] Completado` | Backup automático habilitado | — | F2 | P2 | Núcleo | OCI GetDbSystem en estado ACTIVE confirmó backupPolicy.isEnabled=true y retentionInDays=1 (MySQL.Free). |
 
 
