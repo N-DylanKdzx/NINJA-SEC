@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 21 | 32 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 9 | 19 | 33 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,12 +45,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **45** | **223** | **36** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **45** | **221** | **37** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
 - [Dominio A: AWS · us-east-1 (VPC 10.10.0.0/16)](#dominio-a---aws-us-east-1-vpc-10100016) (95 tareas)
-- [Dominio B: OCI · Home Region (VCN 10.20.0.0/16)](#dominio-b---oci-home-region-vcn-10200016) (62 tareas)
+- [Dominio B: OCI · Home Region (VCN 10.20.0.0/16)](#dominio-b---oci-home-region-vcn-10200016) (61 tareas)
 - [Dominio C: Azure · East US (cumplimiento y forense)](#dominio-c---azure-east-us-cumplimiento-y-forense) (17 tareas)
 - [Dominio D: Cloudflare · DNS y borde](#dominio-d---cloudflare-dns-y-borde) (7 tareas)
 - [Dominio M: Integraciones Multicloud](#dominio-m---integraciones-multicloud) (55 tareas)
@@ -370,15 +370,14 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 <a id="comp-b2"></a>
 
 ### Componente B2: Cómputo OCI Always Free
-- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 6
+- **Fase:** F2 | **Pilar:** — | **Total Tareas:** 5
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B2.1** | `[-] Bloqueado` | monitor-01: VM A1 Flex 2 OCPU / 12 GB en subred privada | — | F2 | — | Núcleo | OCI LaunchInstance para monitor-01 (2 OCPU, 12 GB) devolvió Out of host capacity en los tres dominios de Ashburn. Se mantiene bloqueada por capacidad. Alternativa en B2.4. |
+| **B2.1** | `[x] Completado` | Host de monitoreo en subred privada (A1 Flex o alternativa B2.4) | — | F2 | — | Núcleo | OCI devolvió Out of host capacity para A1 Flex en los tres dominios de Ashburn. Se adoptó bastion-utility-01 (E2.1.Micro) como host de monitoreo. B9.1 a B9.4 verificaron Node Exporter, Prometheus, Grafana por Bastion y /health del portal con HTTP 200. |
 | **B2.2** | `[x] Completado` | VM E2.1.Micro bastion/utility | — | F2 | — | Núcleo | OCI GetInstance y GetVnic: bastion-utility-01, VM.Standard.E2.1.Micro, RUNNING en US-ASHBURN-AD-3, subred privada 10.20.10.0/24 sin IP pública. OCID ocid1.instance.oc1.iad.anuwcljt3nxgmgacays7ij4hje7tqwebsgo6wm3mkpwy2cl3veji2ncwaaea. Acceso por OCI Bastion se verifica en B3. |
 | **B2.3** | `[x] Completado` | VM E2.1.Micro replica-agent-01 | — | F2 | — | Núcleo | OCI GetInstance y GetVnic: replica-agent-01, VM.Standard.E2.1.Micro, RUNNING en US-ASHBURN-AD-3, subred privada 10.20.10.0/24 sin IP pública. OCID ocid1.instance.oc1.iad.anuwcljt3nxgmgacy6ljbmb5iateotxlcnh5x4hl43o3ywricnav6kav3qla. El agente de replicación se valida en su componente. |
 | **B2.4** | `[x] Completado` | Fallback 2×E2.1.Micro si A1 Flex sin capacidad | — | F2 | — | Secundario | OCI GetInstance confirmó dos VM.Standard.E2.1.Micro RUNNING como alternativa: bastion-utility-01 (también destinada a monitoreo) y replica-agent-01. El software de monitoreo queda en B9. |
-| **B2.5** | `[-] Bloqueado` | Cron anti-reclamación (actividad cada 3 min) activo | Evita que OCI reclame instancias idle | F2 | — | Núcleo | Cron no instalado ni verificado. Revisar este requisito al habilitar el acceso al sistema operativo en B3. |
 | **B2.6** | `[x] Completado` | Boot volumes cifrados | — | F2 | — | Núcleo | OCI GetBootVolume verificó los dos volúmenes de 50 GB cifrados en reposo con claves gestionadas por Oracle (kms_key_id=null). GetBootVolumeAttachment confirmó cifrado paravirtualizado en tránsito habilitado en ambos. OCID ocid1.bootvolume.oc1.iad.abuwcljtvs6vnm6g7n7lgvbdtrpcblrq7ugatsj3duc2yyhan3edsryt2qua y ocid1.bootvolume.oc1.iad.abuwcljt6faenvrxsrz3wnzv6uzvypvaqva3jja3y367rga2k7ze5locjjda. |
 
 
