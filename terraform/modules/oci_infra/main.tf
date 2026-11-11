@@ -107,8 +107,16 @@ resource "oci_core_instance" "this" {
   compartment_id      = var.compartment_id
   availability_domain = each.value.availability_domain
   display_name        = each.key
-  shape               = "VM.Standard.E2.1.Micro"
+  shape               = each.value.shape
   freeform_tags       = local.tags
+
+  dynamic "shape_config" {
+    for_each = each.value.shape_config[*]
+    content {
+      ocpus         = shape_config.value.ocpus
+      memory_in_gbs = shape_config.value.memory_in_gbs
+    }
+  }
 
   create_vnic_details {
     subnet_id        = oci_core_subnet.this["private"].id
@@ -132,7 +140,7 @@ resource "oci_mysql_mysql_db_system" "standby" {
   compartment_id          = var.compartment_id
   availability_domain     = var.mysql_availability_domain
   display_name            = "${var.name_prefix}-mysql-private"
-  shape_name              = "MySQL.Free"
+  shape_name              = var.mysql_shape
   data_storage_size_in_gb = 50
   subnet_id               = oci_core_subnet.this["private"].id
   admin_username          = var.mysql_admin_username
@@ -140,6 +148,13 @@ resource "oci_mysql_mysql_db_system" "standby" {
   port                    = 3306
   is_highly_available     = false
   freeform_tags           = local.tags
+}
+
+resource "oci_mysql_heat_wave_cluster" "this" {
+  count        = var.heatwave_cluster == null ? 0 : 1
+  db_system_id = oci_mysql_mysql_db_system.standby.id
+  shape_name   = var.heatwave_cluster.shape_name
+  cluster_size = var.heatwave_cluster.cluster_size
 }
 
 resource "oci_load_balancer_load_balancer" "this" {
