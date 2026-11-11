@@ -37,7 +37,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 4 | 11 | 46 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 11 | 47 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **40** | **213** | **50** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **39** | **213** | **51** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -491,9 +491,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B10.1** | `[ ] Pendiente` | Módulo oci_infra con variables y outputs | — | F2 | P5 | Núcleo |  |
+| **B10.1** | `[x] Completado` | Módulo oci_infra con variables y outputs | — | F2 | P5 | Núcleo | Módulo terraform/modules/oci_infra con variables y outputs para VCN, subredes, gateways, rutas, NSG, Compute, MySQL.Free y LB. Terraform 1.13.5 y oracle/oci 7.32.0: terraform validate devolvió Success en replica-agent-01. |
 | **B10.2** | `[ ] Pendiente` | Autenticación OCI vía API key fuera del repositorio | — | F2 | P5 | Núcleo |  |
-| **B10.3** | `[ ] Pendiente` | terraform apply crea VCN + NSG + compute + HeatWave + LB | — | F2 | P5 | Núcleo |  |
+| **B10.3** | `[ ] Pendiente` | terraform apply crea VCN + NSG + compute + HeatWave + LB | — | F2 | P5 | Núcleo | Módulo validado sin apply. Los recursos OCI ya existen fuera del estado de Terraform. Falta importar, revisar terraform plan y verificar la creación mediante apply en un alcance autorizado. |
 | **B10.4** | `[-] Bloqueado` | Stack equivalente en OCI Resource Manager | — | F2 | P5 | Secundario |  |
 
 
