@@ -35,17 +35,17 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 5 | 6 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 10 | 51 |
-| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
+| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | -4 | 8 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **36** | **212** | **55** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **36** | **202** | **65** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -77,7 +77,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **G1.1** | `[-] Bloqueado` | AWS Academy Learner Lab iniciado (lab activo en us-east-1) | — | F0 | — | Núcleo |  |
 | **G1.2** | `[x] Completado` | Cuenta OCI creada con home region elegida | — | F0 | — | Núcleo |OCI CLI: iam region-subscription list confirmó us-ashburn-1 como región principal; os ns get respondió correctamente. |
 | **G1.3** | `[x] Completado` | OCI Free Trial activado (US$300 / 30 días) si hay tarjeta disponible | Opcional: solo si se quiere probar OCI WAF u otros servicios de pago | F0 | — | Secundario | OCI Organizations ListAssignedSubscriptions confirmó una suscripción CLOUDCM ACTIVE con vigencia de 30 días, del 2026-11-05 al 2026-12-04 UTC. El titular confirmó que corresponde al Free Trial activado al abrir la cuenta. La API consultada no muestra el saldo de créditos restante. |
-| **G1.4** | `[ ] Pendiente` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo |  |
+| **G1.4** | `[x] Completado` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo | az account show confirma Azure for Students, Enabled, suscripción 020556eb-782f-4afc-84d3-39cd392763ba. |
 | **G1.5** | `[ ] Pendiente` | Cuenta Cloudflare Free creada | — | F0 | — | Núcleo |  |
 | **G1.6** | `[ ] Pendiente` | Dominio real registrado y delegado a Cloudflare | Cloudflare requiere un dominio que controles; un subdominio de nip.io no se puede delegar | F0 | — | Núcleo |  |
 | **G1.7** | `[-] Bloqueado` | Llaves SSH generadas (key pair AWS + llave OCI) | — | F0 | — | Núcleo |  |
@@ -93,7 +93,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **G2.1** | `[ ] Pendiente` | Terraform instalado (terraform --version responde) | — | F0 | P5 | Núcleo |  |
 | **G2.2** | `[-] Bloqueado` | AWS CLI configurado con credenciales del Lab | — | F0 | P5 | Núcleo |  |
 | **G2.3** | `[ ] Pendiente` | OCI CLI configurado con API key | — | F0 | P5 | Núcleo |  |
-| **G2.4** | `[ ] Pendiente` | Azure CLI autenticado (az login) | — | F0 | P5 | Núcleo |  |
+| **G2.4** | `[x] Completado` | Azure CLI autenticado (az login) | — | F0 | P5 | Núcleo | Inicio de sesión completado; az account show y az resource list devolvieron la suscripción y sus recursos. |
 | **G2.5** | `[ ] Pendiente` | Repositorio Git creado con estructura terraform/ (environments/prod + modules) | — | F0 | P5 | Núcleo |  |
 | **G2.6** | `[ ] Pendiente` | .gitignore protege terraform.tfvars, llaves y credenciales | — | F0 | P5 | Núcleo |  |
 
@@ -510,14 +510,14 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **C1.1** | `[ ] Pendiente` | Resource Group rg-ninjasec-compliance | — | F2 | P3c | Núcleo |  |
-| **C1.2** | `[ ] Pendiente` | Storage Account creada | — | F2 | P3c | Núcleo |  |
-| **C1.3** | `[ ] Pendiente` | Container audit-logs-aws | — | F2 | P3c | Núcleo |  |
-| **C1.4** | `[ ] Pendiente` | Container audit-logs-oci | — | F2 | P3c | Núcleo |  |
-| **C1.5** | `[ ] Pendiente` | Container db-backups | — | F2 | P3c | Núcleo |  |
-| **C1.6** | `[ ] Pendiente` | Immutability Policy 365 días bloqueada en audit-logs-aws | — | F2 | P3c | Núcleo |  |
-| **C1.7** | `[ ] Pendiente` | Immutability Policy 365 días bloqueada en audit-logs-oci | — | F2 | P3c | Núcleo |  |
-| **C1.8** | `[ ] Pendiente` | Immutability Policy 30 días bloqueada en db-backups | — | F2 | P3c | Núcleo |  |
+| **C1.1** | `[x] Completado` | Resource Group rg-ninjasec-compliance | — | F2 | P3c | Núcleo | az group list confirma rg-ninjasec-compliance, eastus. |
+| **C1.2** | `[x] Completado` | Storage Account creada | — | F2 | P3c | Núcleo | az storage account show: ninjaseccompliance63ba, westus, Standard_LRS, Succeeded, TLS1_2, solo HTTPS y allowBlobPublicAccess=false. |
+| **C1.3** | `[x] Completado` | Container audit-logs-aws | — | F2 | P3c | Núcleo | az storage container-rm list: audit-logs-aws, publicAccess=None. |
+| **C1.4** | `[x] Completado` | Container audit-logs-oci | — | F2 | P3c | Núcleo | az storage container-rm list: audit-logs-oci, publicAccess=None. |
+| **C1.5** | `[x] Completado` | Container db-backups | — | F2 | P3c | Núcleo | az storage container-rm list: db-backups, publicAccess=None. |
+| **C1.6** | `[x] Completado` | Immutability Policy 365 días bloqueada en audit-logs-aws | — | F2 | P3c | Núcleo | az storage container immutability-policy show: audit-logs-aws, 365 días, Locked. |
+| **C1.7** | `[ ] Pendiente` | Immutability Policy 365 días bloqueada en audit-logs-oci | — | F2 | P3c | Núcleo | az storage container immutability-policy show: audit-logs-oci, 365 días, Unlocked. Falta bloquear la política. |
+| **C1.8** | `[x] Completado` | Immutability Policy 30 días bloqueada en db-backups | — | F2 | P3c | Núcleo | az storage container immutability-policy show: db-backups, 30 días, Locked. |
 | **C1.9** | `[ ] Pendiente` | Intento de borrar un blob → error 409 BlobImmutableDueToPolicy | — | F2 | P3c | Núcleo |  |
 | **C1.10** | `[-] Bloqueado` | SAS token de mínimo privilegio con expiración | — | F2 | P3c | Núcleo |  |
 
@@ -529,11 +529,11 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **C2.1** | `[ ] Pendiente` | Workspace de Log Analytics creado | — | F3 | P3c | Núcleo |  |
+| **C2.1** | `[x] Completado` | Workspace de Log Analytics creado | — | F3 | P3c | Núcleo | az monitor log-analytics workspace show: ninjasec-law, westus, Succeeded, retención 30 días. |
 | **C2.2** | `[-] Bloqueado` | Ingesta de eventos de CloudTrail (AWS) | — | F3 | P3c | Núcleo |  |
 | **C2.3** | `[-] Bloqueado` | Ingesta de OCI Audit logs | — | F3 | P3c | Núcleo |  |
 | **C2.4** | `[-] Bloqueado` | Consulta KQL forense (ej. SG modificados en 24 h) devuelve resultados | — | F3 | P3c | Núcleo |  |
-| **C2.5** | `[ ] Pendiente` | Workbook/dashboard de cumplimiento | — | F3 | P3c | Secundario |  |
+| **C2.5** | `[ ] Pendiente` | Workbook/dashboard de cumplimiento | — | F3 | P3c | Secundario | az resource show confirma ninjasec-compliance-workbook (5ec9a0d2-1a5a-4e81-a7a4-698f9e43b035) asociado a ninjasec-law. Falta verificar las visualizaciones con eventos reales. |
 
 
 <a id="comp-c3"></a>
