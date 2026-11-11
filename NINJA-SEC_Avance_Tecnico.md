@@ -35,7 +35,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 9 | 7 | 3 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 7 | 4 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 62 | 57 | 5 | 9 | 27 | 26 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | 4 | 0 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **46** | **229** | **29** |
+| **TOTAL** | **Consolidado General** | **304** | **286** | **18** | **45** | **229** | **30** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -76,7 +76,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **G1.1** | `[-] Bloqueado` | AWS Academy Learner Lab iniciado (lab activo en us-east-1) | — | F0 | — | Núcleo |  |
 | **G1.2** | `[x] Completado` | Cuenta OCI creada con home region elegida | — | F0 | — | Núcleo |OCI CLI: iam region-subscription list confirmó us-ashburn-1 como región principal; os ns get respondió correctamente. |
-| **G1.3** | `[ ] Pendiente` | OCI Free Trial activado (US$300 / 30 días) si hay tarjeta disponible | Opcional: solo si se quiere probar OCI WAF u otros servicios de pago | F0 | — | Secundario |  |
+| **G1.3** | `[x] Completado` | OCI Free Trial activado (US$300 / 30 días) si hay tarjeta disponible | Opcional: solo si se quiere probar OCI WAF u otros servicios de pago | F0 | — | Secundario | OCI Organizations ListAssignedSubscriptions confirmó una suscripción CLOUDCM ACTIVE con vigencia de 30 días, del 2026-11-05 al 2026-12-04 UTC. El titular confirmó que corresponde al Free Trial activado al abrir la cuenta. La API consultada no muestra el saldo de créditos restante. |
 | **G1.4** | `[ ] Pendiente` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo |  |
 | **G1.5** | `[ ] Pendiente` | Cuenta Cloudflare Free creada | — | F0 | — | Núcleo |  |
 | **G1.6** | `[ ] Pendiente` | Dominio real registrado y delegado a Cloudflare | Cloudflare requiere un dominio que controles; un subdominio de nip.io no se puede delegar | F0 | — | Núcleo |  |
