@@ -38,14 +38,14 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 5 | 6 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 10 | 51 |
-| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 13 | -4 | 8 |
+| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 12 | -2 | 11 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 49 | 0 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **36** | **202** | **65** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **35** | **200** | **68** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -516,10 +516,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **C1.4** | `[x] Completado` | Container audit-logs-oci | — | F2 | P3c | Núcleo | az storage container-rm list: audit-logs-oci, publicAccess=None. |
 | **C1.5** | `[x] Completado` | Container db-backups | — | F2 | P3c | Núcleo | az storage container-rm list: db-backups, publicAccess=None. |
 | **C1.6** | `[x] Completado` | Immutability Policy 365 días bloqueada en audit-logs-aws | — | F2 | P3c | Núcleo | az storage container immutability-policy show: audit-logs-aws, 365 días, Locked. |
-| **C1.7** | `[ ] Pendiente` | Immutability Policy 365 días bloqueada en audit-logs-oci | — | F2 | P3c | Núcleo | az storage container immutability-policy show: audit-logs-oci, 365 días, Unlocked. Falta bloquear la política. |
+| **C1.7** | `[x] Completado` | Immutability Policy 365 días bloqueada en audit-logs-oci | — | F2 | P3c | Núcleo | az storage container immutability-policy show: audit-logs-oci, 365 días, Locked. |
 | **C1.8** | `[x] Completado` | Immutability Policy 30 días bloqueada en db-backups | — | F2 | P3c | Núcleo | az storage container immutability-policy show: db-backups, 30 días, Locked. |
-| **C1.9** | `[ ] Pendiente` | Intento de borrar un blob → error 409 BlobImmutableDueToPolicy | — | F2 | P3c | Núcleo |  |
-| **C1.10** | `[-] Bloqueado` | SAS token de mínimo privilegio con expiración | — | F2 | P3c | Núcleo |  |
+| **C1.9** | `[x] Completado` | Intento de borrar un blob → error 409 BlobImmutableDueToPolicy | — | F2 | P3c | Núcleo | DELETE autenticado de ninjasec-worm-proof-20261111-192554.txt en audit-logs-oci: HTTP 409 BlobImmutableDueToPolicy. |
+| **C1.10** | `[x] Completado` | SAS token de mínimo privilegio con expiración | — | F2 | P3c | Núcleo | SAS de delegación para un solo blob en audit-logs-oci, solo HTTPS, permiso c (crear), vencimiento 2026-11-11 19:45 UTC. PUT 201 y GET 403. Permisos temporales de prueba retirados. |
 
 
 <a id="comp-c2"></a>
