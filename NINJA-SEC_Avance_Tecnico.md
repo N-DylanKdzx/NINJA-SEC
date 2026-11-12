@@ -40,12 +40,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 10 | 51 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 10 | --1 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 48 | 3 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 47 | 4 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **31** | **196** | **76** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **31** | **195** | **77** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -686,7 +686,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **M8.1** | `[x] Completado` | Script OCI CLI exporta OCI Audit logs | — | F3 | P3c | Núcleo | scripts/export-oci-audit.ps1 ejecutó OCI CLI audit event list --all. Prueba real: 14 eventos; SHA-256 ee80eb41be3c6c6349e942ea4e201d4664dbe1f5a1d415592b3816a65d6c270b. |
-| **M8.2** | `[-] Bloqueado` | Cron diario (02:30) sube a audit-logs-oci | — | F3 | P3c | Núcleo | Azure Automation ninjasec-oci-audit preparada con identidad administrada de alcance limitado. La ejecución diaria requiere configurar la autenticación de lectura de OCI. Entra ID rechazó el registro de aplicación por permisos de directorio. |
+| **M8.2** | `[x] Completado` | Cron diario (02:30) sube a audit-logs-oci | — | F3 | P3c | Núcleo | Azure Automation ejecuta Publish-OciAudit diariamente a las 02:30 de Colombia. Horario habilitado y vínculo 1f7ae0c5-c246-4e68-bbfd-c241db5b9cc7 verificados. Job de prueba 5b3ab2da-63eb-4ff9-8901-4c7989d676da Completed: 1923 eventos, Blob PUT 201 y KQL 1923 únicos. Blob oci-audit-2026-11-11-b66f5a5a66c70efc27b1797ba2d5874c59a3a435cfb125bf8d8997380043b543.json. Credencial OCI de solo lectura de Audit en variable cifrada OciAuditReader; identidad administrada de Azure limitada al contenedor y DCR. |
 | **M8.3** | `[x] Completado` | Blob queda bloqueado por política WORM | — | F3 | P3c | Núcleo | Lote real de 19 eventos en audit-logs-oci/oci-audit-m8-proof-20261111-210448-55885cabff4f.json. PUT 201, GET con SHA-256 55885cabff4f0a087eca9a281913c9b0f9400aa2670302f44832cb1232184742 y DELETE 409 BlobImmutableDueToPolicy. Retención Locked de 365 días. |
 | **M8.4** | `[x] Completado` | Eventos enviados a Log Analytics | — | F3 | P3c | Núcleo | Reingesta manual del mismo blob WORM tras validar SHA-256: Logs Ingestion API HTTP 204. KQL en ninjasec-law/NINJASECOCIAudit_CL devolvió 19 de 19 EventId del archivo, deduplicados. Permisos temporales retirados. |
 
