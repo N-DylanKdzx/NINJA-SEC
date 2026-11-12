@@ -40,12 +40,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 10 | 51 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 10 | --1 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 3 | 48 | 4 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 1 | 47 | 7 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 8 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **30** | **196** | **77** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **28** | **195** | **80** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -659,9 +659,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **M6.1** | `[ ] Pendiente` | Script mysqldump programado (cron) | — | F2 | P3c | Núcleo |  |
-| **M6.2** | `[ ] Pendiente` | Dump depositado en OCI Object Storage | — | F2 | P3c | Núcleo |  |
-| **M6.3** | `[-] Bloqueado` | Copia subida a Azure container db-backups (WORM) | — | F2 | P3c | Núcleo |  |
-| **M6.4** | `[-] Bloqueado` | Archivos visibles en ambos destinos | — | F2 | P3c | Núcleo |  |
+| **M6.2** | `[x] Completado` | Dump depositado en OCI Object Storage | — | F2 | P3c | Núcleo | OCI GetObject verificó mysql/ninjasec-20261111T070855Z-cf90ae215883.sql.gz en ninjasec-backup-staging, 392 bytes. Origen: MySQL HeatWave OCI. |
+| **M6.3** | `[x] Completado` | Copia subida a Azure container db-backups (WORM) | — | F2 | P3c | Núcleo | Copia manual del dump de HeatWave a db-backups/mysql/ninjasec-20261111T070855Z-cf90ae215883.sql.gz en ninjaseccompliance63ba. Azure Blob PUT 201; política WORM Locked de 30 días. |
+| **M6.4** | `[x] Completado` | Archivos visibles en ambos destinos | — | F2 | P3c | Núcleo | OCI GetObject y Azure Blob GET 200 devolvieron 392 bytes con SHA-256 comprimido idéntico cf90ae215883e35699362711bf074394ca4d559e8f35e2f0e01f30531e78bd27. |
 | **M6.5** | `[-] Bloqueado` | Restauración desde el dump verificada | — | F2 | P3c | Núcleo |  |
 
 
