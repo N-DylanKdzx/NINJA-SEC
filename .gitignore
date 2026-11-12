@@ -24,3 +24,18 @@ credentials*
 .DS_Store
 Thumbs.db
 
+
+# Perfiles locales y claves privadas
+.oci/
+.azure/
+.aws/
+.ssh/
+id_rsa
+id_ed25519
+id_ecdsa
+id_dsa
+ninjasec_oci_*
+*.ppk
+*.pfx
+*.p12
+*.dpapi

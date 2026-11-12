@@ -35,17 +35,17 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 5 | 6 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 8 | 1 | 10 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 10 | 51 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 10 | --1 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 0 | 47 | 8 |
-| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 5 | 15 | 0 |
+| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 4 | 14 | 2 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | -1 | 8 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **26** | **195** | **82** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **25** | **190** | **88** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -90,12 +90,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **G2.1** | `[ ] Pendiente` | Terraform instalado (terraform --version responde) | — | F0 | P5 | Núcleo |  |
+| **G2.1** | `[x] Completado` | Terraform instalado (terraform --version responde) | — | F0 | P5 | Núcleo | terraform version devolvió Terraform v1.13.5 (windows_amd64) al ejecutar el binario local. |
 | **G2.2** | `[-] Bloqueado` | AWS CLI configurado con credenciales del Lab | — | F0 | P5 | Núcleo |  |
-| **G2.3** | `[ ] Pendiente` | OCI CLI configurado con API key | — | F0 | P5 | Núcleo |  |
+| **G2.3** | `[x] Completado` | OCI CLI configurado con API key | — | F0 | P5 | Núcleo | OCI CLI 3.96.2: oci os ns get --profile NINJA_SEC_TERRAFORM devolvió el namespace con autenticación por API key. |
 | **G2.4** | `[x] Completado` | Azure CLI autenticado (az login) | — | F0 | P5 | Núcleo | Inicio de sesión completado; az account show y az resource list devolvieron la suscripción y sus recursos. |
-| **G2.5** | `[ ] Pendiente` | Repositorio Git creado con estructura terraform/ (environments/prod + modules) | — | F0 | P5 | Núcleo |  |
-| **G2.6** | `[ ] Pendiente` | .gitignore protege terraform.tfvars, llaves y credenciales | — | F0 | P5 | Núcleo |  |
+| **G2.5** | `[x] Completado` | Repositorio Git creado con estructura terraform/ (environments/prod + modules) | — | F0 | P5 | Núcleo | main contiene terraform/environments/prod/.gitkeep y los módulos terraform/modules/oci_infra y terraform/modules/azure_storage. La composición multi-provider corresponde a M10. |
+| **G2.6** | `[x] Completado` | .gitignore protege terraform.tfvars, llaves y credenciales | — | F0 | P5 | Núcleo | git check-ignore --no-index confirmó exclusiones para tfvars, PEM, llaves SSH, carpetas de credenciales y archivos DPAPI. |
 
 
 <a id="comp-g3"></a>
@@ -749,8 +749,8 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **T2.1** | `[-] Bloqueado` | grep -r "password | secret | key" sobre el repositorio sin hallazgos | — | Núcleo |  |
-| **T2.2** | `[ ] Pendiente` | terraform.tfvars y llaves fuera de Git | — | F1 | — | Núcleo |  |
+| **T2.1** | `[x] Completado` | grep -r "password | secret | key" sobre el repositorio sin hallazgos | — | Núcleo | Gitleaks v8.30.1 con salida redactada: 37 commits revisados hasta 6e8bff6, sin secretos detectados. Se escanearon también los cambios de esta actualización. |
+| **T2.2** | `[x] Completado` | terraform.tfvars y llaves fuera de Git | — | F1 | — | Núcleo | git check-ignore --no-index confirmó la exclusión de tfvars y llaves. El inventario de rutas del historial de main no mostró archivos sensibles con esos patrones; la API key usada por OCI CLI está fuera del árbol Git. |
 | **T2.3** | `[-] Bloqueado` | Credenciales de datasources de Grafana fuera del repositorio | — | F1 | — | Núcleo |  |
 | **T2.4** | `[-] Bloqueado` | Procedimiento de refresco de credenciales del Lab (CLI, Terraform, Grafana) | — | F1 | — | Núcleo |  |
 
