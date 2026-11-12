@@ -658,7 +658,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M6.1** | `[ ] Pendiente` | Script mysqldump programado (cron) | — | F2 | P3c | Núcleo |  |
+| **M6.1** | `[ ] Pendiente` | Script mysqldump programado (cron) | — | F2 | P3c | Núcleo | Programación diaria por cron pendiente. El dump puntual quedó verificado en M6.2–M6.5. En esta revisión, bastion-utility-01 no respondió por SSH y seguía en STOPPING tras SOFTRESET. Falta desplegar y verificar una ejecución real del job programado en el host autorizado. |
 | **M6.2** | `[x] Completado` | Dump depositado en OCI Object Storage | — | F2 | P3c | Núcleo | OCI GetObject verificó mysql/ninjasec-20261111T070855Z-cf90ae215883.sql.gz en ninjasec-backup-staging, 392 bytes. Origen: MySQL HeatWave OCI. |
 | **M6.3** | `[x] Completado` | Copia subida a Azure container db-backups (WORM) | — | F2 | P3c | Núcleo | Copia manual del dump de HeatWave a db-backups/mysql/ninjasec-20261111T070855Z-cf90ae215883.sql.gz en ninjaseccompliance63ba. Azure Blob PUT 201; política WORM Locked de 30 días. |
 | **M6.4** | `[x] Completado` | Archivos visibles en ambos destinos | — | F2 | P3c | Núcleo | OCI GetObject y Azure Blob GET 200 devolvieron 392 bytes con SHA-256 comprimido idéntico cf90ae215883e35699362711bf074394ca4d559e8f35e2f0e01f30531e78bd27. |
