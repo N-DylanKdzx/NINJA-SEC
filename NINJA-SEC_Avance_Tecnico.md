@@ -473,13 +473,13 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **B9.4** | `[x] Completado` | Datasource Prometheus | — | F3 | P4 | Núcleo | Grafana datasource Prometheus OCI (UID ninjasec-oci-prom) usa 127.0.0.1:9090. Su API autenticada devolvió up{job=node}=1. Con Grafana, Prometheus, Node Exporter y portal activos, /health del portal devolvió 200 y la Micro reportó 422648 kB de MemAvailable durante la prueba. |
 | **B9.5** | `[-] Bloqueado` | Datasource CloudWatch (credenciales del Lab) | — | F3 | P4 | Núcleo |  |
 | **B9.6** | `[x] Completado` | Plugin / datasource OCI Metrics | — | F3 | P4 | Núcleo | Grafana cargó el plugin Oracle OCI Metrics 6.5.6 con firma valid. El datasource ninjasec-oci-native usa identidad de instancia y política de solo lectura. POST /api/ds/query devolvió 6 puntos de CpuUtilization en oci_vmi_resource_utilization, sin errores. |
-| **B9.7** | `[-] Bloqueado` | Datasource Azure Monitor | — | F3 | P4 | Núcleo | Azure CLI az ad app create para ninjasec-grafana-logs devolvió Insufficient privileges to complete the operation. Se requiere registrar la aplicación en Microsoft Entra y asignarle lectura sobre ninjasec-law. La salida HTTPS de la VM a Azure sigue en verificación. |
+| **B9.7** | `[-] Bloqueado` | Datasource Azure Monitor | — | F3 | P4 | Núcleo | Alternativa aceptada: exportación desde Azure Log Analytics a bucket OCI privado, sin registro Entra ni datasource nativo. Azure Automation Export-AzureLogsToOci job 27aebea7-374a-4229-8bc6-b5c12e8ff151 Completed, PUT 200, 100 eventos. Horario diario 03:00 Colombia, vínculo 57669f8a-ec2f-4cbd-b678-b944e1bdd73e. Falta conectar el datasource alternativo en Grafana. |
 | **B9.8** | `[-] Bloqueado` | Panel 1: requests/seg del ALB | — | F3 | P4 | Núcleo |  |
 | **B9.9** | `[-] Bloqueado` | Panel 2: CPU promedio EC2 | — | F3 | P4 | Núcleo |  |
 | **B9.10** | `[x] Completado` | Panel 3: conexiones MySQL (OCI) | — | F3 | P4 | Núcleo | Panel 3 Conexiones MySQL (OCI), tablero UID ninjasec-oci-overview. Exportador local consulta Threads_connected con TLS. Grafana consultó ninjasec_mysql_threads_connected mediante Prometheus y devolvió 3 conexiones. El portal respondió HTTP 200. |
 | **B9.11** | `[-] Bloqueado` | Panel 4: replication lag | — | F3 | P4 | Núcleo |  |
 | **B9.12** | `[-] Bloqueado` | Panel 5: bloqueos del WAF | — | F3 | P4 | Núcleo |  |
-| **B9.13** | `[-] Bloqueado` | Panel 6: últimos logs de Azure Log Analytics | — | F3 | P4 | Núcleo | Workspace ninjasec-law confirmado en Azure y tabla NINJASECOCIAudit_CL comprobada en M8.4. Falta verificar el panel contra el datasource Azure Monitor de B9.7. |
+| **B9.13** | `[-] Bloqueado` | Panel 6: últimos logs de Azure Log Analytics | — | F3 | P4 | Núcleo | OCI GetObject confirmó latest.json en ninjasec-grafana-azure-logs: 100 EventId únicos, SHA-256 927c0a499f34e03d68147e90b622cf16faa1211265efeec51708837c2b146247. Falta cargar el panel 6 con ese archivo. SSH a la VM por Bastion agotó el tiempo de espera. |
 | **B9.14** | `[-] Bloqueado` | Chequeo de estado del túnel VPN (ping checker) en Prometheus | — | F3 | P4 | Núcleo |  |
 | **B9.15** | `[x] Completado` | Alarma visible en Grafana | — | F3 | P4 | Núcleo | Regla nativa de Grafana ninjasec-oci-cpu-grafana: CPU > 80 %, visible en el panel 15 del tablero ninjasec-oci-overview. GET /api/prometheus/grafana/api/v1/rules confirmó evaluación con health=ok, state=inactive, sin error. Las alarmas de correo de OCI se verificaron en B8. |
 
@@ -700,7 +700,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **M9.1** | `[-] Bloqueado` | Métricas de CloudWatch (AWS) visibles en Grafana OCI | — | F3 | P4 | Núcleo |  |
 | **M9.2** | `[x] Completado` | Métricas de OCI visibles en Grafana | — | F3 | P4 | Núcleo | Evidencia cruzada con B9.6 y B9.10: Grafana POST /api/ds/query devolvió 6 puntos de CpuUtilization del datasource OCI nativo ninjasec-oci-native, y el panel 3 mostró 3 conexiones MySQL. En esta revisión Grafana 10.4.19 respondió HTTP 200 en /api/health con database=ok por Bastion. |
-| **M9.3** | `[-] Bloqueado` | Datos de Azure Log Analytics visibles en Grafana | — | F3 | P4 | Núcleo | Log Analytics verificado del lado Azure en M8.4. Falta ejecutar una consulta KQL desde Grafana tras resolver conectividad y autenticación en B9.7. |
+| **M9.3** | `[-] Bloqueado` | Datos de Azure Log Analytics visibles en Grafana | — | F3 | P4 | Núcleo | Se verificó Azure Log Analytics a OCI Object Storage con el job de B9.7 y el hash de B9.13. Falta comprobar los eventos en el Grafana de OCI. El diagnóstico alternativo OCI Run Command quedó ACCEPTED sin ejecución. |
 | **M9.4** | `[-] Bloqueado` | Dashboard unificado de las 3 nubes con datos en vivo | — | F3 | P4 | Núcleo |  |
 
 
@@ -751,7 +751,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **T2.1** | `[x] Completado` | grep -r "password | secret | key" sobre el repositorio sin hallazgos | — | Núcleo | Gitleaks v8.30.1 con salida redactada: 37 commits revisados hasta 6e8bff6, sin secretos detectados. Se escanearon también los cambios de esta actualización. |
 | **T2.2** | `[x] Completado` | terraform.tfvars y llaves fuera de Git | — | F1 | — | Núcleo | git check-ignore --no-index confirmó la exclusión de tfvars y llaves. El inventario de rutas del historial de main no mostró archivos sensibles con esos patrones; la API key usada por OCI CLI está fuera del árbol Git. |
-| **T2.3** | `[-] Bloqueado` | Credenciales de datasources de Grafana fuera del repositorio | — | F1 | — | Núcleo | B9.6 confirma identidad de instancia para el datasource OCI. T2.1 revisó el historial Git sin secretos detectados. Falta verificar el almacenamiento de la credencial del datasource Azure Monitor cuando se configure B9.7. |
+| **T2.3** | `[-] Bloqueado` | Credenciales de datasources de Grafana fuera del repositorio | — | F1 | — | Núcleo | El exportador usa identidad administrada con Log Analytics Reader limitado a ninjasec-law y la variable cifrada OciAuditReader para escribir solo latest.json. El lector previsto usa identidad de instancia OCI. Código sin secretos en 37b422d; falta verificar el datasource alternativo desplegado. |
 | **T2.4** | `[-] Bloqueado` | Procedimiento de refresco de credenciales del Lab (CLI, Terraform, Grafana) | — | F1 | — | Núcleo |  |
 
 
