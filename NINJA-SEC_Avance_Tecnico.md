@@ -41,11 +41,11 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 10 | --1 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 0 | 47 | 8 |
-| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 4 | 14 | 2 |
+| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 11 | 7 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | -1 | 8 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **25** | **190** | **88** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **23** | **187** | **93** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -736,7 +736,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **T1.1** | `[-] Bloqueado` | En reposo: EBS cifrado | — | F1 | — | Núcleo |  |
 | **T1.2** | `[-] Bloqueado` | En reposo: RDS cifrado | — | F1 | — | Núcleo |  |
 | **T1.3** | `[-] Bloqueado` | En reposo: S3 con SSE-KMS | — | F1 | — | Núcleo |  |
-| **T1.4** | `[-] Bloqueado` | En reposo: volúmenes OCI cifrados | — | F1 | — | Núcleo |  |
+| **T1.4** | `[x] Completado` | En reposo: volúmenes OCI cifrados | — | F1 | — | Núcleo | OCI ListBootVolumes y GetBootVolume confirmaron dos volúmenes de arranque de las VM del proyecto, terminados en 2qua y jjda, con kmsKeyId vacío: cifrado en reposo con clave administrada por Oracle. ListVolumes no devolvió volúmenes de bloque adicionales en el compartimento raíz. |
 | **T1.5** | `[-] Bloqueado` | En tránsito: HTTPS en ALB / Cloudflare | — | F1 | — | Núcleo |  |
 | **T1.6** | `[-] Bloqueado` | En tránsito: tráfico AWS↔OCI por túnel IPSec | — | F1 | — | Núcleo |  |
 | **T1.7** | `[-] Bloqueado` | En tránsito: TLS en conexiones BD interinas | — | F1 | — | Núcleo |  |
@@ -763,7 +763,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **T3.1** | `[-] Bloqueado` | SSH solo por llave (sin contraseña) en todas las VMs | — | F2 | — | Núcleo |  |
-| **T3.2** | `[-] Bloqueado` | Administración de OCI solo vía Bastion Service | — | F2 | — | Núcleo |  |
+| **T3.2** | `[x] Completado` | Administración de OCI solo vía Bastion Service | — | F2 | — | Núcleo | SSH de las VM OCI: ambas VNIC sin IP pública, NSG app TCP 22 solo desde Bastion 10.20.10.105/32 y lista de seguridad privada sin ingreso TCP. Por Bastion, hostname e id -un devolvieron bastion-utility-01 y opc. Acceso a replica-agent-01 comprobado por el mismo Bastion durante M6. |
 | **T3.3** | `[ ] Pendiente` | Servidores sin puertos de administración abiertos a Internet | — | F2 | — | Núcleo |  |
 | **T3.4** | `[-] Bloqueado` | Paquetes del SO actualizados | — | F2 | — | Núcleo |  |
 | **T3.5** | `[-] Bloqueado` | fail2ban o equivalente en hosts expuestos | — | F2 | — | Secundario |  |
@@ -777,9 +777,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **T4.1** | `[-] Bloqueado` | AWS: LabRole con políticas de recurso (bucket, secreto, KMS) | — | F2 | — | Núcleo |  |
-| **T4.2** | `[ ] Pendiente` | OCI: grupo de operación creado | — | F2 | — | Núcleo |  |
-| **T4.3** | `[ ] Pendiente` | OCI: políticas de mínimo privilegio aplicadas | — | F2 | — | Núcleo |  |
-| **T4.4** | `[ ] Pendiente` | Azure: RBAC mínimo sobre la Storage Account | — | F2 | — | Núcleo |  |
+| **T4.2** | `[x] Completado` | OCI: grupo de operación creado | — | F2 | — | Núcleo | Grupo ninjasec-oci-operators creado. OCID ocid1.group.oc1..aaaaaaaaipzwhlgn6u6rflwxaiu7dfmumku5ao6vm3a7krhfmhf7cmjvlaba. ListUserGroupMemberships confirmó cero miembros. |
+| **T4.3** | `[x] Completado` | OCI: políticas de mínimo privilegio aplicadas | — | F2 | — | Núcleo | GetPolicy confirmó política ACTIVE ocid1.policy.oc1..aaaaaaaazxrfeu2riuaj35ah2nq5xgnme7nev72vyl57wyuhadrg6tc2yc5a. Bastion dedicado y sesiones port_forwarding TCP 22 restringidas a las dos IP privadas, más lectura de instancias y permisos de lectura de red necesarios. Validada la configuración; prueba con operador pendiente de un miembro asignado. |
+| **T4.4** | `[x] Completado` | Azure: RBAC mínimo sobre la Storage Account | — | F2 | — | Núcleo | Azure CLI verificó para la identidad de servicio de M8 el rol NINJA-SEC Audit Blob Writer solo en ninjaseccompliance63ba/audit-logs-oci, con DataAction blobs/write y sin acciones de lectura o borrado. Se mantiene el Owner humano heredado de la suscripción. Escritura comprobada en M8. |
 
 
 ---
