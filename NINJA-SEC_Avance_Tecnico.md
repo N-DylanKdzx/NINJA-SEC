@@ -40,12 +40,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 8 | 53 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 0 | 1 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 41 | 10 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 40 | 11 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 11 | 8 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 7 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **11** | **194** | **98** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **11** | **193** | **99** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -645,7 +645,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M5.1** | `[-] Bloqueado` | Portal standby operativo en OCI | — | F3 | P3b | Núcleo |  |
+| **M5.1** | `[x] Completado` | Portal standby operativo en OCI | — | F3 | P3b | Núcleo | OCI GetLoadBalancerHealth OK; https://129.159.170.148/health HTTP 200 en prueba por IP con certificado sin validar. Por Bastion, ninjasec-portal active y /health local devolvió status=ok. |
 | **M5.2** | `[-] Bloqueado` | Cloudflare redirige al LB de OCI al caer el endpoint AWS | — | F3 | P3b | Núcleo |  |
 | **M5.3** | `[-] Bloqueado` | Prueba real: AWS fuera de servicio → portal servido desde OCI | — | F3 | P3b | Núcleo |  |
 | **M5.4** | `[-] Bloqueado` | Retorno a AWS verificado | — | F3 | P3b | Núcleo |  |
