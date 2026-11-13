@@ -39,13 +39,13 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 8 | 53 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 0 | 1 | 16 |
-| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 1 | 5 | 1 |
+| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 1 | 4 | 2 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 40 | 11 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 11 | 8 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 7 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **8** | **193** | **102** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **8** | **192** | **103** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -562,7 +562,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **D1.1** | `[x] Completado` | Zona del dominio activa en Cloudflare | — | F3 | P3b | Núcleo | Cloudflare Overview de ninjasec.dev mostró Your domain is now protected by Cloudflare, DNS Setup Full y plan Free. |
 | **D1.2** | `[-] Bloqueado` | Registro primario (CNAME) hacia el ALB de AWS | — | F3 | P3b | Núcleo |  |
-| **D1.3** | `[-] Bloqueado` | Registro secundario hacia el LB de OCI | — | F3 | P3b | Núcleo | Balanceador OCI verificado en M5.1. Falta la zona activa de D1.1 para crear y comprobar el registro secundario. |
+| **D1.3** | `[x] Completado` | Registro secundario hacia el LB de OCI | — | F3 | P3b | Núcleo | Cloudflare DNS Records confirmó el registro A portal-oci.ninjasec.dev hacia 129.159.170.148 con proxy habilitado. |
 | **D1.4** | `[ ] Pendiente` | Proxy y TLS de Cloudflare configurados | — | F3 | P3b | Núcleo |  |
 | **D1.5** | `[-] Bloqueado` | Mecanismo de failover definido (health check o cambio manual) | — | F3 | P3b | Núcleo |  |
 | **D1.6** | `[-] Bloqueado` | portal.<dominio> resuelve y sirve el portal por HTTPS | — | F3 | P3b | Núcleo |  |
