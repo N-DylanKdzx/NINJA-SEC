@@ -35,17 +35,17 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 7 | 11 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 7 | 12 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 8 | 53 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 0 | 1 | 16 |
-| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 2 | 5 | 0 |
+| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 1 | 5 | 1 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 40 | 11 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 11 | 8 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 7 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **10** | **193** | **100** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **8** | **193** | **102** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -79,7 +79,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **G1.3** | `[x] Completado` | OCI Free Trial activado (US$300 / 30 días) si hay tarjeta disponible | Opcional: solo si se quiere probar OCI WAF u otros servicios de pago | F0 | — | Secundario | OCI Organizations ListAssignedSubscriptions confirmó una suscripción CLOUDCM ACTIVE con vigencia de 30 días, del 2026-11-05 al 2026-12-04 UTC. El titular confirmó que corresponde al Free Trial activado al abrir la cuenta. La API consultada no muestra el saldo de créditos restante. |
 | **G1.4** | `[x] Completado` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo | az account show confirma Azure for Students, Enabled, suscripción 020556eb-782f-4afc-84d3-39cd392763ba. |
 | **G1.5** | `[x] Completado` | Cuenta Cloudflare Free creada | — | F0 | — | Núcleo | Sesión autenticada verificada en Cloudflare Account Home y Domains Overview. Cuenta disponible para incorporar el dominio del proyecto. |
-| **G1.6** | `[ ] Pendiente` | Dominio real registrado y delegado a Cloudflare | Cloudflare requiere un dominio que controles; un subdominio de nip.io no se puede delegar | F0 | — | Núcleo | No hay dominio del proyecto registrado o delegado. Falta un dominio bajo control del titular. |
+| **G1.6** | `[x] Completado` | Dominio real registrado y delegado a Cloudflare | Cloudflare requiere un dominio que controles; un subdominio de nip.io no se puede delegar | F0 | — | Núcleo | ninjasec.dev registrado en Name.com y delegado a jessica.ns.cloudflare.com y wesley.ns.cloudflare.com. Cloudflare confirmó la activación. |
 | **G1.7** | `[-] Bloqueado` | Llaves SSH generadas (key pair AWS + llave OCI) | — | F0 | — | Núcleo |  |
 
 
@@ -560,7 +560,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **D1.1** | `[ ] Pendiente` | Zona del dominio activa en Cloudflare | — | F3 | P3b | Núcleo | Domains Overview sin zona del proyecto. Falta incorporar y activar el dominio de G1.6. |
+| **D1.1** | `[x] Completado` | Zona del dominio activa en Cloudflare | — | F3 | P3b | Núcleo | Cloudflare Overview de ninjasec.dev mostró Your domain is now protected by Cloudflare, DNS Setup Full y plan Free. |
 | **D1.2** | `[-] Bloqueado` | Registro primario (CNAME) hacia el ALB de AWS | — | F3 | P3b | Núcleo |  |
 | **D1.3** | `[-] Bloqueado` | Registro secundario hacia el LB de OCI | — | F3 | P3b | Núcleo | Balanceador OCI verificado en M5.1. Falta la zona activa de D1.1 para crear y comprobar el registro secundario. |
 | **D1.4** | `[ ] Pendiente` | Proxy y TLS de Cloudflare configurados | — | F3 | P3b | Núcleo |  |
