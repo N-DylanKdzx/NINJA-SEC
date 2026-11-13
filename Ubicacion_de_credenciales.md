@@ -18,6 +18,14 @@ Referencia verificada el 12 de noviembre de 2026 para retomar el proyecto desde 
 
 Los archivos `.dpapi` dependen de la protección de Windows del usuario que los creó. En otro equipo o cuenta hay que comprobar que se pueden recuperar antes de confiar en una copia.
 
+### Inicio de sesión en el portal NINJA-SEC (OCI)
+
+- Carpeta local: C:\Users\DYLAN\AppData\Local\NINJA-SEC\Credenciales
+- Archivo: portal-oci.credential.clixml. Contiene el usuario del portal y la contraseña cifrada mediante DPAPI de Windows. Se abre con la cuenta de Windows que guardó el archivo en este equipo.
+
+Al crear, recuperar o rotar una credencial de NINJA-SEC que el titular necesite usar, guardar una copia cifrada en esta carpeta y comprobar que su cuenta de Windows puede abrirla. Si una credencial ya se administra en un almacén de secretos y no requiere una copia local, registrar dónde se administra. En Git registrar únicamente la ubicación, el propósito y cómo recuperar el acceso.
+
+
 ## OCI y Azure
 
 | Ubicación | Qué guarda o autoriza |
