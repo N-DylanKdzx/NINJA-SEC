@@ -43,9 +43,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 40 | 11 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 11 | 8 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 7 | 1 |
-| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 2 | 11 | 0 |
+| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **8** | **192** | **103** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **7** | **192** | **104** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -832,7 +832,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **P1.3** | `[-] Bloqueado` | Demo 3: crear incidente → SELECT en OCI | — | F4 | — | Núcleo |  |
 | **P1.4** | `[-] Bloqueado` | Demo 4: terminar web-01 → portal sigue → Auto Scaling repone | — | F4 | — | Núcleo |  |
 | **P1.5** | `[-] Bloqueado` | Demo 5: Grafana SOC con alarma activa | — | F4 | — | Núcleo |  |
-| **P1.6** | `[ ] Pendiente` | Demo 6: Azure WORM rechaza el borrado (409) | — | F4 | — | Núcleo |  |
+| **P1.6** | `[x] Completado` | Demo 6: Azure WORM rechaza el borrado (409) | — | F4 | — | Núcleo | Demo Azure WORM en ninjaseccompliance63ba/audit-logs-oci/ninjasec-p1-6-demo-821107547d824b1683f540fabdb93a37.txt. Política Locked de 365 días. PUT 201; DELETE 409 BlobImmutableDueToPolicy (request ID bfef3883-f01e-001b-1a3e-73e4ba000000); GET 200 con ETag idéntico. Permiso temporal retirado. |
 | **P1.7** | `[-] Bloqueado` | Demo 7: terraform destroy → apply en vivo | — | F4 | — | Núcleo |  |
 | **P1.8** | `[-] Bloqueado` | Ensayo completo cronometrado ≤ 15 min | — | F4 | — | Núcleo |  |
 
