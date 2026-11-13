@@ -3,23 +3,39 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NINJA-SEC | Incidentes</title>
+<link rel="stylesheet" href="/portal.css">
 <script src="/portal.js" defer></script>
-<main>
-  <h1>NINJA-SEC</h1>
-  <h2>Gestión de incidentes</h2>
-  <form id="incident">
-    <p><label>Título <input name="title" maxlength="160" required></label></p>
-    <p><label>Descripción <textarea name="description" maxlength="8000" rows="5"></textarea></label></p>
-    <p><label>Estado <select name="status">
-      <option value="abierto">Abierto</option>
-      <option value="en_progreso">En progreso</option>
-      <option value="resuelto">Resuelto</option>
-    </select></label></p>
-    <button type="submit">Guardar</button>
-    <button type="reset">Nuevo incidente</button>
-  </form>
+<main class="dashboard">
+  <header class="dashboard-header">
+    <div>
+      <p class="eyebrow">NINJA-SEC</p>
+      <h1>Gestión de incidentes</h1>
+      <p class="muted">Registra incidentes de seguridad y actualiza su estado.</p>
+    </div>
+    <button id="logout" type="button">Cerrar sesión</button>
+  </header>
+  <div class="dashboard-grid">
+    <section class="card" aria-labelledby="editor-title">
+      <h2 id="editor-title">Nuevo incidente</h2>
+      <form id="incident">
+        <label>Título <input name="title" maxlength="160" required></label>
+        <label>Descripción <textarea name="description" maxlength="8000" rows="5"></textarea></label>
+        <label>Estado <select name="status">
+          <option value="abierto">Abierto</option>
+          <option value="en_progreso">En progreso</option>
+          <option value="resuelto">Resuelto</option>
+        </select></label>
+        <div class="actions">
+          <button class="primary" type="submit">Guardar</button>
+          <button type="reset">Limpiar formulario</button>
+        </div>
+      </form>
+    </section>
+    <section class="card" aria-labelledby="list-title">
+      <h2 id="list-title">Incidentes registrados</h2>
+      <ul id="incidents"></ul>
+    </section>
+  </div>
   <p id="feedback" role="status" aria-live="polite"></p>
-  <h2>Incidentes registrados</h2>
-  <ul id="incidents"></ul>
 </main>
 </html>

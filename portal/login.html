@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NINJA-SEC | Acceso al portal</title>
+<link rel="stylesheet" href="/portal.css">
+<script src="/login.js" defer></script>
+<main class="access">
+  <section class="access-intro" aria-labelledby="brand">
+    <p class="eyebrow" id="brand">NINJA-SEC</p>
+    <svg viewBox="0 0 280 190" class="illustration" aria-hidden="true" focusable="false">
+      <rect x="25" y="25" width="207" height="133" rx="18" fill="#d9d1ff"/>
+      <rect x="38" y="38" width="207" height="133" rx="18" fill="#4632ae"/>
+      <path d="M38 62h207" stroke="#9183ee" stroke-width="2"/>
+      <circle cx="56" cy="50" r="3" fill="#fff"/>
+      <circle cx="67" cy="50" r="3" fill="#fff"/>
+      <path d="M63 91h72m-72 20h48m-48 20h62" stroke="#bcb0ff" stroke-width="7" stroke-linecap="round"/>
+      <path d="M196 77l44 17v27c0 24-19 40-44 51-25-11-44-27-44-51V94z" fill="#76e7d9"/>
+      <path d="m180 121 11 11 20-24" fill="none" stroke="#16415a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p class="intro-title">Portal de incidentes</p>
+    <p>Registra y da seguimiento a incidentes de seguridad.</p>
+  </section>
+  <section class="access-form" aria-labelledby="login-title">
+    <p class="eyebrow">Acceso al portal</p>
+    <h1 id="login-title">Inicia sesión</h1>
+    <p class="muted">Ingresa el usuario y la contraseña del portal NINJA-SEC.</p>
+    <form id="login" method="post" action="/auth/login">
+      <label>Usuario <input name="username" autocomplete="username" maxlength="256" required></label>
+      <label>Contraseña <input name="password" type="password" autocomplete="current-password" maxlength="1024" required></label>
+      <button class="primary" type="submit">Ingresar</button>
+      <p id="login-feedback" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+</main>
+</html>

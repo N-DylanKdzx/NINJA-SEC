@@ -39,13 +39,13 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 8 | 53 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 0 | 1 | 16 |
-| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 1 | 4 | 2 |
+| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 40 | 11 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 11 | 8 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 7 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **7** | **192** | **104** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | 
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -417,7 +417,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **B5.1** | `[x] Completado` | LB Flexible 10 Mbps en subred pública | — | F2 | P3b | Núcleo | OCI GetLoadBalancer: ninjasec-oci-lb ACTIVE y público, Flexible 10/10 Mbps, asociado a la subred regional pública 10.20.1.0/24. IP 129.159.170.148. OCID ocid1.loadbalancer.oc1.iad.aaaaaaaahzdbqrm4x6y2jlunz26wjwc5rcv6ujcyhvq342pvg4d6t4whe67a. |
 | **B5.2** | `[x] Completado` | Backend set con health check | — | F2 | P3b | Núcleo | GetHealthChecker: ninjasec-standby usa HTTP /health en 8080 y espera 200. OCI GetBackendHealth confirmó OK en 10.20.10.36:8080; /health también respondió 200 por el LB. |
-| **B5.3** | `[x] Completado` | Backend standby que sirve el portal NINJA-SEC desde OCI | — | F2 | P3b | Núcleo | Portal de incidentes en portal/, desplegado como servicio systemd habilitado en bastion-utility-01 (10.20.10.36:8080), con MySQL privado y backend OCI OK. Prueba HTTPS confirmó creación 201, lectura y edición 200, borrado 204 y consulta posterior 404. Se eliminó el registro temporal. |
+| **B5.3** | `[x] Completado` | Backend standby que sirve el portal NINJA-SEC desde OCI | — | F2 | P3b | Núcleo | Portal de incidentes en portal/, desplegado como servicio systemd habilitado en bastion-utility-01 (10.20.10.36:8080), con MySQL privado y backend OCI OK. Prueba HTTPS confirmó creación 201, lectura y edición 200, borrado 204 y consulta posterior 404. Se eliminó el registro temporal.
 | **B5.4** | `[x] Completado` | Listener HTTP/HTTPS configurado | — | F2 | P3b | Núcleo | Listeners HTTP 80 y HTTPS 443. La regla ninjasec_force_https devolvió 301 a HTTPS. El NSG público admite 80/443. La prueba HTTPS desde OCI validó el certificado temporal autofirmado para la IP y el listener mantiene TLS 1.2/1.3. |
 | **B5.5** | `[x] Completado` | Portal accesible vía IP del LB OCI | — | F2 | P3b | Núcleo | GET https://129.159.170.148/ desde la Micro de OCI con certificado temporal validado: portal 200 con autenticación y 401 sin credenciales. /portal.js y /health respondieron 200. CRUD de prueba completado por el mismo endpoint. |
 
@@ -563,7 +563,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **D1.1** | `[x] Completado` | Zona del dominio activa en Cloudflare | — | F3 | P3b | Núcleo | Cloudflare Overview de ninjasec.dev mostró Your domain is now protected by Cloudflare, DNS Setup Full y plan Free. |
 | **D1.2** | `[-] Bloqueado` | Registro primario (CNAME) hacia el ALB de AWS | — | F3 | P3b | Núcleo |  |
 | **D1.3** | `[x] Completado` | Registro secundario hacia el LB de OCI | — | F3 | P3b | Núcleo | Cloudflare DNS Records confirmó el registro A portal-oci.ninjasec.dev hacia 129.159.170.148 con proxy habilitado. |
-| **D1.4** | `[ ] Pendiente` | Proxy y TLS de Cloudflare configurados | — | F3 | P3b | Núcleo | 2026-11-13 UTC: GET /health por Cloudflare y directo al LB OCI devolvieron HTTP 502. OCI GetBackendHealth: 10.20.10.36:8080 CRITICAL / CONNECT_FAILED. bastion-utility-01 no respondió por SSH y quedó en STOPPING tras SOFTRESET. A las 07:04 UTC, OCI rechazó RESET con HTTP 409 Conflict porque la instancia seguía en modificación. Cloudflare siguió devolviendo 502 (CF-RAY a59bec5449e91ea2-EZE). Falta recuperar el backend y verificar HTTP 200 con TLS desde Cloudflare. |
+| **D1.4** | `[x] Completado` | Proxy y TLS de Cloudflare configurados | — | F3 | P3b | Núcleo | 2026-11-13 UTC: recuperado el backend OCI 10.20.10.36:8080. curl HTTPS sin omitir la validación TLS confirmó /health HTTP 200 y status ok por Cloudflare (CF-RAY a59c27a2fcb5c199-EZE); GET / devolvió el formulario NINJA-SEC HTTP 200 sin WWW-Authenticate (CF-RAY a59c2877be37342e-EZE). |
 | **D1.5** | `[-] Bloqueado` | Mecanismo de failover definido (health check o cambio manual) | — | F3 | P3b | Núcleo |  |
 | **D1.6** | `[-] Bloqueado` | portal.<dominio> resuelve y sirve el portal por HTTPS | — | F3 | P3b | Núcleo |  |
 | **D1.7** | `[-] Bloqueado` | Route 53 Health Check + Failover (solo si Academy lo permite) | — | F3 | P3b | Secundario |  |

@@ -3,7 +3,9 @@ import hmac
 import json
 import os
 import re
+import secrets
 import ssl
+import time
 from datetime import date, datetime
 from functools import lru_cache
 from pathlib import Path
@@ -15,6 +17,9 @@ import pymysql
 ROOT = Path(__file__).resolve().parent
 STATUSES = {'abierto', 'en_progreso', 'resuelto'}
 FIELDS = 'id, title, description, status, created_at, updated_at'
+SESSION_SECONDS = 3600
+SESSION_COOKIE = '__Host-ninjasec-session'
+SESSIONS = {}
 
 
 @lru_cache(maxsize=1)
@@ -80,6 +85,53 @@ def authorized(environ):
     return hmac.compare_digest(supplied, expected)
 
 
+def session_token(environ):
+    for cookie in environ.get('HTTP_COOKIE', '').split(';'):
+        name, _, value = cookie.strip().partition('=')
+        if name != SESSION_COOKIE:
+            continue
+        return value if re.fullmatch(r'[0-9a-f]{64}', value) else None
+    return None
+
+
+def session_header(value, max_age):
+    return ('Set-Cookie', f'{SESSION_COOKIE}={value}; Path=/; Max-Age={max_age}; Secure; HttpOnly; SameSite=Strict')
+
+
+def session_endpoint(environ, start, path, method):
+    if method != 'POST':
+        return respond(start, '405 Method Not Allowed', headers=(('Allow', 'POST'),))
+    if environ.get('HTTP_X_NINJASEC_ACTION') != '1':
+        return respond(start, '403 Forbidden', {'error': 'Solicitud de acceso no permitida.'})
+    if path == '/auth/logout':
+        SESSIONS.pop(session_token(environ), None)
+        return respond(start, '204 No Content', headers=(session_header('', 0),))
+    try:
+        if environ.get('CONTENT_TYPE', '').split(';')[0].strip() != 'application/json':
+            raise ValueError
+        size = int(environ.get('CONTENT_LENGTH') or '0')
+        if not 0 < size <= 8192:
+            raise ValueError
+        data = json.loads(environ['wsgi.input'].read(size))
+        username, password = data.get('username'), data.get('password')
+        if not isinstance(username, str) or not isinstance(password, str):
+            raise ValueError
+        user_ok = hmac.compare_digest(username.encode(), os.environ['PORTAL_USER'].encode())
+        password_ok = hmac.compare_digest(password.encode(), os.environ['PORTAL_PASSWORD'].encode())
+    except (ValueError, AttributeError):
+        return respond(start, '400 Bad Request', {'error': 'Completa los datos de acceso.'})
+    if not (user_ok and password_ok):
+        return respond(start, '401 Unauthorized', {'error': 'Usuario o contraseña incorrectos.'})
+    now = time.monotonic()
+    for token, expiry in list(SESSIONS.items()):
+        if expiry <= now:
+            SESSIONS.pop(token, None)
+    SESSIONS.pop(session_token(environ), None)
+    token = secrets.token_hex(32)
+    SESSIONS[token] = now + SESSION_SECONDS
+    return respond(start, '204 No Content', headers=(session_header(token, SESSION_SECONDS),))
+
+
 def incident_data(environ):
     if environ.get('CONTENT_TYPE', '').split(';')[0].strip() != 'application/json':
         raise ValueError('Se requiere application/json.')
@@ -109,14 +161,24 @@ def application(environ, start):
         except (pymysql.MySQLError, OSError, ValueError, RuntimeError):
             return respond(start, '503 Service Unavailable', {'status': 'unavailable'})
 
-    if not authorized(environ):
-        return respond(start, '401 Unauthorized', {'error': 'Autenticación requerida.'},
-                       headers=(('WWW-Authenticate', 'Basic realm="NINJA-SEC", charset="UTF-8"'),))
-
-    assets = {'/': ('index.html', 'text/html'), '/portal.js': ('portal.js', 'text/javascript')}
+    if path in ('/auth/login', '/auth/logout'):
+        return session_endpoint(environ, start, path, method)
+    # Keep explicit Basic auth for scripts; browser requests use the session.
+    signed_in = (SESSIONS.get(session_token(environ), 0) > time.monotonic()
+                 or ('HTTP_SEC_FETCH_SITE' not in environ and authorized(environ)))
+    assets = {
+        '/': ('index.html' if signed_in else 'login.html', 'text/html'),
+        '/portal.css': ('portal.css', 'text/css'),
+        '/login.js': ('login.js', 'text/javascript'),
+    }
+    if signed_in:
+        assets['/portal.js'] = ('portal.js', 'text/javascript')
     if path in assets and method == 'GET':
         filename, mime = assets[path]
         return respond(start, '200 OK', (ROOT / filename).read_bytes(), content_type=mime + '; charset=utf-8')
+
+    if not signed_in:
+        return respond(start, '401 Unauthorized', {'error': 'Autenticación requerida.'})
 
     item = re.fullmatch(r'/api/incidents/([1-9][0-9]{0,18})', path)
     collection = path == '/api/incidents'
