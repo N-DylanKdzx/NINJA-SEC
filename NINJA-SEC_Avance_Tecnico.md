@@ -200,7 +200,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **A5.6** | `[-] Bloqueado` | Payload XSS → HTTP 403 | — | F1 | P3a | Núcleo |  |
 | **A5.7** | `[-] Bloqueado` | Log de ModSecurity enviado a CloudWatch Logs (/ninjasec/waf/blocked) | — | F1 | P3a | Núcleo |  |
 | **A5.8** | `[-] Bloqueado` | Metric filter + alarma sobre bloqueos WAF | — | F1 | P3a | Secundario |  |
-| **A5.9** | `[-] Bloqueado` | AWS WAF delante del ALB (solo si Academy lo permite) | — | F1 | P3a | Secundario |  |
+| **A5.9** | `[-] Bloqueado` | AWS WAF administrado como alternativa opcional | Evaluarlo si la rúbrica lo requiere, Academy lo permite y cabe en el presupuesto. ModSecurity con OWASP CRS es la opción principal. | F1 | P3a | Secundario |  |
 
 
 <a id="comp-a6"></a>
@@ -227,7 +227,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A7.1** | `[-] Bloqueado` | ALB creado en las 2 subredes públicas | — | F1 | — | Núcleo |  |
+| **A7.1** | `[-] Bloqueado` | Un ALB en las dos subredes públicas | Verificar dos zonas de disponibilidad y un único balanceador para el entorno. | F1 | — | Núcleo |  |
 | **A7.2** | `[-] Bloqueado` | Target Group web con health check configurado | — | F1 | — | Núcleo |  |
 | **A7.3** | `[-] Bloqueado` | web-01 y web-02 registrados como targets saludables | — | F1 | — | Núcleo |  |
 | **A7.4** | `[-] Bloqueado` | Listener HTTPS 443 con certificado (ACM o autofirmado) | — | F1 | — | Núcleo |  |
@@ -243,7 +243,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A8.1** | `[-] Bloqueado` | ASG creado: mín 2 / máx 4, repartido en 2 AZ | — | F1 | — | Núcleo |  |
+| **A8.1** | `[-] Bloqueado` | ASG con mínimo y capacidad deseada de 2 en 2 AZ | Máximo inicial de 3 si permite demostrar escalado y reemplazo. Ajustar con evidencia de carga y costo. | F1 | — | Núcleo |  |
 | **A8.2** | `[-] Bloqueado` | ASG asociado al Target Group del ALB | — | F1 | — | Núcleo |  |
 | **A8.3** | `[-] Bloqueado` | Política de escalado por CPU configurada | — | F1 | — | Núcleo |  |
 | **A8.4** | `[-] Bloqueado` | Prueba de carga dispara una instancia nueva | — | F1 | — | Núcleo |  |
@@ -258,11 +258,11 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **A9.1** | `[-] Bloqueado` | DB Subnet Group con subredes privadas de 2 AZ | — | F1 | P2 | Núcleo |  |
-| **A9.2** | `[-] Bloqueado` | RDS MySQL db.t2.micro desplegado en subred privada | — | F1 | P2 | Núcleo |  |
+| **A9.2** | `[-] Bloqueado` | RDS MySQL 8.4 Single-AZ en subred privada | Elegir db.t3.micro si está disponible en Academy, almacenamiento de propósito general sin IOPS provisionadas y RDS Extended Support deshabilitado. Verificar versión, clase, almacenamiento y soporte en la instancia creada. Probar conexión TLS y CRUD del portal. | F1 | P2 | Núcleo |  |
 | **A9.3** | `[-] Bloqueado` | Publicly accessible = No | — | F1 | P2 | Núcleo |  |
 | **A9.4** | `[-] Bloqueado` | Cifrado en reposo habilitado | — | F1 | P2 | Núcleo |  |
 | **A9.5** | `[-] Bloqueado` | Backups automáticos con retención de 7 días | — | F1 | P2 | Núcleo |  |
-| **A9.6** | `[-] Bloqueado` | Parameter group con binlog_format=ROW aplicado | — | F1 | P2 | Núcleo |  |
+| **A9.6** | `[-] Bloqueado` | Formato ROW y compatibilidad del binlog verificados | Comprobar log_bin habilitado y binlog_format efectivo en ROW. Validar cliente y autenticación de MySQL 8.4. Probar la integración con OCI en M2 y registrar la alternativa prevista si la replicación no es viable. | F1 | P2 | Núcleo |  |
 | **A9.7** | `[-] Bloqueado` | Esquema de NINJA-SEC (tabla incidents) y usuario de aplicación creados | — | F1 | P2 | Núcleo |  |
 | **A9.8** | `[-] Bloqueado` | Conexión solo desde app-backend (intento desde Internet rechazado) | — | F1 | P2 | Núcleo |  |
 
@@ -864,10 +864,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **K1.1** | `[-] Bloqueado` | AWS Budget con alarma a US$80 | — | F1 | — | Núcleo |  |
-| **K1.2** | `[-] Bloqueado` | Revisión periódica de Cost Explorer | — | F1 | — | Núcleo |  |
-| **K1.3** | `[-] Bloqueado` | Procedimiento de apagado de EC2/RDS fuera de horario | — | F1 | — | Núcleo |  |
-| **K1.4** | `[-] Bloqueado` | VPN Gateway activo solo en la ventana de integración y eliminado después | — | F1 | — | Núcleo |  |
+| **K1.1** | `[-] Bloqueado` | Aviso de consumo según el saldo de AWS Academy | Definir umbrales dentro de USD 50 y antes de comprometer la reserva para siete días de revisión. Usar AWS Budgets si está permitido y revisión diaria del saldo de Academy como alternativa. | F1 | — | Núcleo |  |
+| **K1.2** | `[-] Bloqueado` | Medición de consumo y reserva para la evaluación | Registrar saldo e inventario, contrastar Cost Explorer según permisos y medir 24 horas con la configuración final. Proyectar siete días con margen, incluyendo cómputo, RDS, ALB, IPv4, almacenamiento, logs y conectividad. | F1 | — | Núcleo |  |
+| **K1.3** | `[-] Bloqueado` | Control de recursos activos durante desarrollo y evaluación | Durante desarrollo detener o retirar recursos cuando corresponda. Considerar el autoarranque de RDS tras siete días y los cargos de almacenamiento. Durante la revisión mantener los recursos necesarios dentro de la reserva. | F1 | — | Núcleo |  |
+| **K1.4** | `[-] Bloqueado` | Conectividad AWS–OCI disponible según etapa | Durante desarrollo limitar la VPN gestionada a las ventanas de prueba si se adopta. Durante la evaluación mantener disponible la opción de conectividad verificada e incluir su costo en la proyección. | F1 | — | Núcleo |  |
 | **K1.5** | `[-] Bloqueado` | Confirmado: no existe NAT Gateway gestionado (se usa NAT Instance) | — | F1 | — | Núcleo |  |
 
 
@@ -880,7 +880,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **K2.1** | `[-] Bloqueado` | Tras reinicio, web-01/web-02 levantan Nginx solos | — | F1 | — | Núcleo |  |
 | **K2.2** | `[-] Bloqueado` | Tras reinicio, app-backend levanta la API sola | — | F1 | — | Núcleo |  |
-| **K2.3** | `[-] Bloqueado` | Tras reinicio, los scripts y cron quedan activos | — | F1 | — | Núcleo |  |
+| **K2.3** | `[-] Bloqueado` | Scripts, tareas programadas y continuidad del acceso comprobados | Verificar scripts y cron tras reiniciar. Al expirar una sesión del Learner Lab, comprobar externamente el portal y la integración. Validar por separado el acceso del docente desde una sesión nueva. | F1 | — | Núcleo |  |
 
 
 ---
