@@ -35,23 +35,23 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 7 | 12 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 3 | 4 | 12 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 8 | 53 |
-| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · East US (cumplimiento y forense) | 17 | 16 | 1 | 0 | 1 | 16 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
+| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 4 | 40 | 11 |
-| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 11 | 8 |
-| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 7 | 1 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 5 | 40 | 10 |
+| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 11 | 7 |
+| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 7 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
-| **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 0 | 8 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **6** | **192** | **105** |
+| **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 5 | 0 |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **21** | **186** | **96** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
 - [Dominio A: AWS · us-east-1 (VPC 10.10.0.0/16)](#dominio-a---aws-us-east-1-vpc-10100016) (95 tareas)
 - [Dominio B: OCI · Home Region (VCN 10.20.0.0/16)](#dominio-b---oci-home-region-vcn-10200016) (61 tareas)
-- [Dominio C: Azure · East US (cumplimiento y forense)](#dominio-c---azure-east-us-cumplimiento-y-forense) (17 tareas)
+- [Dominio C: Azure · West US (servicios; RG en East US)](#dominio-c---azure-east-us-cumplimiento-y-forense) (17 tareas)
 - [Dominio D: Cloudflare · DNS y borde](#dominio-d---cloudflare-dns-y-borde) (7 tareas)
 - [Dominio M: Integraciones Multicloud](#dominio-m---integraciones-multicloud) (55 tareas)
 - [Dominio T: Seguridad transversal](#dominio-t---seguridad-transversal) (20 tareas)
@@ -74,7 +74,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **G1.1** | `[-] Bloqueado` | AWS Academy Learner Lab iniciado (lab activo en us-east-1) | — | F0 | — | Núcleo |  |
+| **G1.1** | `[ ] Pendiente` | AWS Academy Learner Lab iniciado (lab activo en us-east-1) | Verificar cuenta del nuevo Lab, saldo inicial y región; no reutilizar recursos ni atribuir evidencias del Lab anterior. | F0 | — | Núcleo |  |
 | **G1.2** | `[x] Completado` | Cuenta OCI creada con home region elegida | — | F0 | — | Núcleo |OCI CLI: iam region-subscription list confirmó us-ashburn-1 como región principal; os ns get respondió correctamente. |
 | **G1.3** | `[x] Completado` | OCI Free Trial activado (US$300 / 30 días) si hay tarjeta disponible | Opcional: solo si se quiere probar OCI WAF u otros servicios de pago | F0 | — | Secundario | OCI Organizations ListAssignedSubscriptions confirmó una suscripción CLOUDCM ACTIVE con vigencia de 30 días, del 2026-11-05 al 2026-12-04 UTC. El titular confirmó que corresponde al Free Trial activado al abrir la cuenta. La API consultada no muestra el saldo de créditos restante. |
 | **G1.4** | `[x] Completado` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo | az account show confirma Azure for Students, Enabled, suscripción 020556eb-782f-4afc-84d3-39cd392763ba. |
@@ -91,7 +91,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **G2.1** | `[x] Completado` | Terraform instalado (terraform --version responde) | — | F0 | P5 | Núcleo | terraform version devolvió Terraform v1.13.5 (windows_amd64) al ejecutar el binario local. |
-| **G2.2** | `[-] Bloqueado` | AWS CLI configurado con credenciales del Lab | — | F0 | P5 | Núcleo |  |
+| **G2.2** | `[ ] Pendiente` | AWS CLI configurado con credenciales del Lab | Autenticar la nueva cuenta y verificar STS; credenciales locales fuera de Git. | F0 | P5 | Núcleo |  |
 | **G2.3** | `[x] Completado` | OCI CLI configurado con API key | — | F0 | P5 | Núcleo | OCI CLI 3.96.2: oci os ns get --profile NINJA_SEC_TERRAFORM devolvió el namespace con autenticación por API key. |
 | **G2.4** | `[x] Completado` | Azure CLI autenticado (az login) | — | F0 | P5 | Núcleo | Inicio de sesión completado; az account show y az resource list devolvieron la suscripción y sus recursos. |
 | **G2.5** | `[x] Completado` | Repositorio Git creado con estructura terraform/ (environments/prod + modules) | — | F0 | P5 | Núcleo | main contiene terraform/environments/prod/.gitkeep y los módulos terraform/modules/oci_infra y terraform/modules/azure_storage. La composición multi-provider corresponde a M10. |
@@ -105,10 +105,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **G3.1** | `[-] Bloqueado` | VPN Connection / Virtual Private Gateway disponible en Academy | Si ❌ → Plan B: WireGuard en EC2 | F0 | — | Núcleo |  |
+| **G3.1** | `[ ] Pendiente` | Validar WireGuard en Academy y viabilidad del extremo OCI | Confirmar permisos, rutas y host OCI sin comprometer memoria del portal; no contratar VPN gestionada como opción predeterminada. | F0 | — | Núcleo |  |
 | **G3.2** | `[-] Bloqueado` | Route 53 verificado (disponible o descartado → Cloudflare primario) | — | F0 | — | Núcleo |  |
 | **G3.3** | `[-] Bloqueado` | AWS WAF verificado (disponible o descartado → ModSecurity primario) | — | F0 | — | Núcleo |  |
-| **G3.4** | `[-] Bloqueado` | binlog_format=ROW configurable en RDS vía parameter group | Si ❌ → dual-write como mecanismo principal | F0 | — | Núcleo |  |
+| **G3.4** | `[-] Bloqueado` | binlog_format=ROW configurable en RDS vía parameter group | Validar ROW, retención de binlogs y compatibilidad RDS 8.4 → versión real de HeatWave; M2 es la opción principal. M3 se activa solo si se demuestra una limitación. | F0 | — | Núcleo |  |
 | **G3.5** | `[x] Completado` | Capacidad A1 Flex confirmada en OCI (o decidido fallback 2×E2.1.Micro) | — | F0 | — | Núcleo | OCI LaunchInstance devolvió Out of host capacity para VM.Standard.A1.Flex en AD-1, AD-2 y AD-3. Se adoptó la alternativa de dos E2.1.Micro verificada en B2.4. |
 | **G3.6** | `[x] Completado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo | OCI Limits confirmó mysql-free-count=1 en AD-3. GetDbSystem y SELECT VERSION() confirmaron MySQL.Free activo y operativo en Ashburn. |
 
@@ -127,9 +127,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **A1.1** | `[-] Bloqueado` | VPC 10.10.0.0/16 creada | — | F1 | — | Núcleo |  |
-| **A1.2** | `[-] Bloqueado` | Subred pública Web-01 10.10.1.0/24 (AZ-1a) | — | F1 | — | Núcleo |  |
-| **A1.3** | `[-] Bloqueado` | Subred pública Web-02 10.10.2.0/24 (AZ-1b) | — | F1 | — | Núcleo |  |
-| **A1.4** | `[-] Bloqueado` | Subred privada APP 10.10.10.0/24 (AZ-1a) | — | F1 | — | Núcleo |  |
+| **A1.2** | `[-] Bloqueado` | Subred pública edge-01 10.10.1.0/24 (AZ-1a) | Para ALB y router NAT/VPN; las instancias de aplicación son privadas. | F1 | — | Núcleo |  |
+| **A1.3** | `[-] Bloqueado` | Subred pública edge-02 10.10.2.0/24 (AZ-1b) | Segunda zona del ALB; no exponer las instancias de aplicación. | F1 | — | Núcleo |  |
+| **A1.4** | `[-] Bloqueado` | Dos subredes privadas APP: 10.10.10.0/24 y 10.10.11.0/24 | Una por AZ; ASG con Nginx, ModSecurity y API en cada instancia, sin IP pública. | F1 | — | Núcleo |  |
 | **A1.5** | `[-] Bloqueado` | Subred privada BD 10.10.20.0/24 (AZ-1a) | — | F1 | — | Núcleo |  |
 | **A1.6** | `[-] Bloqueado` | Subred privada BD secundaria 10.10.21.0/24 (AZ-1b) | RDS exige un DB Subnet Group con subredes en al menos 2 AZ | F1 | — | Núcleo |  |
 | **A1.7** | `[-] Bloqueado` | Internet Gateway creado y adjunto a la VPC | — | F1 | — | Núcleo |  |
@@ -146,10 +146,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A2.1** | `[-] Bloqueado` | EC2 t2.nano lanzada en subred pública con Elastic IP | — | F1 | — | Núcleo |  |
+| **A2.1** | `[-] Bloqueado` | Router EC2 t3.nano para NAT y WireGuard con una Elastic IP | Confirmar disponibilidad en Academy y capacidad con mediciones; documentar punto único de fallo, persistencia y recuperación reproducible. | F1 | — | Núcleo |  |
 | **A2.2** | `[-] Bloqueado` | Source/Dest check deshabilitado | — | F1 | — | Núcleo |  |
 | **A2.3** | `[-] Bloqueado` | iptables MASQUERADE + net.ipv4.ip_forward persistentes tras reinicio | — | F1 | — | Núcleo |  |
-| **A2.4** | `[-] Bloqueado` | Instancia privada sale a Internet por la NAT (traceroute/curl verificado) | — | F1 | — | Núcleo |  |
+| **A2.4** | `[-] Bloqueado` | Instancia privada sale a Internet por la NAT (traceroute/curl verificado) | Probar salida HTTPS, tráfico del túnel, reinicio y recuperación del router; medir CPU/memoria y no confundir NAT de salida con NAT entre nubes. | F1 | — | Núcleo |  |
 
 
 <a id="comp-a3"></a>
@@ -161,9 +161,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **A3.1** | `[-] Bloqueado` | alb-sg: 80/443 desde 0.0.0.0/0 (única regla abierta al mundo) | — | F1 | — | Núcleo |  |
 | **A3.2** | `[-] Bloqueado` | web-sg: 80/443 solo desde alb-sg | — | F1 | — | Núcleo |  |
-| **A3.3** | `[-] Bloqueado` | app-sg: 8080 solo desde web-sg | — | F1 | — | Núcleo |  |
-| **A3.4** | `[-] Bloqueado` | db-sg: 3306 solo desde app-sg | — | F1 | — | Núcleo |  |
-| **A3.5** | `[-] Bloqueado` | nat-sg: tráfico solo desde subredes privadas | — | F1 | — | Núcleo |  |
+| **A3.3** | `[-] Bloqueado` | API local accesible solo desde Nginx en cada nodo | Escuchar en loopback:8080; sin acceso directo desde Internet ni desde otras instancias. | F1 | — | Núcleo |  |
+| **A3.4** | `[-] Bloqueado` | db-sg: MySQL privado desde aplicación y réplica autorizadas | 3306 desde SG de los nodos APP y origen efectivo de HeatWave por túnel; verificar si existe SNAT y restringir el origen observado. | F1 | — | Núcleo |  |
+| **A3.5** | `[-] Bloqueado` | router-sg: NAT privada y túnel limitado al peer OCI | Solo subredes privadas para NAT; UDP de WireGuard solo desde IP del peer; administración restringida. | F1 | — | Núcleo |  |
 | **A3.6** | `[-] Bloqueado` | SSH sin 0.0.0.0/0 (acceso restringido a origen conocido) | — | F1 | — | Núcleo |  |
 | **A3.7** | `[-] Bloqueado` | Revisión final: ninguna regla 0.0.0.0/0 salvo alb-sg | — | F1 | — | Núcleo |  |
 
@@ -175,12 +175,12 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A4.1** | `[-] Bloqueado` | Launch Template de web tier creado (AMI, t2.micro, SG, User Data) | — | F1 | — | Núcleo |  |
-| **A4.2** | `[-] Bloqueado` | web-01 t2.micro en AZ-1a operativo | — | F1 | — | Núcleo |  |
-| **A4.3** | `[-] Bloqueado` | web-02 t2.micro en AZ-1b operativo | — | F1 | — | Núcleo |  |
+| **A4.1** | `[-] Bloqueado` | Launch Template privado con Nginx, ModSecurity y API | t3.micro inicial, EBS gp3 cifrado; seleccionar modo de créditos CPU y medir rendimiento/costo. Imagen/configuración reproducible en ambas AZ. | F1 | — | Núcleo |  |
+| **A4.2** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1a | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
+| **A4.3** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1b | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
 | **A4.4** | `[-] Bloqueado` | Nginx instalado y sirviendo el frontend del portal | — | F1 | — | Núcleo |  |
 | **A4.5** | `[-] Bloqueado` | Frontend del portal NINJA-SEC desplegado | — | F1 | — | Núcleo |  |
-| **A4.6** | `[-] Bloqueado` | Proxy inverso /api → app-backend:8080 funcionando | — | F1 | — | Núcleo |  |
+| **A4.6** | `[-] Bloqueado` | Proxy inverso /api hacia API local:8080 | Probar CRUD y autenticación en ambos nodos; ninguna dependencia de un app-backend único. | F1 | — | Núcleo |  |
 | **A4.7** | `[-] Bloqueado` | User Data: servicios arrancan solos al reiniciar la instancia | — | F1 | — | Núcleo |  |
 | **A4.8** | `[-] Bloqueado` | Volúmenes EBS cifrados | — | F1 | — | Núcleo |  |
 
@@ -200,7 +200,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **A5.6** | `[-] Bloqueado` | Payload XSS → HTTP 403 | — | F1 | P3a | Núcleo |  |
 | **A5.7** | `[-] Bloqueado` | Log de ModSecurity enviado a CloudWatch Logs (/ninjasec/waf/blocked) | — | F1 | P3a | Núcleo |  |
 | **A5.8** | `[-] Bloqueado` | Metric filter + alarma sobre bloqueos WAF | — | F1 | P3a | Secundario |  |
-| **A5.9** | `[-] Bloqueado` | AWS WAF administrado como alternativa opcional | Evaluarlo si la rúbrica lo requiere, Academy lo permite y cabe en el presupuesto. ModSecurity con OWASP CRS es la opción principal. | F1 | P3a | Secundario |  |
+| **A5.9** | `[-] Bloqueado` | AWS WAF administrado como alternativa opcional | Alternativa secundaria, no desplegar por defecto. ModSecurity/CRS es la protección elegida; activar AWS WAF solo si un requisito explícito lo exige y se recalcula el presupuesto. | F1 | P3a | Secundario |  |
 
 
 <a id="comp-a6"></a>
@@ -210,13 +210,13 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A6.1** | `[-] Bloqueado` | EC2 app-backend t2.micro en subred privada APP | — | F1 | — | Núcleo |  |
+| **A6.1** | `[-] Bloqueado` | API desplegada en los dos nodos privados del ASG | Sustituye la EC2 app-backend única; verificar misma versión, secretos y esquema en ambos nodos. | F1 | — | Núcleo |  |
 | **A6.2** | `[-] Bloqueado` | API REST Flask con CRUD de incidentes | — | F1 | — | Núcleo |  |
 | **A6.3** | `[-] Bloqueado` | Servicio systemd con arranque automático | — | F1 | — | Núcleo |  |
 | **A6.4** | `[-] Bloqueado` | Endpoint /health respondiendo | — | F1 | — | Núcleo |  |
-| **A6.5** | `[-] Bloqueado` | Acceso al backend solo desde web-sg (verificado) | — | F1 | — | Núcleo |  |
+| **A6.5** | `[-] Bloqueado` | Acceso a API restringido al proxy local | Verificar loopback y rechazo de acceso directo al puerto de la API. | F1 | — | Núcleo |  |
 | **A6.6** | `[-] Bloqueado` | Credenciales leídas desde Secrets Manager (sin texto plano) | — | F1 | — | Núcleo |  |
-| **A6.7** | `[-] Bloqueado` | Portal: crear / leer / actualizar / eliminar incidente funciona de extremo a extremo | — | F1 | — | Núcleo |  |
+| **A6.7** | `[-] Bloqueado` | Portal: crear / leer / actualizar / eliminar incidente funciona de extremo a extremo | CRUD y autenticación por ALB; sesiones válidas al alternar nodos, sin estado imprescindible solo en memoria local. Probar pérdida de un nodo sin duplicar escrituras. | F1 | — | Núcleo |  |
 | **A6.8** | `[-] Bloqueado` | Logs de aplicación enviados a CloudWatch Logs | — | F1 | — | Secundario |  |
 
 
@@ -230,7 +230,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **A7.1** | `[-] Bloqueado` | Un ALB en las dos subredes públicas | Verificar dos zonas de disponibilidad y un único balanceador para el entorno. | F1 | — | Núcleo |  |
 | **A7.2** | `[-] Bloqueado` | Target Group web con health check configurado | — | F1 | — | Núcleo |  |
 | **A7.3** | `[-] Bloqueado` | web-01 y web-02 registrados como targets saludables | — | F1 | — | Núcleo |  |
-| **A7.4** | `[-] Bloqueado` | Listener HTTPS 443 con certificado (ACM o autofirmado) | — | F1 | — | Núcleo |  |
+| **A7.4** | `[-] Bloqueado` | Listener HTTPS 443 con certificado confiable | ACM con dominio validado; verificar cadena y nombre sin omitir validación TLS. No dar por válido un certificado autofirmado como acceso público final. | F1 | — | Núcleo |  |
 | **A7.5** | `[-] Bloqueado` | Listener HTTP 80 redirige a HTTPS | — | F1 | — | Núcleo |  |
 | **A7.6** | `[-] Bloqueado` | Balanceo verificado (tráfico llega a ambas instancias) | — | F1 | — | Núcleo |  |
 | **A7.7** | `[-] Bloqueado` | Falla simulada de web-01 → servicio continúa por web-02 | — | F1 | — | Núcleo |  |
@@ -246,7 +246,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **A8.1** | `[-] Bloqueado` | ASG con mínimo y capacidad deseada de 2 en 2 AZ | Máximo inicial de 3 si permite demostrar escalado y reemplazo. Ajustar con evidencia de carga y costo. | F1 | — | Núcleo |  |
 | **A8.2** | `[-] Bloqueado` | ASG asociado al Target Group del ALB | — | F1 | — | Núcleo |  |
 | **A8.3** | `[-] Bloqueado` | Política de escalado por CPU configurada | — | F1 | — | Núcleo |  |
-| **A8.4** | `[-] Bloqueado` | Prueba de carga dispara una instancia nueva | — | F1 | — | Núcleo |  |
+| **A8.4** | `[-] Bloqueado` | Prueba de carga dispara una instancia nueva | Carga controlada: pasar de 2 a 3 nodos y volver a 2, comprobar targets saludables, errores, latencia y costo. Escalado acotado, no capacidad ilimitada. | F1 | — | Núcleo |  |
 | **A8.5** | `[-] Bloqueado` | Instancia terminada manualmente es reemplazada | — | F1 | — | Núcleo |  |
 
 
@@ -264,7 +264,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **A9.5** | `[-] Bloqueado` | Backups automáticos con retención de 7 días | — | F1 | P2 | Núcleo |  |
 | **A9.6** | `[-] Bloqueado` | Formato ROW y compatibilidad del binlog verificados | Comprobar log_bin habilitado y binlog_format efectivo en ROW. Validar cliente y autenticación de MySQL 8.4. Probar la integración con OCI en M2 y registrar la alternativa prevista si la replicación no es viable. | F1 | P2 | Núcleo |  |
 | **A9.7** | `[-] Bloqueado` | Esquema de NINJA-SEC (tabla incidents) y usuario de aplicación creados | — | F1 | P2 | Núcleo |  |
-| **A9.8** | `[-] Bloqueado` | Conexión solo desde app-backend (intento desde Internet rechazado) | — | F1 | P2 | Núcleo |  |
+| **A9.8** | `[-] Bloqueado` | Acceso MySQL solo desde aplicación y replicación autorizadas | Probar conexión TLS desde nodos APP y canal OCI; rechazar Internet y orígenes privados no autorizados. | F1 | P2 | Núcleo |  |
 
 
 <a id="comp-a10"></a>
@@ -323,7 +323,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **A13.4** | `[-] Bloqueado` | Alarma: ALB 5xx | — | F1 | P4 | Núcleo |  |
 | **A13.5** | `[-] Bloqueado` | Tópico SNS con suscripción de correo confirmada | — | F1 | P4 | Núcleo |  |
 | **A13.6** | `[-] Bloqueado` | Alarma disparada de verdad (carga CPU) y correo recibido | — | F1 | P4 | Núcleo |  |
-| **A13.7** | `[-] Bloqueado` | CloudWatch Agent en EC2 (memoria y disco) | — | F1 | P4 | Secundario |  |
+| **A13.7** | `[-] Bloqueado` | CloudWatch Agent en EC2 (memoria y disco) | Recoger solo métricas necesarias de memoria/disco y medir consumo; alertar presión de memoria antes de OOM. | F1 | P4 | Secundario |  |
 | **A13.8** | `[-] Bloqueado` | Log groups de nginx y aplicación | — | F1 | P4 | Secundario |  |
 
 
@@ -337,7 +337,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **A14.1** | `[-] Bloqueado` | Stack 1 vpc-stack.yaml (VPC, subredes, SG) desplegado | — | F1 | P5 | Núcleo |  |
 | **A14.2** | `[-] Bloqueado` | Stack 2 compute-stack.yaml (EC2, RDS, ALB, ASG) desplegado | — | F1 | P5 | Núcleo |  |
 | **A14.3** | `[-] Bloqueado` | Módulo Terraform aws_infra con variables y outputs | — | F1 | P5 | Núcleo |  |
-| **A14.4** | `[-] Bloqueado` | terraform apply del módulo aws_infra crea la infraestructura | — | F1 | P5 | Núcleo |  |
+| **A14.4** | `[-] Bloqueado` | terraform apply del módulo aws_infra crea la infraestructura | Crear y verificar la topología definitiva. Evitar que Terraform y CloudFormation administren simultáneamente el mismo recurso; pruebas alternativas en stacks aislados. | F1 | P5 | Núcleo |  |
 
 
 ---
@@ -361,7 +361,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **B1.6** | `[x] Completado` | Route Tables pública y privada | — | F2 | — | Núcleo | OCI GetSubnet y GetRouteTable: subred publica asociada a ninjasec-rt-edge (ocid1.routetable.oc1.iad.aaaaaaaafhnkfof3unuhkzxjnj7gqvfplmrszff5nnhwrcddcayolrse5ita), 0.0.0.0/0 al IGW. Subred privada asociada a ninjasec-rt-private (ocid1.routetable.oc1.iad.aaaaaaaaarjku7swwx34c6t7a3mfmw7ly3dwomacvzklkrfz2rrshcl35iiq), 0.0.0.0/0 al NAT y servicios regionales al SGW. Se verificaron las asociaciones y destinos en OCI. |
 | **B1.7** | `[x] Completado` | Security Lists configuradas | — | F2 | — | Núcleo | OCI GetSecurityList y GetSubnet verificaron las listas asociadas. Ingreso ICMP IPv4 tipo 3/código 4 para PMTU. En la lista privada, salida TCP 22 limitada a las dos IP privadas de B2 para Bastion. El NSG de las VM permite ingreso SSH solo desde el endpoint privado del Bastion. |
 | **B1.8** | `[x] Completado` | NSG lb-nsg / monitor-nsg / db-nsg creados | — | F2 | — | Núcleo | OCI ListNetworkSecurityGroups: lb-nsg, ninjasec-nsg-soc (monitor) y ninjasec-nsg-db en estado AVAILABLE en la VCN. lb-nsg: ocid1.networksecuritygroup.oc1.iad.aaaaaaaanasaxkrlu4szysqwp37sz4hwj5hac2gvo27awryyxyfaaf4x5ipa. |
-| **B1.9** | `[-] Bloqueado` | db-nsg: 3306 solo desde 10.10.10.0/24 (backend AWS) | — | F2 | — | Núcleo |  |
+| **B1.9** | `[-] Bloqueado` | Acceso privado mínimo a MySQL para operación multicloud | Conservar acceso del portal OCI 10.20.10.36/32; autorizar solo orígenes AWS necesarios para recuperación, tras validar rutas/SNAT. El canal M2 inicia conexión desde OCI hacia RDS. | F2 | — | Núcleo | Revisión 2026-11-17: No implementado: sustituye la regla que contemplaba únicamente una subred AWS. |
 | **B1.10** | `[x] Completado` | DRG creado y adjunto a la VCN | — | F2 | — | Núcleo | OCI GetDrg y GetDrgAttachment: ninjasec-drg AVAILABLE y ninjasec-drg-vcn ATTACHED a la VCN. Adjunción: ocid1.drgattachment.oc1.iad.aaaaaaaajzqsyqbh2z3pevuxatdpbglcynbggrajisjvjhsubcss2bkjddtq. |
 | **B1.11** | `[x] Completado` | Service Gateway | — | F2 | — | Secundario |OCI GetServiceGateway: ninjasec-sgw AVAILABLE, block-traffic=false, servicio regional habilitado. OCID: ocid1.servicegateway.oc1.iad.aaaaaaaakrtor7thqphnupo5sneyumimnkmyc4jryscdyr6arljqfdrlr5vq. |
 | **B1.12** | `[x] Completado` | VCN Flow Logs habilitados | — | F2 | — | Secundario | OCI Logging GetLog: ninjasec-vcn-flow ACTIVE y habilitado para la VCN. Retención 30 días y muestreo 1 de 10; captura de tráfico aún sin probar. OCID: ocid1.log.oc1.iad.amaaaaaa3nxgmgaagx5ewsulncrjjcvl3kvciosfhylga2eqqypksmzeitnq. |
@@ -401,9 +401,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **B4.1** | `[x] Completado` | DB System Always Free (50 GB) en subred privada | — | F2 | P2 | Núcleo | OCI GetDbSystem: ninjasec-mysql-private ACTIVE, MySQL.Free, 50 GiB, AD-3, subred privada 10.20.10.0/24, endpoint privado 10.20.10.191:3306. OCID ocid1.mysqldbsystem.oc1.iad.aaaaaaaaqvrwleeienvokku6d5uuymx5cyxzpy5vqfbtpdvufs3jwskw3spa. |
-| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | — | F2 | P2 | Núcleo | Se creó incidents en MySQL de OCI con portal/schema.sql y se verificó su uso mediante CRUD. Sigue pendiente comparar su DDL con RDS cuando se implemente A9.7. |
+| **B4.2** | `[-] Bloqueado` | Esquema idéntico al de RDS (tabla incidents) | Comparar DDL, charset/collation, versión, autenticación y TLS con RDS 8.4 antes de cargar M2; conservar datos existentes. | F2 | P2 | Núcleo | Se creó incidents en MySQL de OCI con portal/schema.sql y se verificó su uso mediante CRUD. Sigue pendiente comparar su DDL con RDS cuando se implemente A9.7. |
 | **B4.3** | `[x] Completado` | Usuario de aplicación y permisos creados | — | F2 | P2 | Núcleo | SHOW GRANTS confirmó SELECT, INSERT, UPDATE y DELETE sobre ninjasec.* para ninjasec_app@10.20.10.36. SELECT CURRENT_USER(), DATABASE(), 1 devolvió ninjasec_app@10.20.10.36, ninjasec, 1. Cuenta limitada a la Micro de OCI y con TLS obligatorio. El acceso de AWS se validará en su integración. |
-| **B4.4** | `[x] Completado` | Acceso 3306 restringido por NSG | — | F2 | P2 | Núcleo | OCI Work Request de asociación del NSG SUCCEEDED. GetDbSystem y ListNetworkSecurityGroupSecurityRules confirmaron que ninjasec-nsg-db permite TCP 3306 solo desde 10.20.10.36/32. La política IAM está limitada al principal del DB System. OCID de política ocid1.policy.oc1..aaaaaaaaecb5ohnondn574cvtjgxxjkl6xt5i5dm4wwvinarsmhoubbnzxxa. El acceso del backend AWS sigue pendiente en B1.9. |
+| **B4.4** | `[ ] Pendiente` | Acceso 3306 restringido por NSG | Revalidar mínimo privilegio después de M1/B1.9, incluyendo acceso permitido y rechazado; no abrir 3306 al público. | F2 | P2 | Núcleo | OCI Work Request de asociación del NSG SUCCEEDED. GetDbSystem y ListNetworkSecurityGroupSecurityRules confirmaron que ninjasec-nsg-db permite TCP 3306 solo desde 10.20.10.36/32. La política IAM está limitada al principal del DB System. OCID de política ocid1.policy.oc1..aaaaaaaaecb5ohnondn574cvtjgxxjkl6xt5i5dm4wwvinarsmhoubbnzxxa. El acceso del backend AWS sigue pendiente en B1.9. Revisión 2026-11-17: Reabierta para reglas finales multicloud; la evidencia anterior de acceso solo desde .36 se conserva, pero no verifica la ampliación. |
 | **B4.5** | `[x] Completado` | Conexión exitosa desde monitor-01 | — | F2 | P2 | Núcleo | Desde el host de monitoreo adoptado bastion-utility-01, SELECT VERSION() devolvió 26.10.0-u1-cloud y la cuenta de aplicación ejecutó SELECT con TLS_AES_128_GCM_SHA256. |
 | **B4.6** | `[x] Completado` | Backup automático habilitado | — | F2 | P2 | Núcleo | OCI GetDbSystem en estado ACTIVE confirmó backupPolicy.isEnabled=true y retentionInDays=1 (MySQL.Free). |
 
@@ -456,7 +456,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **B8.1** | `[x] Completado` | OCI Monitoring con métricas de compute visibles | — | F2 | P4 | Núcleo | OCI SummarizeMetricsData devolvió puntos reales de CpuUtilization en oci_vmi_resource_utilization para bastion-utility-01 y replica-agent-01. La muestra de las 07:14 UTC devolvió 1.48 % y 1.37 %, respectivamente. |
 | **B8.2** | `[x] Completado` | Alarma CPU > 80% | — | F2 | P4 | Núcleo | OCI GetAlarm confirmó dos alarmas habilitadas con CpuUtilization[5m].mean() > 80, filtradas por OCID de instancia y dirigidas al topic ninjasec-monitoring-alerts. Monitor: ocid1.alarm.oc1.iad.amaaaaaa3nxgmgaaynhesiwqvbzkxny4432igfamrjl6uwvcxjvmv25v6y2q. Réplica: ocid1.alarm.oc1.iad.amaaaaaa3nxgmgaamd5ilwa2wivvzzvk4doixzt7nqts74uhc2uuykahjzta. 2026-11-17: alarma adicional ninjasec-portal-backend-unhealthy ACTIVE y habilitada. Mide unhealthyBackendServers para ninjasec-standby y notifica tras dos minutos al topic existente. OCID ocid1.alarm.oc1.iad.amaaaaaa3nxgmgaarzael5eqkvcwaajwaolff3b4fxs2nxddcuv7xgyzlc2q. Disparo y recepción por confirmar. |
 | **B8.3** | `[x] Completado` | Topic de Notifications con correo suscrito | — | F2 | P4 | Núcleo | OCI GetTopic y GetSubscription confirmaron topic y suscripción EMAIL en estado ACTIVE después de la confirmación del destinatario. Topic ocid1.onstopic.oc1.iad.amaaaaaa3nxgmgaaxikr6t2szrwyitk7eicxdiuhkncemdewzhlm6qropqlq. |
-| **B8.4** | `[x] Completado` | Alarma disparada y correo recibido | — | F2 | P4 | Núcleo | Prueba controlada de entrega en el mismo topic. GetAlarmHistory registró OK a FIRING el 2026-11-11 a las 07:20:30 UTC. El destinatario confirmó el correo OK_TO_FIRING con lectura de CPU de 1.49 % y umbral temporal > 0. Alarma ocid1.alarm.oc1.iad.amaaaaaa3nxgmgaatrt5km5przlyiw2cyqslegp5me7ymvdlaqg72ookekdq, deshabilitada al terminar. Las dos alarmas operativas conservan el umbral > 80 %.  |
+| **B8.4** | `[ ] Pendiente` | Alarmas de CPU y backend no saludable probadas con entrega | Conservar prueba CPU; provocar de forma controlada condición del backend, confirmar alarma/correo y recuperación a OK. | F2 | P4 | Núcleo | Prueba controlada de entrega en el mismo topic. GetAlarmHistory registró OK a FIRING el 2026-11-11 a las 07:20:30 UTC. El destinatario confirmó el correo OK_TO_FIRING con lectura de CPU de 1.49 % y umbral temporal > 0. Alarma ocid1.alarm.oc1.iad.amaaaaaa3nxgmgaatrt5km5przlyiw2cyqslegp5me7ymvdlaqg72ookekdq, deshabilitada al terminar. Las dos alarmas operativas conservan el umbral > 80 %. Revisión 2026-11-17: La prueba CPU sigue válida; falta disparo y recepción de ninjasec-portal-backend-unhealthy consignada en B8.2. |
 | **B8.5** | `[x] Completado` | Logging habilitado (VCN Flow Logs / audit) | — | F2 | P4 | Secundario | OCI Logging GetLog confirmó ninjasec-vcn-flow ACTIVE y habilitado para la VCN. OCI Audit ListEvents devolvió 78 eventos en una ventana de dos horas. Log ocid1.log.oc1.iad.amaaaaaa3nxgmgaagx5ewsulncrjjcvl3kvciosfhylga2eqqypksmzeitnq. |
 
 
@@ -480,7 +480,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **B9.11** | `[-] Bloqueado` | Panel 4: replication lag | — | F3 | P4 | Núcleo |  |
 | **B9.12** | `[-] Bloqueado` | Panel 5: bloqueos del WAF | — | F3 | P4 | Núcleo |  |
 | **B9.13** | `[x] Completado` | Panel 6: últimos logs de Azure Log Analytics | — | F3 | P4 | Núcleo | Panel 6 del tablero ninjasec-azure-logs verificado mediante su consulta Grafana. Devolvió EventId 8c52fabe-9f9d-4147-9f5d-57531250a36f, igual al primer evento del snapshot leído en OCI. |
-| **B9.14** | `[-] Bloqueado` | Chequeo de estado del túnel VPN (ping checker) en Prometheus | — | F3 | P4 | Núcleo |  |
+| **B9.14** | `[-] Bloqueado` | Estado y frescura del túnel monitorizados | Combinar handshake reciente con prueba del servicio por red privada; ICMP por sí solo no acredita MySQL disponible. | F3 | P4 | Núcleo |  |
 | **B9.15** | `[x] Completado` | Alarma visible en Grafana | — | F3 | P4 | Núcleo | Regla nativa de Grafana ninjasec-oci-cpu-grafana: CPU > 80 %, visible en el panel 15 del tablero ninjasec-oci-overview. GET /api/prometheus/grafana/api/v1/rules confirmó evaluación con health=ok, state=inactive, sin error. Las alarmas de correo de OCI se verificaron en B8. |
 
 
@@ -491,7 +491,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **B10.1** | `[x] Completado` | Módulo oci_infra con variables y outputs | — | F2 | P5 | Núcleo | Módulo terraform/modules/oci_infra con variables y outputs para VCN, subredes, gateways, rutas, NSG, Compute, MySQL.Free y LB. Terraform 1.13.5 y oracle/oci 7.32.0: terraform validate devolvió Success en replica-agent-01. |
+| **B10.1** | `[ ] Pendiente` | Módulo oci_infra con variables y outputs | Actualizar módulo a rutas, NSG, bootstrap y servicios finales; validar y revisar plan sin recrear producción ni la base gratuita. | F2 | P5 | Núcleo | Módulo terraform/modules/oci_infra con variables y outputs para VCN, subredes, gateways, rutas, NSG, Compute, MySQL.Free y LB. Terraform 1.13.5 y oracle/oci 7.32.0: terraform validate devolvió Success en replica-agent-01. Revisión 2026-11-17: Ampliación de IaC por integración final y cambios operativos del portal; validate histórico no demuestra correspondencia con el despliegue definitivo. B10.3 conserva la prueba real de creación. |
 | **B10.2** | `[x] Completado` | Autenticación OCI vía API key fuera del repositorio | — | F2 | P5 | Núcleo | Perfil local NINJA_SEC_TERRAFORM fuera del repositorio; clave privada con ACL exclusiva del usuario de Windows. Firma API Key verificada con GetVcn HTTP 200 para ninjasec-vcn, fingerprint 37:ea:8e:8f:e4:a1:f4:27:ed:1f:c2:8b:3d:6d:cd:9a. |
 | **B10.3** | `[x] Completado` | terraform apply crea VCN + NSG + compute + HeatWave + LB | — | F2 | P5 | Núcleo | 11-nov-2026, Ashburn. Stack aislado ninjasec-b10-apply-proof (ocid1.ormstack.oc1.iad.amaaaaaa3nxgmgaatgoa7tl3zbqmjgsy6gkiehdpt76cbe3ktaylmsagkcmq), Terraform 1.5.x / oracle/oci 7.32.0. PLAN ocid1.ormjob.oc1.iad.amaaaaaa3nxgmgaahsmlv4sludjfof4elwzdsu3aaq4a44ejra3gzi3cbsua: 18 altas. Primer APPLY ocid1.ormjob.oc1.iad.amaaaaaa3nxgmgaanxhjxjxbkbmroxa35mfwfshjtz647bv3qwpklrotlu3q: 16 creados; MySQL rechazó la longitud de la contraseña temporal. APPLY corregido ocid1.ormjob.oc1.iad.amaaaaaa3nxgmgaad7ebqun72zn323tg5llxyduofkhwqm4xhqbs7dhzbdka: SUCCEEDED, 2 altas, 0 cambios, 0 eliminaciones; estado total 18 recursos. Verificación API: VCN 10.29.0.0/16 AVAILABLE (ocid1.vcn.oc1.iad.amaaaaaa3nxgmgaa2exwdngoziw5pwhh2kzavhqkwxbwhzhhrfkuqk7ys3oa); 4 NSG AVAILABLE (OCID de app ocid1.networksecuritygroup.oc1.iad.aaaaaaaawgw4e57pu7skelyih7d2iyqeyhcisnnylcxgih3w5pn42ian4bhq; todos en outputs nsg_ids); VM E5 Flex RUNNING y privada (ocid1.instance.oc1.iad.anuwcljt3nxgmgacioadxtjnh7mneqxmsbkgb6onnykbcd25gecrypbtfyqa); MySQL.2 ACTIVE (ocid1.mysqldbsystem.oc1.iad.aaaaaaaapkrrvxrbdnlrv52sgs2qnxvkqhwrooh5rt54z23gmfglvpqnn37q) con HeatWave.32GB cluster-node-1 ACTIVE (GetHeatWaveCluster con OCID de MySQL); LB ACTIVE (ocid1.loadbalancer.oc1.iad.aaaaaaaaaig7ijo66mmbmrog4v76omzojjxkh5rpur4chh7bq4i6wxpmpixa). DESTROY ocid1.ormjob.oc1.iad.amaaaaaa3nxgmgaa6ac4atphzhnj7hxzftgfel5qfrej2ryqk7mehq5nalqa: SUCCEEDED, 18 eliminados, estado Terraform vacío y volumen de arranque TERMINATED; base y balanceador del portal ACTIVE tras la limpieza. |
 | **B10.4** | `[x] Completado` | Stack equivalente en OCI Resource Manager | — | F2 | P5 | Secundario | Stack ninjasec-oci-infra ACTIVE (ocid1.ormstack.oc1.iad.amaaaaaa3nxgmgaa7fwbd3z3tvdjdxa7gjypi4i7ayxmln26rdbgwd3ykgiq); job PLAN SUCCEEDED (ocid1.ormjob.oc1.iad.amaaaaaa3nxgmgaabubmols3kcbt73wwzpdf7vuuwtjej47reop3osigjnqq) con Terraform 1.5.x y oracle/oci 7.32.0: 18 altas, 0 cambios y 0 eliminaciones, incluidos VCN, NSG, Compute, MySQL.Free y LB. |
@@ -501,7 +501,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 <a id="dominio-c---azure-east-us-cumplimiento-y-forense"></a>
 
-## Dominio C: Azure · East US (cumplimiento y forense)
+## Dominio C: Azure · West US (servicios; RG en East US)
 
 <a id="comp-c1"></a>
 
@@ -530,10 +530,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **C2.1** | `[x] Completado` | Workspace de Log Analytics creado | — | F3 | P3c | Núcleo | az monitor log-analytics workspace show: ninjasec-law, westus, Succeeded, retención 30 días. |
-| **C2.2** | `[-] Bloqueado` | Ingesta de eventos de CloudTrail (AWS) | — | F3 | P3c | Núcleo |  |
+| **C2.2** | `[-] Bloqueado` | Ingesta de eventos de CloudTrail (AWS) | Depende de A12/M7: mismo eventID real en S3, Blob WORM y KQL; probar reintento/deduplicación y credencial renovable en Academy. | F3 | P3c | Núcleo |  |
 | **C2.3** | `[x] Completado` | Ingesta de OCI Audit logs | — | F3 | P3c | Núcleo | OCI Audit → Logs Ingestion API mediante DCR ninjasec-oci-audit (dcr-2d321bc72d694883ab54e51b61710966) → ninjasec-law / NINJASECOCIAudit_CL. Dos lotes aceptados HTTP 204; consulta HTTP 200 confirmó 38 EventId únicos. Prueba manual. |
-| **C2.4** | `[x] Completado` | Consulta KQL forense (ej. SG modificados en 24 h) devuelve resultados | — | F3 | P3c | Núcleo | KQL sobre NINJASECOCIAudit_CL con ventana de 24 h y deduplicación por EventId devolvió 38 cambios de red, incluidos CreateNetworkSecurityGroup, UpdateRouteTable y UpdateSecurityList. Variante OCI del ejemplo forense. |
-| **C2.5** | `[x] Completado` | Workbook/dashboard de cumplimiento | — | F3 | P3c | Secundario | Workbook 5ec9a0d2-1a5a-4e81-a7a4-698f9e43b035, panel ninjasec-oci-network-audit guardado y releído por ARM; consulta fuente comprobada con eventos reales de OCI. |
+| **C2.4** | `[ ] Pendiente` | Consulta KQL forense (ej. SG modificados en 24 h) devuelve resultados | Conservar consulta OCI; ampliar a CloudTrail cuando M7 esté operativo y correlacionar proveedor, identidad, recurso y tiempo. | F3 | P3c | Núcleo | KQL sobre NINJASECOCIAudit_CL con ventana de 24 h y deduplicación por EventId devolvió 38 cambios de red, incluidos CreateNetworkSecurityGroup, UpdateRouteTable y UpdateSecurityList. Variante OCI del ejemplo forense. Revisión 2026-11-17: Reabierta por alcance forense AWS+OCI. Los 38 eventos OCI permanecen como evidencia parcial; falta validación AWS. |
+| **C2.5** | `[ ] Pendiente` | Workbook/dashboard de cumplimiento | Ampliar workbook existente con AWS y OCI, mostrando última ingesta y ausencia de datos sin simular eventos. | F3 | P3c | Secundario | Workbook 5ec9a0d2-1a5a-4e81-a7a4-698f9e43b035, panel ninjasec-oci-network-audit guardado y releído por ARM; consulta fuente comprobada con eventos reales de OCI. Revisión 2026-11-17: Dashboard existente demuestra OCI; falta cobertura final de AWS tras C2.2. |
 
 
 <a id="comp-c3"></a>
@@ -543,7 +543,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **C3.1** | `[x] Completado` | Módulo azure_storage con variables y outputs | — | F2 | P5 | Núcleo | Módulo terraform/modules/azure_storage con variables y outputs. Terraform 1.13.5 y AzureRM 4.81.0: terraform validate devolvió Success en replica-agent-01 con el proveedor Linux firmado por HashiCorp. |
+| **C3.1** | `[ ] Pendiente` | Módulo azure_storage con variables y outputs | Revisar módulo frente a recursos finales de ingesta, Automation, DCR, RBAC y exportación; declarar alcance gestionado y revisar plan sin modificar retenciones Locked. | F2 | P5 | Núcleo | Módulo terraform/modules/azure_storage con variables y outputs. Terraform 1.13.5 y AzureRM 4.81.0: terraform validate devolvió Success en replica-agent-01 con el proveedor Linux firmado por HashiCorp. Revisión 2026-11-17: El módulo base fue validado; falta incorporar o parametrizar las integraciones finales y documentar sus límites en el criterio/evidencia. C3.2 conserva su apply verificado. |
 | **C3.2** | `[x] Completado` | terraform apply crea RG + Blob + WORM + Log Analytics | — | F2 | P5 | Núcleo | 11-nov-2026. Azure Cloud Shell, AzureRM 4.81.0, módulo 0dff08034e533165a9694427954f92060d92cd71. terraform apply: 9 added, 0 changed, 0 destroyed en rg-ninjasec-c32-8f210d4e (West US), Storage ninjac328f210d4e y Log Analytics ninjasec-c32-8f210d4e. Azure CLI confirmó retenciones Unlocked de 365/365/30 días en audit-logs-aws/audit-logs-oci/db-backups. Se usó features.storage.data_plane_available=false para evitar la consulta de sitio estático incompatible con el token de Cloud Shell. Plan de limpieza aplicado: 9 destroyed; az group exists devolvió false para ambos grupos temporales. |
 
 
@@ -564,7 +564,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **D1.2** | `[-] Bloqueado` | Registro primario (CNAME) hacia el ALB de AWS | — | F3 | P3b | Núcleo |  |
 | **D1.3** | `[x] Completado` | Registro secundario hacia el LB de OCI | — | F3 | P3b | Núcleo | Cloudflare DNS Records confirmó el registro A portal-oci.ninjasec.dev hacia 129.159.170.148 con proxy habilitado. |
 | **D1.4** | `[x] Completado` | Proxy y TLS de Cloudflare configurados | — | F3 | P3b | Núcleo | 2026-11-13 UTC: recuperado el backend OCI 10.20.10.36:8080. curl HTTPS sin omitir la validación TLS confirmó /health HTTP 200 y status ok por Cloudflare (CF-RAY a59c27a2fcb5c199-EZE); GET / devolvió el formulario NINJA-SEC HTTP 200 sin WWW-Authenticate (CF-RAY a59c2877be37342e-EZE). 2026-11-17: /health público volvió a HTTP 200 con TLS verificado después de recuperar el backend OCI. Véase B5.2. |
-| **D1.5** | `[-] Bloqueado` | Mecanismo de failover definido (health check o cambio manual) | — | F3 | P3b | Núcleo |  |
+| **D1.5** | `[-] Bloqueado` | Mecanismo de failover definido (health check o cambio manual) | Implementar conmutación controlada de portal.ninjasec.dev y retorno, coordinada con M4. No asumir failover automático incluido en Cloudflare Free; registrar mecanismo, tiempos y costo. | F3 | P3b | Núcleo |  |
 | **D1.6** | `[-] Bloqueado` | portal.<dominio> resuelve y sirve el portal por HTTPS | — | F3 | P3b | Núcleo |  |
 | **D1.7** | `[-] Bloqueado` | Route 53 Health Check + Failover (solo si Academy lo permite) | — | F3 | P3b | Secundario |  |
 
@@ -577,22 +577,22 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 <a id="comp-m1"></a>
 
-### Componente M1: Backbone VPN IPSec AWS ↔ OCI
+### Componente M1: Túnel privado WireGuard AWS ↔ OCI
 - **Fase:** F3 | **Pilar:** P1 | **Total Tareas:** 11
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M1.1** | `[-] Bloqueado` | Virtual Private Gateway creado y adjunto a la VPC | — | F3 | P1 | Núcleo |  |
-| **M1.2** | `[-] Bloqueado` | Customer Gateway apuntando a la IP pública del DRG de OCI | — | F3 | P1 | Núcleo |  |
-| **M1.3** | `[-] Bloqueado` | Site-to-Site VPN en OCI con CPE = AWS | — | F3 | P1 | Núcleo |  |
-| **M1.4** | `[-] Bloqueado` | Túnel IPSec en estado UP (ambos lados) | — | F3 | P1 | Núcleo |  |
-| **M1.5** | `[-] Bloqueado` | AWS: 10.20.0.0/16 → VGW en route tables privadas | — | F3 | P1 | Núcleo |  |
-| **M1.6** | `[-] Bloqueado` | OCI: 10.10.0.0/16 → DRG en route tables | — | F3 | P1 | Núcleo |  |
-| **M1.7** | `[-] Bloqueado` | SG/NSG permiten 3306 entre 10.10.10.0/24 y 10.20.10.0/24 | — | F3 | P1 | Núcleo |  |
-| **M1.8** | `[-] Bloqueado` | ping 10.20.10.20 desde app-backend responde | — | F3 | P1 | Núcleo |  |
-| **M1.9** | `[-] Bloqueado` | ip route en app-backend muestra la ruta hacia 10.20.x.x | — | F3 | P1 | Núcleo |  |
-| **M1.10** | `[-] Bloqueado` | Plan B: WireGuard en EC2 (si no hay VGW) | — | F3 | P1 | Secundario |  |
-| **M1.11** | `[-] Bloqueado` | Segundo túnel de redundancia | — | F3 | P1 | Secundario |  |
+| **M1.1** | `[-] Bloqueado` | Extremo AWS WireGuard en router NAT | Reutilizar A2; IP pública estable, claves protegidas y puerto limitado al peer OCI. | F3 | P1 | Núcleo |  |
+| **M1.2** | `[-] Bloqueado` | Extremo OCI WireGuard identificado y dimensionado | Verificar disponibilidad de IP/UDP público y rutas; las VM actuales son privadas. No reutilizar ni exponer un host sin validar recursos, seguridad y costo. | F3 | P1 | Núcleo |  |
+| **M1.3** | `[-] Bloqueado` | Peers WireGuard configurados en AWS y OCI | AllowedIPs mínimos, claves fuera de Git; servicio persistente. El DRG existente no sustituye un peer WireGuard. | F3 | P1 | Núcleo |  |
+| **M1.4** | `[-] Bloqueado` | Túnel WireGuard operativo en ambos extremos | Handshake reciente y transferencia bidireccional tras reinicio; no describirlo como IPSec gestionado. | F3 | P1 | Núcleo |  |
+| **M1.5** | `[-] Bloqueado` | Rutas AWS hacia 10.20.0.0/16 por router WireGuard | Verificar tablas de ambas subredes APP y subredes RDS, forwarding y source/destination check. | F3 | P1 | Núcleo |  |
+| **M1.6** | `[-] Bloqueado` | Rutas OCI de retorno hacia 10.10.0.0/16 | Configurar siguiente salto válido para el peer elegido en VCN y host; no asumir que la ruta por DRG sirve para WireGuard. | F3 | P1 | Núcleo |  |
+| **M1.7** | `[-] Bloqueado` | Reglas mínimas para servicios privados entre nubes | HeatWave inicia replicación hacia RDS: autorizar dirección real y retorno. Acceso AWS → OCI solo cuando necesario; conservar TLS. | F3 | P1 | Núcleo |  |
+| **M1.8** | `[-] Bloqueado` | Conectividad TCP/TLS hacia los endpoints MySQL privados | OCI 10.20.10.191:3306 y endpoint privado RDS; probar conexión autorizada y rechazo no autorizado. No exigir ping a un servicio administrado. | F3 | P1 | Núcleo |  |
+| **M1.9** | `[-] Bloqueado` | Rutas efectivas y puertos entre nubes verificados | Registrar tablas cloud y rutas de hosts junto con prueba SQL/TLS; ip route local por sí solo no demuestra trayecto completo. | F3 | P1 | Núcleo |  |
+| **M1.10** | `[-] Bloqueado` | Recuperación reproducible del router/túnel | Reiniciar o reemplazar controladamente, restablecer rutas y comprobar servicio; registrar tiempo. Router único sigue siendo punto de fallo. | F3 | P1 | Secundario |  |
+| **M1.11** | `[-] Bloqueado` | Evaluar redundancia adicional del túnel | Secundaria, condicionada al presupuesto. No declarar dos caminos activos ni HA de red sin implementarlos y probarlos. | F3 | P1 | Secundario |  |
 
 
 <a id="comp-m2"></a>
@@ -605,24 +605,24 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **M2.1** | `[-] Bloqueado` | Usuario de replicación creado en RDS | — | F3 | P2 | Núcleo |  |
 | **M2.2** | `[-] Bloqueado` | binlog ROW activo con retención suficiente | — | F3 | P2 | Núcleo |  |
 | **M2.3** | `[-] Bloqueado` | Carga inicial consistente importada en HeatWave | — | F3 | P2 | Núcleo |  |
-| **M2.4** | `[-] Bloqueado` | Replicación configurada (RDS como fuente, vía VPN) | — | F3 | P2 | Núcleo |  |
+| **M2.4** | `[-] Bloqueado` | Replicación configurada (RDS como fuente, vía VPN) | Canal nativo de entrada en HeatWave por red privada/TLS desde RDS; validar versiones reales y permisos. Always Free admite replicación, pero el canal concreto sigue sin probarse. | F3 | P2 | Núcleo |  |
 | **M2.5** | `[-] Bloqueado` | Replicación en ejecución (hilos IO/SQL activos) | — | F3 | P2 | Núcleo |  |
-| **M2.6** | `[-] Bloqueado` | Replication lag < 2 s medido | — | F3 | P2 | Núcleo |  |
+| **M2.6** | `[-] Bloqueado` | Replication lag < 2 s medido | Medir desfase durante escrituras, carga y reconexión; objetivo <2 s, registrar máximo y ventana. No equivale a RPO garantizado ni replicación síncrona. | F3 | P2 | Núcleo |  |
 | **M2.7** | `[-] Bloqueado` | INSERT en AWS → SELECT en OCI verificado | — | F3 | P2 | Núcleo |  |
 
 
 <a id="comp-m3"></a>
 
-### Componente M3: Dual-write de la aplicación
+### Componente M3: Alternativa condicionada a limitación comprobada de M2
 - **Fase:** F2 | **Pilar:** P2 | **Total Tareas:** 5
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M3.1** | `[-] Bloqueado` | Lógica dual-write en app-backend (RDS + HeatWave) | — | F2 | P2 | Núcleo |  |
-| **M3.2** | `[-] Bloqueado` | Etapa interina: escritura a HeatWave con TLS por IP pública | — | F2 | P2 | Núcleo |  |
-| **M3.3** | `[-] Bloqueado` | Migrado a IP privada 10.20.10.20 vía VPN | — | F2 | P2 | Núcleo |  |
-| **M3.4** | `[-] Bloqueado` | Manejo de fallo parcial (si una BD falla, la app no se cae) | — | F2 | P2 | Núcleo |  |
-| **M3.5** | `[-] Bloqueado` | Ticket creado en el portal visible en OCI en < 1 s | — | F2 | P2 | Núcleo |  |
+| **M3.1** | `[-] Bloqueado` | Alternativa de sincronización si M2 no es viable | Bloqueada por decisión: activar solo tras limitación técnica comprobada de M2; no ejecutar dual-write y replicación nativa sobre los mismos datos. | F2 | P2 | Núcleo |  |
+| **M3.2** | `[-] Bloqueado` | Alternativa: conexiones privadas con TLS | Sin etapa MySQL pública. Requiere M1; validar identidades, certificados y permisos. | F2 | P2 | Núcleo |  |
+| **M3.3** | `[-] Bloqueado` | Alternativa: entrega idempotente hacia HeatWave privado | Usar endpoint verificado 10.20.10.191:3306; cola/outbox persistente, identificadores únicos y reintentos acotados. | F2 | P2 | Núcleo |  |
+| **M3.4** | `[-] Bloqueado` | Alternativa: reconciliación ante escrituras parciales | Probar caída de destino y recuperación sin perder ni duplicar eventos; no considerar segura una doble escritura sin control. | F2 | P2 | Núcleo |  |
+| **M3.5** | `[-] Bloqueado` | Alternativa: consistencia y demora medidas | Validar inserciones, actualizaciones y borrados, atraso y reintentos. Si M2 es adoptado, conservar como alternativa no ejecutada; no marcar completada. | F2 | P2 | Núcleo |  |
 
 
 <a id="comp-m4"></a>
@@ -633,9 +633,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **M4.1** | `[-] Bloqueado` | Connection string conmutable (secreto/variable de entorno) | — | F4 | P2 | Núcleo |  |
-| **M4.2** | `[-] Bloqueado` | Detección de falla de RDS en la aplicación | — | F4 | P2 | Núcleo |  |
-| **M4.3** | `[-] Bloqueado` | Conmutación a HeatWave ejecutada | — | F4 | P2 | Núcleo |  |
-| **M4.4** | `[-] Bloqueado` | Con RDS detenido el portal sigue operativo con los datos | — | F4 | P2 | Núcleo |  |
+| **M4.2** | `[-] Bloqueado` | Detección de falla de RDS en la aplicación | Detectar fallo sin promocionar por un error transitorio; distinguir fallo de RDS, del túnel y de toda la nube. | F4 | P2 | Núcleo |  |
+| **M4.3** | `[-] Bloqueado` | Conmutación a HeatWave ejecutada | Antes de habilitar escrituras OCI, aislar escrituras AWS, comprobar última transacción recibida y promover de forma controlada; impedir dos primarios activos. | F4 | P2 | Núcleo |  |
+| **M4.4** | `[-] Bloqueado` | Con RDS detenido el portal sigue operativo con los datos | Probar CRUD con datos replicados y medir RTO/RPO; una respuesta /health o HTML sin acceso a datos no acredita continuidad. | F4 | P2 | Núcleo |  |
 
 
 <a id="comp-m5"></a>
@@ -645,10 +645,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M5.1** | `[x] Completado` | Portal standby operativo en OCI | — | F3 | P3b | Núcleo | OCI GetLoadBalancerHealth OK; https://129.159.170.148/health HTTP 200 en prueba por IP con certificado sin validar. Por Bastion, ninjasec-portal active y /health local devolvió status=ok. 2026-11-17: tras el incidente de B5.2, ninjasec-portal quedó active y /health privado y público devolvieron status ok. Estabilidad posterior en observación. |
-| **M5.2** | `[-] Bloqueado` | Cloudflare redirige al LB de OCI al caer el endpoint AWS | — | F3 | P3b | Núcleo |  |
+| **M5.1** | `[ ] Pendiente` | Portal standby operativo en OCI | Verificar CRUD y estabilidad del host bajo carga representativa, memoria/OOM y reinicio. Coordinar rol de escritura con M4; no basta /health. | F3 | P3b | Núcleo | OCI GetLoadBalancerHealth OK; https://129.159.170.148/health HTTP 200 en prueba por IP con certificado sin validar. Por Bastion, ninjasec-portal active y /health local devolvió status=ok. 2026-11-17: tras el incidente de B5.2, ninjasec-portal quedó active y /health privado y público devolvieron status ok. Estabilidad posterior en observación. Revisión 2026-11-17: Reabierta para preparación real de recuperación tras el incidente y el nuevo rol multicloud. Pruebas de disponibilidad anteriores conservadas; estabilidad/capacidad y promoción pendientes. |
+| **M5.2** | `[-] Bloqueado` | Cloudflare redirige al LB de OCI al caer el endpoint AWS | Cambio controlado del origen del dominio principal, coordinado con promoción de datos; verificar HTTPS y sesiones. No confundir portal-oci independiente con failover. | F3 | P3b | Núcleo |  |
 | **M5.3** | `[-] Bloqueado` | Prueba real: AWS fuera de servicio → portal servido desde OCI | — | F3 | P3b | Núcleo |  |
-| **M5.4** | `[-] Bloqueado` | Retorno a AWS verificado | — | F3 | P3b | Núcleo |  |
+| **M5.4** | `[-] Bloqueado` | Retorno a AWS verificado | Resincronizar datos creados en OCI, comprobar consistencia y transferir escritura exclusiva a AWS antes del retorno; sin sobrescribir datos nuevos. | F3 | P3b | Núcleo |  |
 
 
 <a id="comp-m6"></a>
@@ -658,7 +658,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M6.1** | `[ ] Pendiente` | Script mysqldump programado (cron) | — | F2 | P3c | Núcleo | Respaldo puntual verificado en M6.2–M6.5. El 2026-11-13 OCI seguía mostrando bastion-utility-01 en STOPPING. replica-agent-01 estaba RUNNING (10.20.10.212), pero SSH vía Bastion agotó el tiempo durante el intercambio inicial. Falta acceder a un host con conectividad privada a MySQL, programar cron y verificar un respaldo generado por el job. 2026-11-13: script preparado en scripts/backup_mysql.py con OCI Vault, TLS, gzip y SHA-256. SSH a bastion-utility-01 agotó el intercambio inicial. replica-agent-01 respondió por SSH y crond figuró active, pero mysqldump no estaba disponible en PATH y no se confirmó conectividad a MySQL. Falta desplegar el script, instalar/verificar el cliente, habilitar cron y comprobar su primera ejecución. 2026-11-17: SSH a bastion-utility-01 por Bastion recuperado tras reiniciar. scripts/backup_mysql.py confirmado en main. Cron y primer respaldo automático todavía pendientes. |
+| **M6.1** | `[ ] Pendiente` | Script mysqldump programado (cron) | Programación diaria con cliente compatible, TLS, secretos protegidos y alerta de fallo; verificar ejecución automática con datos y copia a OCI y Azure, integridad y restauración. No confundir el dump manual existente con respaldo diario. | F2 | P3c | Núcleo | Respaldo puntual verificado en M6.2–M6.5. El 2026-11-13 OCI seguía mostrando bastion-utility-01 en STOPPING. replica-agent-01 estaba RUNNING (10.20.10.212), pero SSH vía Bastion agotó el tiempo durante el intercambio inicial. Falta acceder a un host con conectividad privada a MySQL, programar cron y verificar un respaldo generado por el job. 2026-11-13: script preparado en scripts/backup_mysql.py con OCI Vault, TLS, gzip y SHA-256. SSH a bastion-utility-01 agotó el intercambio inicial. replica-agent-01 respondió por SSH y crond figuró active, pero mysqldump no estaba disponible en PATH y no se confirmó conectividad a MySQL. Falta desplegar el script, instalar/verificar el cliente, habilitar cron y comprobar su primera ejecución. 2026-11-17: SSH a bastion-utility-01 por Bastion recuperado tras reiniciar. scripts/backup_mysql.py confirmado en main. Cron y primer respaldo automático todavía pendientes. |
 | **M6.2** | `[x] Completado` | Dump depositado en OCI Object Storage | — | F2 | P3c | Núcleo | OCI GetObject verificó mysql/ninjasec-20261111T070855Z-cf90ae215883.sql.gz en ninjasec-backup-staging, 392 bytes. Origen: MySQL HeatWave OCI. |
 | **M6.3** | `[x] Completado` | Copia subida a Azure container db-backups (WORM) | — | F2 | P3c | Núcleo | Copia manual del dump de HeatWave a db-backups/mysql/ninjasec-20261111T070855Z-cf90ae215883.sql.gz en ninjaseccompliance63ba. Azure Blob PUT 201; política WORM Locked de 30 días. |
 | **M6.4** | `[x] Completado` | Archivos visibles en ambos destinos | — | F2 | P3c | Núcleo | OCI GetObject y Azure Blob GET 200 devolvieron 392 bytes con SHA-256 comprimido idéntico cf90ae215883e35699362711bf074394ca4d559e8f35e2f0e01f30531e78bd27. |
@@ -673,9 +673,9 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **M7.1** | `[-] Bloqueado` | Script boto3 lee logs de CloudTrail desde S3 | — | F3 | P3c | Núcleo |  |
-| **M7.2** | `[-] Bloqueado` | Cron diario (02:00) sube a audit-logs-aws | — | F3 | P3c | Núcleo |  |
+| **M7.2** | `[-] Bloqueado` | Cron diario (02:00) sube a audit-logs-aws | Job diario con checkpoint, nombres idempotentes y reintentos; identidad Azure administrada cuando corresponda, credencial AWS renovable. No depender de una App Registration bloqueada en el directorio universitario. | F3 | P3c | Núcleo |  |
 | **M7.3** | `[-] Bloqueado` | Blob queda bloqueado por política WORM | — | F3 | P3c | Núcleo |  |
-| **M7.4** | `[-] Bloqueado` | Eventos enviados a Log Analytics | — | F3 | P3c | Núcleo |  |
+| **M7.4** | `[-] Bloqueado` | Eventos enviados a Log Analytics | Mismo eventID en S3, Blob y KQL; deduplicación y alerta por ingesta atrasada; validar credenciales tras expiración de sesión del Lab. | F3 | P3c | Núcleo |  |
 
 
 <a id="comp-m8"></a>
@@ -701,7 +701,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **M9.1** | `[-] Bloqueado` | Métricas de CloudWatch (AWS) visibles en Grafana OCI | — | F3 | P4 | Núcleo |  |
 | **M9.2** | `[x] Completado` | Métricas de OCI visibles en Grafana | — | F3 | P4 | Núcleo | Evidencia cruzada con B9.6 y B9.10: Grafana POST /api/ds/query devolvió 6 puntos de CpuUtilization del datasource OCI nativo ninjasec-oci-native, y el panel 3 mostró 3 conexiones MySQL. En esta revisión Grafana 10.4.19 respondió HTTP 200 en /api/health con database=ok por Bastion. |
 | **M9.3** | `[x] Completado` | Datos de Azure Log Analytics visibles en Grafana | — | F3 | P4 | Núcleo | Flujo verificado: Azure Automation consulta ninjasec-law, publica latest.json en OCI, y el panel 6 de Grafana en replica-agent-01 devuelve el EventId 8c52fabe-9f9d-4147-9f5d-57531250a36f del snapshot de 100 eventos. |
-| **M9.4** | `[-] Bloqueado` | Dashboard unificado de las 3 nubes con datos en vivo | — | F3 | P4 | Núcleo |  |
+| **M9.4** | `[-] Bloqueado` | Dashboard unificado de las 3 nubes con datos en vivo | Mostrar AWS, OCI y Azure con timestamp/frescura; Azure exportado es periódico, no streaming. Probar alertas de indisponibilidad, memoria, túnel y retraso de replicación; no mostrar datos antiguos como actuales. | F3 | P4 | Núcleo |  |
 
 
 <a id="comp-m10"></a>
@@ -714,10 +714,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **M10.1** | `[ ] Pendiente` | providers.tf con AWS + OCI + AzureRM | — | F2 | P5 | Núcleo |  |
 | **M10.2** | `[-] Bloqueado` | Backend remoto S3 + lock DynamoDB funcionando | — | F2 | P5 | Núcleo |  |
 | **M10.3** | `[ ] Pendiente` | main.tf invoca los 3 módulos | — | F2 | P5 | Núcleo |  |
-| **M10.4** | `[ ] Pendiente` | terraform plan sin errores | — | F2 | P5 | Núcleo |  |
-| **M10.5** | `[-] Bloqueado` | terraform apply despliega las 3 nubes | — | F2 | P5 | Núcleo |  |
-| **M10.6** | `[-] Bloqueado` | terraform destroy elimina los recursos | — | F2 | P5 | Núcleo |  |
-| **M10.7** | `[-] Bloqueado` | Re-apply recrea la infraestructura (~10 min) | — | F2 | P5 | Núcleo |  |
+| **M10.4** | `[ ] Pendiente` | terraform plan sin errores | Plan final de las tres nubes coherente con recursos y cambios operativos; revisar drift, importación cuando aplique, retenciones WORM y ausencia de reemplazos inesperados. | F2 | P5 | Núcleo |  |
+| **M10.5** | `[-] Bloqueado` | terraform apply despliega las 3 nubes | Composición reproducible con evidencias apply por proveedor e integración; un solo propietario IaC por recurso. Adoptar existentes con revisión segura sin atribuir adopción como creación nueva. | F2 | P5 | Núcleo |  |
+| **M10.6** | `[-] Bloqueado` | terraform destroy elimina los recursos | Probar destroy solo en stack aislado de demostración; preservar producción, backups y WORM Locked. Registrar los recursos que legal/técnicamente no pueden borrarse antes de retención. | F2 | P5 | Núcleo |  |
+| **M10.7** | `[-] Bloqueado` | Re-apply recrea la infraestructura (~10 min) | Recrear stack aislado y verificar funcionalidad, registrando duración real. Objetivo ~10 min sujeto a tiempos de proveedores; no eliminar producción para demostrarlo. | F2 | P5 | Núcleo |  |
 
 
 ---
@@ -738,8 +738,8 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **T1.3** | `[-] Bloqueado` | En reposo: S3 con SSE-KMS | — | F1 | — | Núcleo |  |
 | **T1.4** | `[x] Completado` | En reposo: volúmenes OCI cifrados | — | F1 | — | Núcleo | OCI ListBootVolumes y GetBootVolume confirmaron dos volúmenes de arranque de las VM del proyecto, terminados en 2qua y jjda, con kmsKeyId vacío: cifrado en reposo con clave administrada por Oracle. ListVolumes no devolvió volúmenes de bloque adicionales en el compartimento raíz. |
 | **T1.5** | `[-] Bloqueado` | En tránsito: HTTPS en ALB / Cloudflare | — | F1 | — | Núcleo |  |
-| **T1.6** | `[-] Bloqueado` | En tránsito: tráfico AWS↔OCI por túnel IPSec | — | F1 | — | Núcleo |  |
-| **T1.7** | `[-] Bloqueado` | En tránsito: TLS en conexiones BD interinas | — | F1 | — | Núcleo |  |
+| **T1.6** | `[-] Bloqueado` | Tráfico AWS–OCI protegido por WireGuard | Verificar túnel y TLS de MySQL; no etiquetarlo como IPSec. | F1 | — | Núcleo |  |
+| **T1.7** | `[-] Bloqueado` | TLS en todas las conexiones a bases de datos | Validar certificados y cifrado en operación normal, replicación y recuperación; ninguna etapa pública interina. | F1 | — | Núcleo |  |
 
 
 <a id="comp-t2"></a>
@@ -749,7 +749,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **T2.1** | `[x] Completado` | grep -r "password | secret | key" sobre el repositorio sin hallazgos | — | Núcleo | Gitleaks v8.30.1 con salida redactada: 37 commits revisados hasta 6e8bff6, sin secretos detectados. Se escanearon también los cambios de esta actualización. |
+| **T2.1** | `[x] Completado` | Escaneo de secretos del repositorio sin hallazgos | — | F1 | — | Núcleo | Gitleaks v8.30.1 con salida redactada: 37 commits revisados hasta 6e8bff6, sin secretos detectados. Se escanearon también los cambios de esta actualización. |
 | **T2.2** | `[x] Completado` | terraform.tfvars y llaves fuera de Git | — | F1 | — | Núcleo | git check-ignore --no-index confirmó la exclusión de tfvars y llaves. El inventario de rutas del historial de main no mostró archivos sensibles con esos patrones; la API key usada por OCI CLI está fuera del árbol Git. |
 | **T2.3** | `[x] Completado` | Credenciales de datasources de Grafana fuera del repositorio | — | F1 | — | Núcleo | Grafana API confirmó cero campos secretos configurados en ninjasec-azure-export. El lector local autenticó contra OCI con identidad de replica-agent-01 y lectura restringida a latest.json, política ocid1.policy.oc1..aaaaaaaaczrfr6m36vsvcn6j33774xezqqz3nivwooujrpe6uhszwv6ybxra. Exportador con identidad Azure y variable cifrada, fuera de Git. |
 | **T2.4** | `[-] Bloqueado` | Procedimiento de refresco de credenciales del Lab (CLI, Terraform, Grafana) | — | F1 | — | Núcleo |  |
@@ -779,7 +779,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **T4.1** | `[-] Bloqueado` | AWS: LabRole con políticas de recurso (bucket, secreto, KMS) | — | F2 | — | Núcleo |  |
 | **T4.2** | `[x] Completado` | OCI: grupo de operación creado | — | F2 | — | Núcleo | Grupo ninjasec-oci-operators creado. OCID ocid1.group.oc1..aaaaaaaaipzwhlgn6u6rflwxaiu7dfmumku5ao6vm3a7krhfmhf7cmjvlaba. ListUserGroupMemberships confirmó cero miembros. |
 | **T4.3** | `[x] Completado` | OCI: políticas de mínimo privilegio aplicadas | — | F2 | — | Núcleo | GetPolicy confirmó política ACTIVE ocid1.policy.oc1..aaaaaaaazxrfeu2riuaj35ah2nq5xgnme7nev72vyl57wyuhadrg6tc2yc5a. Bastion dedicado y sesiones port_forwarding TCP 22 restringidas a las dos IP privadas, más lectura de instancias y permisos de lectura de red necesarios. Validada la configuración; prueba con operador pendiente de un miembro asignado. |
-| **T4.4** | `[x] Completado` | Azure: RBAC mínimo sobre la Storage Account | — | F2 | — | Núcleo | Azure CLI verificó para la identidad de servicio de M8 el rol NINJA-SEC Audit Blob Writer solo en ninjaseccompliance63ba/audit-logs-oci, con DataAction blobs/write y sin acciones de lectura o borrado. Se mantiene el Owner humano heredado de la suscripción. Escritura comprobada en M8. |
+| **T4.4** | `[ ] Pendiente` | Azure: RBAC mínimo sobre la Storage Account | Conservar política OCI Audit; añadir permisos mínimos del flujo AWS y respaldos sobre sus contenedores/DCR. Probar operación permitida y acceso fuera de alcance denegado. | F2 | — | Núcleo | Azure CLI verificó para la identidad de servicio de M8 el rol NINJA-SEC Audit Blob Writer solo en ninjaseccompliance63ba/audit-logs-oci, con DataAction blobs/write y sin acciones de lectura o borrado. Se mantiene el Owner humano heredado de la suscripción. Escritura comprobada en M8. Revisión 2026-11-17: Reabierta por ampliación de integraciones. La evidencia anterior cubre únicamente el escritor audit-logs-oci, no todos los flujos finales. |
 
 
 ---
@@ -808,10 +808,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **R2.1** | `[-] Bloqueado` | Restauración de RDS desde snapshot probada | — | F4 | P2 | Núcleo |  |
-| **R2.2** | `[x] Completado` | Restauración del dump en HeatWave probada | — | F4 | P2 | Núcleo | HeatWave ninjasec-mysql-private (10.20.10.191:3306): se restauró el mismo dump OCI/Azure de M6.4 en ninjasec_restore_cc82f1cb0e9b. Se verificaron la estructura, las 0 filas de origen y una escritura sintética con rollback. Esquema y reglas temporales eliminados y verificados. |
+| **R2.2** | `[ ] Pendiente` | Restauración del dump en HeatWave probada | Repetir restauración aislada con datos representativos, conteos e integridad y tiempo medido; no basta el dump histórico de cero filas. | F4 | P2 | Núcleo | HeatWave ninjasec-mysql-private (10.20.10.191:3306): se restauró el mismo dump OCI/Azure de M6.4 en ninjasec_restore_cc82f1cb0e9b. Se verificaron la estructura, las 0 filas de origen y una escritura sintética con rollback. Esquema y reglas temporales eliminados y verificados. Revisión 2026-11-17: Se conserva RESTORE anterior; falta prueba con datos para la recuperación final. |
 | **R2.3** | `[-] Bloqueado` | Recuperación de web tier por Auto Scaling probada | — | F4 | P2 | Núcleo |  |
-| **R2.4** | `[-] Bloqueado` | RTO medido < 5 min en failover de BD | — | F4 | P2 | Núcleo |  |
-| **R2.5** | `[-] Bloqueado` | RPO medido < 1 s con dual-write / replicación | — | F4 | P2 | Núcleo |  |
+| **R2.4** | `[-] Bloqueado` | RTO medido < 5 min en failover de BD | Objetivo RTO <5 min: medir desde interrupción hasta CRUD funcional, incluida promoción/DNS; registrar pasos manuales y resultado real. | F4 | P2 | Núcleo |  |
+| **R2.5** | `[-] Bloqueado` | RPO medido < 1 s con dual-write / replicación | Objetivo RPO <1 s: medir última transacción confirmada frente a recuperada ante fallo. Replicación asíncrona no garantiza cero pérdida; si no cumple mantener pendiente y explicar desviación. | F4 | P2 | Núcleo |  |
 
 
 ---
@@ -833,7 +833,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **P1.4** | `[-] Bloqueado` | Demo 4: terminar web-01 → portal sigue → Auto Scaling repone | — | F4 | — | Núcleo |  |
 | **P1.5** | `[-] Bloqueado` | Demo 5: Grafana SOC con alarma activa | — | F4 | — | Núcleo |  |
 | **P1.6** | `[x] Completado` | Demo 6: Azure WORM rechaza el borrado (409) | — | F4 | — | Núcleo | Demo Azure WORM en ninjaseccompliance63ba/audit-logs-oci/ninjasec-p1-6-demo-821107547d824b1683f540fabdb93a37.txt. Política Locked de 365 días. PUT 201; DELETE 409 BlobImmutableDueToPolicy (request ID bfef3883-f01e-001b-1a3e-73e4ba000000); GET 200 con ETag idéntico. Permiso temporal retirado. |
-| **P1.7** | `[-] Bloqueado` | Demo 7: terraform destroy → apply en vivo | — | F4 | — | Núcleo |  |
+| **P1.7** | `[-] Bloqueado` | Demo 7: terraform destroy → apply en vivo | Demo en stack aislado; preservar portal productivo y Azure WORM. Evidenciar creación, destrucción y reconstrucción funcional. | F4 | — | Núcleo |  |
 | **P1.8** | `[-] Bloqueado` | Ensayo completo cronometrado ≤ 15 min | — | F4 | — | Núcleo |  |
 
 
@@ -864,10 +864,10 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **K1.1** | `[-] Bloqueado` | Aviso de consumo según el saldo de AWS Academy | Definir umbrales dentro de USD 50 y antes de comprometer la reserva para siete días de revisión. Usar AWS Budgets si está permitido y revisión diaria del saldo de Academy como alternativa. | F1 | — | Núcleo |  |
-| **K1.2** | `[-] Bloqueado` | Medición de consumo y reserva para la evaluación | Registrar saldo e inventario, contrastar Cost Explorer según permisos y medir 24 horas con la configuración final. Proyectar siete días con margen, incluyendo cómputo, RDS, ALB, IPv4, almacenamiento, logs y conectividad. | F1 | — | Núcleo |  |
+| **K1.1** | `[ ] Pendiente` | Aviso de consumo según el saldo de AWS Academy | USD 50 totales; avisos previos y reserva de emergencia USD 10. Incluir desarrollo/pruebas y 14 días de evaluación; Budgets si permitido y revisión Academy diaria, sin asumir corte automático. | F1 | — | Núcleo |  |
+| **K1.2** | `[ ] Pendiente` | Medición de consumo y reserva para la evaluación | Inventario y saldo reales; medir 24 h y proyectar 14 días y mes. Incluir EC2/créditos CPU, EBS, RDS/backups, ALB/LCU, IPv4, tráfico, logs, KMS, secretos, S3/estado y túnel. Referencia USD 33–37/14 días no validada, excluye consumo previo; exigir saldo >= proyección + USD 10. | F1 | — | Núcleo |  |
 | **K1.3** | `[-] Bloqueado` | Control de recursos activos durante desarrollo y evaluación | Durante desarrollo detener o retirar recursos cuando corresponda. Considerar el autoarranque de RDS tras siete días y los cargos de almacenamiento. Durante la revisión mantener los recursos necesarios dentro de la reserva. | F1 | — | Núcleo |  |
-| **K1.4** | `[-] Bloqueado` | Conectividad AWS–OCI disponible según etapa | Durante desarrollo limitar la VPN gestionada a las ventanas de prueba si se adopta. Durante la evaluación mantener disponible la opción de conectividad verificada e incluir su costo en la proyección. | F1 | — | Núcleo |  |
+| **K1.4** | `[-] Bloqueado` | Conectividad AWS–OCI disponible según etapa | Mantener WireGuard operativo durante evaluación; incluir extremo OCI y recursos adicionales en costos. VPN gestionada solo tras justificar cambio y recalcular reserva. | F1 | — | Núcleo |  |
 | **K1.5** | `[-] Bloqueado` | Confirmado: no existe NAT Gateway gestionado (se usa NAT Instance) | — | F1 | — | Núcleo |  |
 
 
@@ -879,8 +879,8 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **K2.1** | `[-] Bloqueado` | Tras reinicio, web-01/web-02 levantan Nginx solos | — | F1 | — | Núcleo |  |
-| **K2.2** | `[-] Bloqueado` | Tras reinicio, app-backend levanta la API sola | — | F1 | — | Núcleo |  |
-| **K2.3** | `[-] Bloqueado` | Scripts, tareas programadas y continuidad del acceso comprobados | Verificar scripts y cron tras reiniciar. Al expirar una sesión del Learner Lab, comprobar externamente el portal y la integración. Validar por separado el acceso del docente desde una sesión nueva. | F1 | — | Núcleo |  |
+| **K2.2** | `[-] Bloqueado` | Las API de ambos nodos arrancan tras reinicio | Probar API, WAF, secretos y sesiones; no depender de un app-backend único. | F1 | — | Núcleo |  |
+| **K2.3** | `[ ] Pendiente` | Scripts, tareas programadas y continuidad del acceso comprobados | Comprobar externamente portal, túnel, jobs y observabilidad al expirar sesión Academy; validar acceso docente en sesión nueva. No prometer 14 días continuos hasta comprobar límites del Lab. | F1 | — | Núcleo |  |
 
 
 ---
