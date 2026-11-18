@@ -32,7 +32,11 @@ def main():
     rt='ocid1.routetable.oc1.iad.aaaaaaaaarjku7swwx34c6t7a3mfmw7ly3dwomacvzklkrfz2rrshcl35iiq'
     response=net.get_route_table(rt);routes=response.data.route_rules
     existing=next((r for r in routes if r.destination=='10.10.0.0/16'),None)
-    if existing and existing.network_entity_id!=private.id:raise RuntimeError('Existing AWS route uses a different next hop; manual review required')
+    if existing and existing.network_entity_id!=private.id:
+        previous='ocid1.privateip.oc1.iad.abuwcljttj4ea34hoemt5ixtwv6gxqiiwhm3opu2jpihaadkxsknd7meopza'
+        if existing.network_entity_id!=previous:raise RuntimeError('Existing AWS route uses an unrecognized next hop; manual review required')
+        existing.network_entity_id=private.id
+        net.update_route_table(rt,oci.core.models.UpdateRouteTableDetails(route_rules=routes),if_match=response.headers['etag'])
     if not existing:
         routes.append(oci.core.models.RouteRule(destination='10.10.0.0/16',destination_type='CIDR_BLOCK',network_entity_id=private.id,description='AWS via private utility WireGuard peer; no DRG'))
         net.update_route_table(rt,oci.core.models.UpdateRouteTableDetails(route_rules=routes),if_match=response.headers['etag'])

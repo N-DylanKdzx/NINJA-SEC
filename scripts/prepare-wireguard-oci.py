@@ -5,7 +5,7 @@ from pathlib import Path
 import oci
 
 VCN='ocid1.vcn.oc1.iad.amaaaaaa3nxgmgaaxc45vda6zodcagfq2sa2uliasla75ray67di4t4gtqca'
-VNIC='ocid1.vnic.oc1.iad.abuwcljth6oz6q4czb6mqzu4tdn6h365nltdjxiaclnnrhwuwszup2z3fq7a'
+VNIC='ocid1.vnic.oc1.iad.abuwcljtcffp4wa4iyt3s6zepz437qgbi2efcysbxel5m4rotnh7xhleayeq'
 
 def main():
     cfg=oci.config.from_file(profile_name='NINJA_SEC_TERRAFORM')
