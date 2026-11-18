@@ -999,6 +999,138 @@
           "Code": 4
         }
       }
+    },
+    "FlowLogsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": "ninjasec-flowlogs-533267256700",
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "IgnorePublicAcls": true,
+          "BlockPublicPolicy": true,
+          "RestrictPublicBuckets": true
+        },
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "ExpireFlowLogs",
+              "Status": "Enabled",
+              "ExpirationInDays": 7,
+              "AbortIncompleteMultipartUpload": {
+                "DaysAfterInitiation": 1
+              }
+            }
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "FlowLogsBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {
+          "Ref": "FlowLogsBucket"
+        },
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DeliveryAcl",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "delivery.logs.amazonaws.com"
+              },
+              "Action": "s3:GetBucketAcl",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "FlowLogsBucket",
+                  "Arn"
+                ]
+              },
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceAccount": "533267256700"
+                },
+                "ArnLike": {
+                  "aws:SourceArn": "arn:aws:logs:us-east-1:533267256700:*"
+                }
+              }
+            },
+            {
+              "Sid": "DeliveryWrite",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "delivery.logs.amazonaws.com"
+              },
+              "Action": "s3:PutObject",
+              "Resource": "arn:aws:s3:::ninjasec-flowlogs-533267256700/AWSLogs/533267256700/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceAccount": "533267256700",
+                  "s3:x-amz-acl": "bucket-owner-full-control"
+                },
+                "ArnLike": {
+                  "aws:SourceArn": "arn:aws:logs:us-east-1:533267256700:*"
+                }
+              }
+            },
+            {
+              "Sid": "RequireTls",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                "arn:aws:s3:::ninjasec-flowlogs-533267256700",
+                "arn:aws:s3:::ninjasec-flowlogs-533267256700/*"
+              ],
+              "Condition": {
+                "Bool": {
+                  "aws:SecureTransport": "false"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "VpcFlowLog": {
+      "Type": "AWS::EC2::FlowLog",
+      "DependsOn": "FlowLogsBucketPolicy",
+      "Properties": {
+        "ResourceId": {
+          "Ref": "Vpc"
+        },
+        "ResourceType": "VPC",
+        "TrafficType": "ALL",
+        "LogDestinationType": "s3",
+        "LogDestination": {
+          "Fn::GetAtt": [
+            "FlowLogsBucket",
+            "Arn"
+          ]
+        },
+        "MaxAggregationInterval": 600,
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
     }
   },
   "Outputs": {
