@@ -36,3 +36,16 @@ Guardar las credenciales de acceso que se creen, recuperen o cambien únicamente
 | **Grafana → fuentes de OCI y de eventos exportados** | El datasource OCI usa identidad de instancia. El lector alternativo de eventos Azure está preparado para usar esa misma modalidad y queda pendiente de despliegue. Microsoft Entra rechazó el registro de la aplicación del datasource nativo y por eso no se generó un `client_secret` para Grafana. |
 
 Para retomar el trabajo, usa el [checklist técnico](NINJA-SEC_Avance_Tecnico.md) para comprobar el estado vigente y las evidencias.
+
+
+### Accesos vigentes tras migracion OCI del 2026-11-18
+
+Hosts privados vigentes: `ninjasec-utility-stable-01` (`10.20.10.40`) y `ninjasec-replica-stable-01` (`10.20.10.41`). Las Micro originales quedan detenidas, con discos conservados. Acceso administrativo por OCI Bastion; la sesion temporal no requiere reiniciar las VM.
+
+| Tipo de credencial | Ubicacion local | Uso |
+| --- | --- | --- |
+| Claves privadas de ambos peers WireGuard | `E:\NINJA-SEC\Credenciales de Acceso\ninjasec-wireguard.json` | Tunel AWS-OCI. No publicar su contenido. Copia AWS cifrada en Parameter Store Standard `/ninjasec/wireguard/aws`; configs remotas root0600. |
+| Usuario y contrasena Grafana principal | `E:\NINJA-SEC\Credenciales de Acceso\Grafana OCI utility.md` | Grafana privado en `10.20.10.40:3000`, por Bastion. |
+| Usuario y contrasena Grafana Azure | `E:\NINJA-SEC\Credenciales de Acceso\Grafana OCI replica.md` | Grafana privado en `10.20.10.41:3000`, por Bastion. |
+
+Archivos de credenciales restringidos al usuario local DYLAN, SYSTEM y Administradores. El repositorio conserva solo tipo, ubicacion y funcion; no valores secretos. La credencial del portal existente no cambio.
