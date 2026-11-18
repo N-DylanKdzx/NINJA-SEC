@@ -1,0 +1,627 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "NINJA-SEC network foundation; private default routes and VPN rules await validated router/peer. No compute, public IP, ALB, database or logging resources.",
+  "Resources": {
+    "Vpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.10.0.0/16",
+        "EnableDnsSupport": true,
+        "EnableDnsHostnames": true,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-vpc"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-igw"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "GatewayAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
+      }
+    },
+    "EdgeA": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": "10.10.1.0/24",
+        "AvailabilityZone": "us-east-1a",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-edgea"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "EdgeB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": "10.10.2.0/24",
+        "AvailabilityZone": "us-east-1b",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-edgeb"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "AppA": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": "10.10.10.0/24",
+        "AvailabilityZone": "us-east-1a",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-appa"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "AppB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": "10.10.11.0/24",
+        "AvailabilityZone": "us-east-1b",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-appb"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "DbA": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": "10.10.20.0/24",
+        "AvailabilityZone": "us-east-1a",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-dba"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "DbB": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "CidrBlock": "10.10.21.0/24",
+        "AvailabilityZone": "us-east-1b",
+        "MapPublicIpOnLaunch": false,
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-dbb"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "PublicRoutes": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-publicroutes"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "AppRoutesA": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-approutesa"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "AppRoutesB": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-approutesb"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "DbRoutesA": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-dbroutesa"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "DbRoutesB": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-dbroutesb"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "InternetRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRoutes"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        }
+      },
+      "DependsOn": "GatewayAttachment"
+    },
+    "EdgeAAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "EdgeA"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRoutes"
+        }
+      }
+    },
+    "EdgeBAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "EdgeB"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRoutes"
+        }
+      }
+    },
+    "AppAAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "AppA"
+        },
+        "RouteTableId": {
+          "Ref": "AppRoutesA"
+        }
+      }
+    },
+    "AppBAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "AppB"
+        },
+        "RouteTableId": {
+          "Ref": "AppRoutesB"
+        }
+      }
+    },
+    "DbAAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "DbA"
+        },
+        "RouteTableId": {
+          "Ref": "DbRoutesA"
+        }
+      }
+    },
+    "DbBAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "DbB"
+        },
+        "RouteTableId": {
+          "Ref": "DbRoutesB"
+        }
+      }
+    },
+    "AlbSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "NINJA-SEC AlbSecurityGroup",
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "127.0.0.1/32",
+            "Description": "Explicit placeholder prevents default allow-all; replace with required egress before compute"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-albsecuritygroup"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "AppSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "NINJA-SEC AppSecurityGroup",
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "127.0.0.1/32",
+            "Description": "Explicit placeholder prevents default allow-all; replace with required egress before compute"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-appsecuritygroup"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "DbSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "NINJA-SEC DbSecurityGroup",
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "127.0.0.1/32",
+            "Description": "Explicit placeholder prevents default allow-all; replace with required egress before compute"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-dbsecuritygroup"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "RouterSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "NINJA-SEC RouterSecurityGroup",
+        "VpcId": {
+          "Ref": "Vpc"
+        },
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "127.0.0.1/32",
+            "Description": "Explicit placeholder prevents default allow-all; replace with required egress before compute"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-routersecuritygroup"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "AlbIngress80": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "AlbSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 80,
+        "ToPort": 80,
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "AppIngress80": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "AppSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 80,
+        "ToPort": 80,
+        "SourceSecurityGroupId": {
+          "Ref": "AlbSecurityGroup"
+        }
+      }
+    },
+    "AlbEgress80": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "AlbSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 80,
+        "ToPort": 80,
+        "DestinationSecurityGroupId": {
+          "Ref": "AppSecurityGroup"
+        }
+      }
+    },
+    "AlbIngress443": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "AlbSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "AppIngress443": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "AppSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "SourceSecurityGroupId": {
+          "Ref": "AlbSecurityGroup"
+        }
+      }
+    },
+    "AlbEgress443": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "AlbSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "DestinationSecurityGroupId": {
+          "Ref": "AppSecurityGroup"
+        }
+      }
+    },
+    "DbIngress": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "DbSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "SourceSecurityGroupId": {
+          "Ref": "AppSecurityGroup"
+        }
+      }
+    },
+    "AppDbEgress": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "AppSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "DestinationSecurityGroupId": {
+          "Ref": "DbSecurityGroup"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "Vpc": {
+      "Value": {
+        "Ref": "Vpc"
+      }
+    },
+    "InternetGateway": {
+      "Value": {
+        "Ref": "InternetGateway"
+      }
+    },
+    "EdgeA": {
+      "Value": {
+        "Ref": "EdgeA"
+      }
+    },
+    "EdgeB": {
+      "Value": {
+        "Ref": "EdgeB"
+      }
+    },
+    "AppA": {
+      "Value": {
+        "Ref": "AppA"
+      }
+    },
+    "AppB": {
+      "Value": {
+        "Ref": "AppB"
+      }
+    },
+    "DbA": {
+      "Value": {
+        "Ref": "DbA"
+      }
+    },
+    "DbB": {
+      "Value": {
+        "Ref": "DbB"
+      }
+    },
+    "AlbSecurityGroup": {
+      "Value": {
+        "Ref": "AlbSecurityGroup"
+      }
+    },
+    "AppSecurityGroup": {
+      "Value": {
+        "Ref": "AppSecurityGroup"
+      }
+    },
+    "DbSecurityGroup": {
+      "Value": {
+        "Ref": "DbSecurityGroup"
+      }
+    },
+    "RouterSecurityGroup": {
+      "Value": {
+        "Ref": "RouterSecurityGroup"
+      }
+    }
+  }
+}
