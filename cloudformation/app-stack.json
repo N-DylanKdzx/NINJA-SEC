@@ -104,7 +104,7 @@
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "AlarmName": "ninjasec-waf-blocked",
-        "AlarmDescription": "At least one real ModSecurity block in five minutes. Notification subscription pending A13.5.",
+        "AlarmDescription": "At least one real ModSecurity block in five minutes; notify NINJA-SEC monitoring topic.",
         "Namespace": "NINJA-SEC/Security",
         "MetricName": "WafBlockedRequests",
         "Statistic": "Sum",
@@ -112,7 +112,39 @@
         "EvaluationPeriods": 1,
         "Threshold": 1,
         "ComparisonOperator": "GreaterThanOrEqualToThreshold",
-        "TreatMissingData": "notBreaching"
+        "TreatMissingData": "notBreaching",
+        "AlarmActions": [
+          {
+            "Ref": "AlertsTopic"
+          }
+        ],
+        "OKActions": [
+          {
+            "Ref": "AlertsTopic"
+          }
+        ]
+      }
+    },
+    "AlertsTopic": {
+      "Type": "AWS::SNS::Topic",
+      "Properties": {
+        "TopicName": "ninjasec-monitoring-alerts",
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "AlertsEmail": {
+      "Type": "AWS::SNS::Subscription",
+      "Properties": {
+        "TopicArn": {
+          "Ref": "AlertsTopic"
+        },
+        "Protocol": "email",
+        "Endpoint": "ndylanx@gmail.com"
       }
     }
   },
@@ -120,6 +152,11 @@
     "LaunchTemplateId": {
       "Value": {
         "Ref": "AppLaunchTemplate"
+      }
+    },
+    "AlertsTopicArn": {
+      "Value": {
+        "Ref": "AlertsTopic"
       }
     }
   }
