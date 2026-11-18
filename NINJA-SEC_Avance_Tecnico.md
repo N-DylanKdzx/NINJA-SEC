@@ -45,12 +45,12 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 38 | 11 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 5 | 38 | 12 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 11 | 7 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 6 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **20** | **142** | **141** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **142** | **142** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -677,10 +677,10 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M7.1** | `[ ] Pendiente` | Script boto3 lee logs de CloudTrail desde S3 | Script boto3 lee gzip real desde S3 con identidad autorizada, valida formato y conserva eventID para exportación idempotente. | F3 | P3c | Núcleo |  2026-11-18: A12 completado desbloquea el origen real. Lectura puntual por AWS CLI verificada; falta implementar y probar script boto3 reutilizable, control de duplicados y credencial renovable. Azure permanece pendiente en M7.2–M7.4. |
-| **M7.2** | `[-] Bloqueado` | Cron diario (02:00) sube a audit-logs-aws | Job diario con checkpoint, nombres idempotentes y reintentos; identidad Azure administrada cuando corresponda, credencial AWS renovable. No depender de una App Registration bloqueada en el directorio universitario. | F3 | P3c | Núcleo |  |
-| **M7.3** | `[-] Bloqueado` | Blob queda bloqueado por política WORM | — | F3 | P3c | Núcleo |  |
-| **M7.4** | `[-] Bloqueado` | Eventos enviados a Log Analytics | Mismo eventID en S3, Blob y KQL; deduplicación y alerta por ingesta atrasada; validar credenciales tras expiración de sesión del Lab. | F3 | P3c | Núcleo |  |
+| **M7.1** | `[x] Completado` | Script boto3 lee logs de CloudTrail desde S3 | Script boto3 lee gzip real desde S3 con identidad autorizada, valida Records/eventID y conserva eventos y hashes para exportación repetible. | F3 | P3c | Núcleo | 2026-11-18: A12 completado desbloquea el origen real. Lectura puntual por AWS CLI verificada; falta implementar y probar script boto3 reutilizable, control de duplicados y credencial renovable. Azure permanece pendiente en M7.2–M7.4. 2026-11-18: scripts/read-cloudtrail.py y scripts/requirements-aws-audit.txt (boto3 1.44.5). Perfil local renovado, cadena SDK sin credenciales en código. Lectura real del archivo A12.1: 1 objeto, 8 eventos, eventID ba712b38-0276-467d-a257-f45aaa2fc157 encontrado. SHA-256 origen 1713af2c958ffc0e955f99c561d30b4d64d2d03c8c205290b6e215fde2c7206c. Dos lecturas, una repitiendo la key, produjeron el mismo lote SHA-256 cfaf995c61f145b51502c6d9f9b34644e727ca49dfff59d55f7054e9e29eb118 y 8 eventos: LIVE_READ_RETRY_SOURCE_HASH_PASS. Verificaciones locales de paginación, duplicados entre archivos, conflicto de eventID y registro malformado PASS. Salida JSON atómica fuera de Git, archivos temporales de prueba retirados. No valida firmas digest de CloudTrail. Exportación, checkpoint persistente y programación Azure corresponden a M7.2–M7.4. |
+| **M7.2** | `[-] Bloqueado` | Cron diario (02:00) sube a audit-logs-aws | Job diario con checkpoint, nombres idempotentes y reintentos; identidad Azure administrada cuando corresponda, credencial AWS renovable. No depender de una App Registration bloqueada en el directorio universitario. | F3 | P3c | Núcleo |   2026-11-18: M7.1 ya ofrece lector boto3 probado con lote determinista. Falta adaptar exportación al destino Azure, persistir checkpoint, programar y verificar renovación de credencial AWS sin depender de la laptop. |
+| **M7.3** | `[-] Bloqueado` | Blob queda bloqueado por política WORM | — | F3 | P3c | Núcleo |   2026-11-18: Contenedor Azure audit-logs-aws existente según C1.6; falta depositar un lote AWS real por M7.2 y probar su inmutabilidad. |
+| **M7.4** | `[-] Bloqueado` | Eventos enviados a Log Analytics | Mismo eventID en S3, Blob y KQL; deduplicación y alerta por ingesta atrasada; validar credenciales tras expiración de sesión del Lab. | F3 | P3c | Núcleo |   2026-11-18: Evento AWS de referencia disponible en S3 y lector M7.1. Falta tabla/DCR o mecanismo de ingesta autorizado, deduplicación KQL y correlación del mismo eventID con Blob. |
 
 
 <a id="comp-m8"></a>
