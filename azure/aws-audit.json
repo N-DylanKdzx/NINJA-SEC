@@ -1,0 +1,192 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2022-10-01",
+      "name": "ninjasec-law/NINJASECAWSAudit_CL",
+      "properties": {
+        "schema": {
+          "name": "NINJASECAWSAudit_CL",
+          "columns": [
+            {
+              "name": "TimeGenerated",
+              "type": "datetime"
+            },
+            {
+              "name": "EventId",
+              "type": "string"
+            },
+            {
+              "name": "EventName",
+              "type": "string"
+            },
+            {
+              "name": "Region",
+              "type": "string"
+            },
+            {
+              "name": "ResourceId",
+              "type": "string"
+            },
+            {
+              "name": "ResponseStatus",
+              "type": "string"
+            },
+            {
+              "name": "SourceIp",
+              "type": "string"
+            },
+            {
+              "name": "UserArn",
+              "type": "string"
+            },
+            {
+              "name": "AWSAccountId",
+              "type": "string"
+            },
+            {
+              "name": "SourceBlob",
+              "type": "string"
+            }
+          ]
+        },
+        "retentionInDays": 30,
+        "totalRetentionInDays": 30,
+        "plan": "Analytics"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2023-05-01",
+      "name": "ninjaseccompliance63ba/default/pipeline-state",
+      "properties": {
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2023-03-11",
+      "name": "ninjasec-aws-audit",
+      "location": "westus",
+      "kind": "Direct",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables','ninjasec-law','NINJASECAWSAudit_CL')]"
+      ],
+      "properties": {
+        "streamDeclarations": {
+          "Custom-NINJASECAWSAudit_CL": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "datetime"
+              },
+              {
+                "name": "EventId",
+                "type": "string"
+              },
+              {
+                "name": "EventName",
+                "type": "string"
+              },
+              {
+                "name": "Region",
+                "type": "string"
+              },
+              {
+                "name": "ResourceId",
+                "type": "string"
+              },
+              {
+                "name": "ResponseStatus",
+                "type": "string"
+              },
+              {
+                "name": "SourceIp",
+                "type": "string"
+              },
+              {
+                "name": "UserArn",
+                "type": "string"
+              },
+              {
+                "name": "AWSAccountId",
+                "type": "string"
+              },
+              {
+                "name": "SourceBlob",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law",
+              "name": "ninjasec-law"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Custom-NINJASECAWSAudit_CL"
+            ],
+            "destinations": [
+              "ninjasec-law"
+            ],
+            "transformKql": "source",
+            "outputStream": "Custom-NINJASECAWSAudit_CL"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts/runbooks",
+      "apiVersion": "2023-11-01",
+      "name": "ninjasec-oci-audit/Import-AwsAudit",
+      "location": "westus",
+      "properties": {
+        "runbookType": "PowerShell72",
+        "logProgress": false,
+        "logVerbose": false,
+        "description": "Ingest immutable AWS audit batches with managed identity and durable checkpoints."
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Automation/automationAccounts', 'ninjasec-oci-audit')]"
+      ]
+    },
+    {
+      "type": "Microsoft.Automation/automationAccounts",
+      "apiVersion": "2023-11-01",
+      "name": "ninjasec-oci-audit",
+      "location": "westus",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "sku": {
+          "name": "Basic"
+        },
+        "disableLocalAuth": false
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "ninjasec-law/NINJASECAWSAudit",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', 'ninjasec-law', 'NINJASECAWSAudit_CL')]"
+      ],
+      "properties": {
+        "category": "NINJA-SEC",
+        "displayName": "AWS audit deduplicated by eventID",
+        "functionAlias": "NINJASECAWSAudit",
+        "query": "NINJASECAWSAudit_CL | extend IngestedAt=ingestion_time() | summarize arg_max(IngestedAt, *) by EventId",
+        "version": 1
+      }
+    }
+  ]
+}
