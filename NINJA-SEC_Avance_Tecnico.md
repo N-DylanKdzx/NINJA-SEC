@@ -41,16 +41,16 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 2 | 16 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 59 | 36 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 57 | 38 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 5 | 39 | 11 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 38 | 11 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 11 | 7 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 6 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **145** | **139** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **20** | **142** | **141** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -279,7 +279,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A10.1** | `[x] Completado` | Clave KMS propia creada | Verificar clave simétrica Enabled, alias del proyecto, política y rotación; registrar ARN y costo. | F1 | — | Núcleo |  2026-11-18: kms describe-key: arn:aws:kms:us-east-1:533267256700:key/d298d19a-46c6-4fd6-bbde-df3e59bce700 Enabled, alias/ninjasec-storage. Stack ninjasec-storage CREATE_COMPLETE; rotación anual configurada. Costo base USD 1/mes prorrateado, aprox. USD 0,47/14 días más llamadas. La revisión fina de permisos de consumidores sigue en T4/A10.6. |
+| **A10.1** | `[x] Completado` | Clave KMS propia creada | Verificar clave simétrica Enabled, alias del proyecto, política y rotación; registrar ARN y costo. | F1 | — | Núcleo |  2026-11-18: kms describe-key: arn:aws:kms:us-east-1:533267256700:key/d298d19a-46c6-4fd6-bbde-df3e59bce700 Enabled, alias/ninjasec-storage. Stack ninjasec-storage CREATE_COMPLETE; rotación anual configurada. Costo base USD 1/mes prorrateado, aprox. USD 0,47/14 días más llamadas. La revisión fina de permisos de consumidores sigue en T4/A10.6.  2026-11-18: Política ampliada para CloudTrail con GenerateDataKey y DescribeKey restringidos por SourceArn al trail ninjasec-audit; entrega SSE-KMS real verificada en A12. |
 | **A10.2** | `[-] Bloqueado` | Secreto: credenciales de RDS | — | F1 | — | Núcleo |  |
 | **A10.3** | `[-] Bloqueado` | Secreto: endpoint/credenciales de MySQL HeatWave (OCI) | — | F1 | — | Núcleo |  |
 | **A10.4** | `[-] Bloqueado` | Secreto: SAS token de Azure Blob | — | F1 | — | Núcleo |  |
@@ -295,7 +295,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **A11.1** | `[x] Completado` | Bucket de assets estáticos | Bucket privado de assets creado y verificado por API. Uso por el portal se verifica en su despliegue. | F1 | — | Núcleo |  2026-11-18: ninjasec-assets-533267256700 creado y verificado con get-bucket-versioning, encryption, lifecycle y public-access-block. |
-| **A11.2** | `[x] Completado` | Bucket de auditoría (ninjasec-audit) para CloudTrail | Bucket privado para auditoría creado; habilitación y entrega de CloudTrail corresponden a A12. | F1 | — | Núcleo |  2026-11-18: ninjasec-audit-533267256700 creado y verificado por API. CloudTrail aún sin configurar. |
+| **A11.2** | `[x] Completado` | Bucket de auditoría (ninjasec-audit) para CloudTrail | Bucket privado para auditoría creado; habilitación y entrega de CloudTrail corresponden a A12. | F1 | — | Núcleo |  2026-11-18: ninjasec-audit-533267256700 creado y verificado por API. CloudTrail aún sin configurar.  2026-11-18: CloudTrail ninjasec-audit ya entrega archivos a este bucket; A12.1/A12.2 verifican contenido y cifrado. |
 | **A11.3** | `[x] Completado` | Versionado habilitado | Versioning Enabled en assets, auditoría y estado; verificar recuperación anterior en R1.3. | F1 | — | Núcleo |  2026-11-18: get-bucket-versioning devolvió Enabled en los tres buckets del stack de almacenamiento. |
 | **A11.4** | `[x] Completado` | Lifecycle policy configurada | Verificar políticas lifecycle, retención de versiones y evitar expiración del estado actual. | F1 | — | Núcleo |  2026-11-18: get-bucket-lifecycle-configuration: versiones no actuales expiran a 30 días y multipart incompletos a 1 día en los tres buckets. Auditoría expira objetos actuales a 30 días; assets y estado actual sin expiración. Copia Azure WORM de auditoría corresponde a M7. |
 | **A11.5** | `[x] Completado` | Cifrado SSE-KMS en buckets | SSE-KMS con clave del proyecto en los tres buckets A11 y comprobar cifrado efectivo de un objeto de estado. | F1 | — | Núcleo |  2026-11-18: get-bucket-encryption: aws:kms, clave arn:aws:kms:us-east-1:533267256700:key/d298d19a-46c6-4fd6-bbde-df3e59bce700, BucketKeyEnabled=true en assets/audit/state. head-object del estado aislado tras corregir kms_key_id: ServerSideEncryption=aws:kms, VersionId=qALtbnPcguGLjpKhEBlCOvGApL7qNzfe. Bucket separado Flow Logs conserva SSE-S3; alcance explícito de esta tarea: tres buckets A11. |
@@ -311,8 +311,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A12.1** | `[-] Bloqueado` | Trail activo entregando logs al bucket de auditoría | — | F1 | P3c | Núcleo |  |
-| **A12.2** | `[-] Bloqueado` | Evento buscado y encontrado (ej. StartInstances / cambio de SG) | — | F1 | P3c | Núcleo |  |
+| **A12.1** | `[x] Completado` | Trail activo entregando logs al bucket de auditoría | Verificar trail IsLogging=true, selectores de administración sin data events, entrega real S3, cifrado KMS y validación de archivos habilitada. | F1 | P3c | Núcleo |  2026-11-18: Trail arn:aws:cloudtrail:us-east-1:533267256700:trail/ninjasec-audit creado por stack ninjasec-storage UPDATE_COMPLETE. Multirregión, eventos globales, ReadWriteType=All, solo administración, EnableLogFileValidation=true. Verificación 2026-11-18: IsLogging=true y LatestDeliveryAttemptSucceeded=2026-11-18T08:39:30Z. Archivo AWSLogs/533267256700/CloudTrail/us-east-1/2026/11/18/533267256700_CloudTrail_us-east-1_20261118T0840Z_rY6a0QrKVahl0z8K.json.gz, 1547 bytes, 8 Records. head-object confirmó aws:kms y clave d298d19a-46c6-4fd6-bbde-df3e59bce700. SHA-256 comprimido 1713af2c958ffc0e955f99c561d30b4d64d2d03c8c205290b6e215fde2c7206c. Políticas KMS/S3 del servicio restringidas al ARN del trail. Validación de cadena digest habilitada, prueba del primer digest aún pendiente. |
+| **A12.2** | `[x] Completado` | Evento buscado y encontrado (ej. StartInstances / cambio de SG) | Generar operación reversible de administración y correlacionar eventID entre historial y archivo S3 entregado. | F1 | P3c | Núcleo |  2026-11-18: Etiqueta temporal AuditProof=NINJA-SEC-A12-20261118 creada y retirada de vpc-04a4e75e8ce10f512. lookup-events: CreateTags, ec2.amazonaws.com, eventTime=2026-11-18T08:36:51Z, eventID=ba712b38-0276-467d-a257-f45aaa2fc157, sin error. Mismo eventID encontrado en el gzip de A12.1: EVENT_MATCH_PASS. Lectura por API con KMS verificada. Estas pruebas se completaron antes de la interrupción del chat; registro en GitHub recuperado al retomar. |
 
 
 <a id="comp-a13"></a>
@@ -677,7 +677,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M7.1** | `[-] Bloqueado` | Script boto3 lee logs de CloudTrail desde S3 | — | F3 | P3c | Núcleo |  |
+| **M7.1** | `[ ] Pendiente` | Script boto3 lee logs de CloudTrail desde S3 | Script boto3 lee gzip real desde S3 con identidad autorizada, valida formato y conserva eventID para exportación idempotente. | F3 | P3c | Núcleo |  2026-11-18: A12 completado desbloquea el origen real. Lectura puntual por AWS CLI verificada; falta implementar y probar script boto3 reutilizable, control de duplicados y credencial renovable. Azure permanece pendiente en M7.2–M7.4. |
 | **M7.2** | `[-] Bloqueado` | Cron diario (02:00) sube a audit-logs-aws | Job diario con checkpoint, nombres idempotentes y reintentos; identidad Azure administrada cuando corresponda, credencial AWS renovable. No depender de una App Registration bloqueada en el directorio universitario. | F3 | P3c | Núcleo |  |
 | **M7.3** | `[-] Bloqueado` | Blob queda bloqueado por política WORM | — | F3 | P3c | Núcleo |  |
 | **M7.4** | `[-] Bloqueado` | Eventos enviados a Log Analytics | Mismo eventID en S3, Blob y KQL; deduplicación y alerta por ingesta atrasada; validar credenciales tras expiración de sesión del Lab. | F3 | P3c | Núcleo |  |
