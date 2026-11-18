@@ -40,8 +40,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 4 | 14 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 69 | 26 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 2 | 16 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 68 | 27 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
@@ -49,8 +49,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 11 | 7 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 7 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
-| **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 5 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **160** | **124** |
+| **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **156** | **128** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -111,8 +111,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **G3.1** | `[ ] Pendiente` | Validar WireGuard en Academy y viabilidad del extremo OCI | Confirmar permisos, rutas y host OCI sin comprometer memoria del portal; no contratar VPN gestionada como opción predeterminada. | F0 | — | Núcleo |  |
-| **G3.2** | `[-] Bloqueado` | Route 53 verificado (disponible o descartado → Cloudflare primario) | — | F0 | — | Núcleo |  |
-| **G3.3** | `[-] Bloqueado` | AWS WAF verificado (disponible o descartado → ModSecurity primario) | — | F0 | — | Núcleo |  |
+| **G3.2** | `[x] Completado` | Route 53 verificado (disponible o descartado → Cloudflare primario) | Consultar disponibilidad y decidir proveedor DNS principal con justificación de costo; no requiere desplegar una zona pagada. | F0 | — | Núcleo |  2026-11-18: route53 list-hosted-zones respondió [] en cuenta 533267256700. Lectura disponible; creación no probada. Se mantiene Cloudflare principal y dominio delegado (D1.1), evitando duplicar zona de pago. Failover real sigue en D1/M5. |
+| **G3.3** | `[x] Completado` | AWS WAF verificado (disponible o descartado → ModSecurity primario) | Consultar disponibilidad de WAF y verificar alternativa elegida. Si ModSecurity satisface el alcance, conservar AWS WAF como opción secundaria sin desplegarlo. | F0 | — | Núcleo |  2026-11-18: wafv2 list-web-acls --scope REGIONAL en us-east-1 respondió []; lectura disponible, creación no probada. Se mantiene ModSecurity principal por costo y pruebas reales A5.1–A5.8. AWS WAF opcional queda sin desplegar. |
 | **G3.4** | `[-] Bloqueado` | binlog_format=ROW configurable en RDS vía parameter group | Validar ROW, retención de binlogs y compatibilidad RDS 8.4 → versión real de HeatWave; M2 es la opción principal. M3 se activa solo si se demuestra una limitación. | F0 | — | Núcleo |  |
 | **G3.5** | `[x] Completado` | Capacidad A1 Flex confirmada en OCI (o decidido fallback 2×E2.1.Micro) | — | F0 | — | Núcleo | OCI LaunchInstance devolvió Out of host capacity para VM.Standard.A1.Flex en AD-1, AD-2 y AD-3. Se adoptó la alternativa de dos E2.1.Micro verificada en B2.4. |
 | **G3.6** | `[x] Completado` | Capacidad MySQL HeatWave Always Free confirmada | — | F0 | — | Núcleo | OCI Limits confirmó mysql-free-count=1 en AD-3. GetDbSystem y SELECT VERSION() confirmaron MySQL.Free activo y operativo en Ashburn. |
@@ -326,7 +326,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **A13.2** | `[-] Bloqueado` | Alarma: CPU alta en web tier | — | F1 | P4 | Núcleo |  |
 | **A13.3** | `[-] Bloqueado` | Alarma: conexiones RDS | — | F1 | P4 | Núcleo |  |
 | **A13.4** | `[-] Bloqueado` | Alarma: ALB 5xx | — | F1 | P4 | Núcleo |  |
-| **A13.5** | `[-] Bloqueado` | Tópico SNS con suscripción de correo confirmada | — | F1 | P4 | Núcleo |  |
+| **A13.5** | `[x] Completado` | Tópico SNS con suscripción de correo confirmada | Topic SNS con suscripción EMAIL confirmada por el destinatario; verificar ARN y prueba de entrega. | F1 | P4 | Núcleo | 2026-11-18: topic arn:aws:sns:us-east-1:533267256700:ninjasec-monitoring-alerts creado por CloudFormation. Destinatario autorizado; suscripción PendingConfirmation. Alarma WAF conectada en ALARM y OK. Falta confirmación y entrega real. Confirmación verificada: subscription arn:aws:sns:us-east-1:533267256700:ninjasec-monitoring-alerts:a094557b-19cd-4211-9bd7-8b409f31e3eb. sns publish devolvió MessageId a35de2df-bba8-5894-8a61-81a8d935b4f2; destinatario confirmó recepción de la prueba. describe-alarms verificó AlarmActions y OKActions de ninjasec-waf-blocked hacia este topic. Prueba SNS directa; A13.6 CPU permanece pendiente. |
 | **A13.6** | `[-] Bloqueado` | Alarma disparada de verdad (carga CPU) y correo recibido | — | F1 | P4 | Núcleo |  |
 | **A13.7** | `[-] Bloqueado` | CloudWatch Agent en EC2 (memoria y disco) | Recoger solo métricas necesarias de memoria/disco y medir consumo; alertar presión de memoria antes de OOM. | F1 | P4 | Secundario |   2026-11-18: Agente instalado automáticamente desde AWS oficial, configuración scripts/cloudwatch-agent-aws.json. get-metric-statistics del nodo temporal i-0a227e3c9bb4d00a5 devolvió mem_used_percent=28.2605 y disk_used_percent=37.4321, cada 60 s. Bootstrap completo probado desde cero; memoria disponible local 536 MiB con agente y WAF. Falta aplicar/medir en nodos definitivos y configurar alerta de presión de memoria; mantiene estado bloqueado por despliegue final. |
 | **A13.8** | `[-] Bloqueado` | Log groups de nginx y aplicación | — | F1 | P4 | Secundario |   2026-11-18: Log groups /ninjasec/waf/blocked, /ninjasec/nginx/access y /ninjasec/app creados con retención 7 días. WAF real recibido; nginx access configurado. Unit API escribe a /var/log/ninjasec-portal.log, colector preparado. Falta ejecución real de API con credenciales/BD y evidencia de sus logs. |
@@ -873,7 +873,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **K1.2** | `[ ] Pendiente` | Medición de consumo y reserva para la evaluación | Inventario y saldo reales; medir 24 h y proyectar 14 días y mes. Incluir EC2/créditos CPU, EBS, RDS/backups, ALB/LCU, IPv4, tráfico, logs, KMS, secretos, S3/estado y túnel. Referencia USD 33–37/14 días no validada, excluye consumo previo; exigir saldo >= proyección + USD 10. | F1 | — | Núcleo |  |
 | **K1.3** | `[-] Bloqueado` | Control de recursos activos durante desarrollo y evaluación | Durante desarrollo detener o retirar recursos cuando corresponda. Considerar el autoarranque de RDS tras siete días y los cargos de almacenamiento. Durante la revisión mantener los recursos necesarios dentro de la reserva. | F1 | — | Núcleo |  |
 | **K1.4** | `[-] Bloqueado` | Conectividad AWS–OCI disponible según etapa | Mantener WireGuard operativo durante evaluación; incluir extremo OCI y recursos adicionales en costos. VPN gestionada solo tras justificar cambio y recalcular reserva. | F1 | — | Núcleo |  |
-| **K1.5** | `[-] Bloqueado` | Confirmado: no existe NAT Gateway gestionado (se usa NAT Instance) | — | F1 | — | Núcleo |  |
+| **K1.5** | `[x] Completado` | Confirmado: no existe NAT Gateway gestionado (se usa NAT Instance) | Consultar NAT Gateways en regiones permitidas y confirmar alternativa NAT Instance operativa. | F1 | — | Núcleo |  2026-11-18: describe-nat-gateways en us-east-1 y us-west-2 devolvió [] en ambas regiones. NAT Instance i-0e3a000a38a35f248 implementada y salida privada probada en A2. |
 
 
 <a id="comp-k2"></a>
