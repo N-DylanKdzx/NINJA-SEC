@@ -1,0 +1,147 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "NINJA-SEC restricted HTTPS NAT router; VPN configuration deferred to M1. Single point of failure. Recreate from this stack; routes must reference replacement instance.",
+  "Resources": {
+    "Router": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-00f43ee0e98d52529",
+        "InstanceType": "t3.nano",
+        "IamInstanceProfile": "LabInstanceProfile",
+        "SubnetId": "subnet-0d522fd2c57432492",
+        "SecurityGroupIds": [
+          "sg-05bb30eb371db4487"
+        ],
+        "SourceDestCheck": false,
+        "CreditSpecification": {
+          "CPUCredits": "standard"
+        },
+        "MetadataOptions": {
+          "HttpTokens": "required"
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "VolumeSize": 8,
+              "VolumeType": "gp3",
+              "Encrypted": true,
+              "DeleteOnTermination": true
+            }
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash\nset -euxo pipefail\nfallocate -l 512M /swapfile\nchmod 600 /swapfile\nmkswap /swapfile\nswapon /swapfile\necho '/swapfile swap swap defaults 0 0' >> /etc/fstab\nfor i in $(seq 1 12); do dnf install -y iptables-services && break; sleep 10; done\ncat > /etc/sysctl.d/90-ninjasec-nat.conf <<'EOF'\nnet.ipv4.ip_forward=1\nEOF\nsysctl --system\nIFACE=$(ip -4 route show default | awk '{print $5; exit}')\niptables -F FORWARD\niptables -P FORWARD DROP\niptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT\niptables -A FORWARD -s 10.10.10.0/24 -o \"$IFACE\" -p tcp --dport 443 -j ACCEPT\niptables -A FORWARD -s 10.10.11.0/24 -o \"$IFACE\" -p tcp --dport 443 -j ACCEPT\niptables -t nat -A POSTROUTING -s 10.10.10.0/24 -o \"$IFACE\" -j MASQUERADE\niptables -t nat -A POSTROUTING -s 10.10.11.0/24 -o \"$IFACE\" -j MASQUERADE\niptables-save > /etc/sysconfig/iptables\nsystemctl enable iptables\nsystemctl restart iptables\n"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ninjasec-nat-router"
+          },
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "Eip": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
+    },
+    "Association": {
+      "Type": "AWS::EC2::EIPAssociation",
+      "Properties": {
+        "InstanceId": {
+          "Ref": "Router"
+        },
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "Eip",
+            "AllocationId"
+          ]
+        }
+      }
+    },
+    "IngressA": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "CidrIp": "10.10.10.0/24"
+      }
+    },
+    "IngressB": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "CidrIp": "10.10.11.0/24"
+      }
+    },
+    "HttpsEgress": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "AppRoutesADefault": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": "rtb-00dee5f461315f16c",
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "InstanceId": {
+          "Ref": "Router"
+        }
+      }
+    },
+    "AppRoutesBDefault": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": "rtb-04554f10214de262e",
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "InstanceId": {
+          "Ref": "Router"
+        }
+      }
+    },
+    "AppHttpsEgress": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": "sg-0e248bc79d72b4c69",
+        "IpProtocol": "tcp",
+        "FromPort": 443,
+        "ToPort": 443,
+        "CidrIp": "0.0.0.0/0"
+      }
+    }
+  },
+  "Outputs": {
+    "RouterId": {
+      "Value": {
+        "Ref": "Router"
+      }
+    },
+    "PublicIp": {
+      "Value": {
+        "Ref": "Eip"
+      }
+    }
+  }
+}
