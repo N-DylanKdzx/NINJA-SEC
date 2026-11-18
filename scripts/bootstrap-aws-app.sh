@@ -49,6 +49,8 @@ WorkingDirectory=/opt/ninjasec-portal
 ExecStart=/opt/ninjasec-venv/bin/python /opt/ninjasec-portal/app.py
 Restart=on-failure
 NoNewPrivileges=yes
+StandardOutput=append:/var/log/ninjasec-portal.log
+StandardError=append:/var/log/ninjasec-portal.log
 PrivateTmp=yes
 ProtectSystem=strict
 ProtectHome=yes
@@ -61,3 +63,66 @@ nginx -t
 systemctl restart nginx
 # API starts only after its real DB and portal credentials are provisioned.
 systemctl start ninjasec-portal
+
+# CloudWatch uses the EC2 instance profile, without static AWS credentials.
+curl --fail --retry 5 -o /tmp/amazon-cloudwatch-agent.deb https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+dpkg -i /tmp/amazon-cloudwatch-agent.deb
+rm /tmp/amazon-cloudwatch-agent.deb
+cat > /opt/aws/amazon-cloudwatch-agent/etc/ninjasec.json <<'CWAJSON'
+{
+  "agent": {
+    "metrics_collection_interval": 60,
+    "run_as_user": "root"
+  },
+  "metrics": {
+    "namespace": "NINJA-SEC/Host",
+    "append_dimensions": {
+      "InstanceId": "${aws:InstanceId}"
+    },
+    "metrics_collected": {
+      "mem": {
+        "measurement": [
+          "mem_used_percent"
+        ]
+      },
+      "disk": {
+        "measurement": [
+          "used_percent"
+        ],
+        "resources": [
+          "/"
+        ],
+        "drop_device": true
+      }
+    }
+  },
+  "logs": {
+    "force_flush_interval": 5,
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "/var/log/nginx/error.log",
+            "log_group_name": "/ninjasec/waf/blocked",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 7
+          },
+          {
+            "file_path": "/var/log/nginx/access.log",
+            "log_group_name": "/ninjasec/nginx/access",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 7
+          },
+          {
+            "file_path": "/var/log/ninjasec-portal.log",
+            "log_group_name": "/ninjasec/app",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 7
+          }
+        ]
+      }
+    }
+  }
+}
+CWAJSON
+/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/etc/ninjasec.json
