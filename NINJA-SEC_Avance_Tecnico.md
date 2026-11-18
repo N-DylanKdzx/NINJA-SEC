@@ -41,16 +41,16 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 2 | 16 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 68 | 27 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 59 | 36 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 5 | 40 | 10 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 5 | 39 | 11 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 11 | 7 |
-| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 7 | 0 |
+| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 6 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **156** | **128** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **145** | **139** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -279,7 +279,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A10.1** | `[-] Bloqueado` | Clave KMS propia creada | — | F1 | — | Núcleo |  |
+| **A10.1** | `[x] Completado` | Clave KMS propia creada | Verificar clave simétrica Enabled, alias del proyecto, política y rotación; registrar ARN y costo. | F1 | — | Núcleo |  2026-11-18: kms describe-key: arn:aws:kms:us-east-1:533267256700:key/d298d19a-46c6-4fd6-bbde-df3e59bce700 Enabled, alias/ninjasec-storage. Stack ninjasec-storage CREATE_COMPLETE; rotación anual configurada. Costo base USD 1/mes prorrateado, aprox. USD 0,47/14 días más llamadas. La revisión fina de permisos de consumidores sigue en T4/A10.6. |
 | **A10.2** | `[-] Bloqueado` | Secreto: credenciales de RDS | — | F1 | — | Núcleo |  |
 | **A10.3** | `[-] Bloqueado` | Secreto: endpoint/credenciales de MySQL HeatWave (OCI) | — | F1 | — | Núcleo |  |
 | **A10.4** | `[-] Bloqueado` | Secreto: SAS token de Azure Blob | — | F1 | — | Núcleo |  |
@@ -294,14 +294,14 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A11.1** | `[-] Bloqueado` | Bucket de assets estáticos | — | F1 | — | Núcleo |  |
-| **A11.2** | `[-] Bloqueado` | Bucket de auditoría (ninjasec-audit) para CloudTrail | — | F1 | — | Núcleo |  |
-| **A11.3** | `[-] Bloqueado` | Versionado habilitado | — | F1 | — | Núcleo |  |
-| **A11.4** | `[-] Bloqueado` | Lifecycle policy configurada | — | F1 | — | Núcleo |  |
-| **A11.5** | `[-] Bloqueado` | Cifrado SSE-KMS en buckets | — | F1 | — | Núcleo |  |
-| **A11.6** | `[-] Bloqueado` | Block Public Access activo | — | F1 | — | Núcleo |  |
-| **A11.7** | `[-] Bloqueado` | Bucket de estado Terraform (ninjasec-terraform-state) | — | F1 | — | Núcleo |  |
-| **A11.8** | `[-] Bloqueado` | Tabla DynamoDB de lock (ninjasec-tfstate-lock) | — | F1 | — | Núcleo |  |
+| **A11.1** | `[x] Completado` | Bucket de assets estáticos | Bucket privado de assets creado y verificado por API. Uso por el portal se verifica en su despliegue. | F1 | — | Núcleo |  2026-11-18: ninjasec-assets-533267256700 creado y verificado con get-bucket-versioning, encryption, lifecycle y public-access-block. |
+| **A11.2** | `[x] Completado` | Bucket de auditoría (ninjasec-audit) para CloudTrail | Bucket privado para auditoría creado; habilitación y entrega de CloudTrail corresponden a A12. | F1 | — | Núcleo |  2026-11-18: ninjasec-audit-533267256700 creado y verificado por API. CloudTrail aún sin configurar. |
+| **A11.3** | `[x] Completado` | Versionado habilitado | Versioning Enabled en assets, auditoría y estado; verificar recuperación anterior en R1.3. | F1 | — | Núcleo |  2026-11-18: get-bucket-versioning devolvió Enabled en los tres buckets del stack de almacenamiento. |
+| **A11.4** | `[x] Completado` | Lifecycle policy configurada | Verificar políticas lifecycle, retención de versiones y evitar expiración del estado actual. | F1 | — | Núcleo |  2026-11-18: get-bucket-lifecycle-configuration: versiones no actuales expiran a 30 días y multipart incompletos a 1 día en los tres buckets. Auditoría expira objetos actuales a 30 días; assets y estado actual sin expiración. Copia Azure WORM de auditoría corresponde a M7. |
+| **A11.5** | `[x] Completado` | Cifrado SSE-KMS en buckets | SSE-KMS con clave del proyecto en los tres buckets A11 y comprobar cifrado efectivo de un objeto de estado. | F1 | — | Núcleo |  2026-11-18: get-bucket-encryption: aws:kms, clave arn:aws:kms:us-east-1:533267256700:key/d298d19a-46c6-4fd6-bbde-df3e59bce700, BucketKeyEnabled=true en assets/audit/state. head-object del estado aislado tras corregir kms_key_id: ServerSideEncryption=aws:kms, VersionId=qALtbnPcguGLjpKhEBlCOvGApL7qNzfe. Bucket separado Flow Logs conserva SSE-S3; alcance explícito de esta tarea: tres buckets A11. |
+| **A11.6** | `[x] Completado` | Block Public Access activo | Cuatro opciones de Block Public Access activadas y política exige HTTPS en cada bucket A11. | F1 | — | Núcleo |  2026-11-18: get-public-access-block: todos los flags true en assets/audit/state; políticas RequireTls desplegadas con Deny para SecureTransport=false y ObjectOwnership=BucketOwnerEnforced. |
+| **A11.7** | `[x] Completado` | Bucket de estado Terraform (ninjasec-terraform-state) | Bucket de estado privado, versionado y cifrado; backend configurado sin claves en Git. | F1 | — | Núcleo |  2026-11-18: ninjasec-terraform-state-533267256700. terraform/environments/prod/backend.tf usa prod/terraform.tfstate, use_lockfile=true y kms_key_id explícito. terraform init -reconfigure correcto; composición de módulos sigue pendiente en M10.3. |
+| **A11.8** | `[x] Completado` | Bloqueo nativo de estado S3 (sustituye tabla DynamoDB) | Con Terraform >=1.10 usar use_lockfile=true y demostrar rechazo de operación concurrente; ninguna tabla DynamoDB necesaria. | F1 | — | Núcleo |  2026-11-18: Decisión: HashiCorp depreca locking DynamoDB (developer.hashicorp.com/terraform/language/backend/s3). Terraform 1.13.5: apply aislado obtuvo lock; segundo plan devolvió Error acquiring the state lock, S3 HTTP412 PreconditionFailed. CONCURRENT_LOCK_PASS. Prueba terraform_data destruida al terminar. |
 
 
 <a id="comp-a12"></a>
@@ -717,7 +717,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **M10.1** | `[ ] Pendiente` | providers.tf con AWS + OCI + AzureRM | — | F2 | P5 | Núcleo |  |
-| **M10.2** | `[-] Bloqueado` | Backend remoto S3 + lock DynamoDB funcionando | — | F2 | P5 | Núcleo |  |
+| **M10.2** | `[x] Completado` | Backend remoto S3 + bloqueo nativo S3 funcionando | Inicializar backend y probar escritura/lectura, cifrado y exclusión concurrente en un estado aislado; mantener credenciales fuera del código. | F2 | P5 | Núcleo |  2026-11-18: terraform 1.13.5 init y validate correctos en entorno prod. Clave aislada validation/native-lock-proof.tfstate: apply 1 added y destroy 1 destroyed; segundo plan concurrente rechazado por HTTP412. Tras fijar kms_key_id se repitió apply/destroy y head-object confirmó aws:kms con clave del proyecto. Integración de los tres módulos corresponde a otras tareas M10. |
 | **M10.3** | `[ ] Pendiente` | main.tf invoca los 3 módulos | — | F2 | P5 | Núcleo |  |
 | **M10.4** | `[ ] Pendiente` | terraform plan sin errores | Plan final de las tres nubes coherente con recursos y cambios operativos; revisar drift, importación cuando aplique, retenciones WORM y ausencia de reemplazos inesperados. | F2 | P5 | Núcleo |  |
 | **M10.5** | `[-] Bloqueado` | terraform apply despliega las 3 nubes | Composición reproducible con evidencias apply por proveedor e integración; un solo propietario IaC por recurso. Adoptar existentes con revisión segura sin atribuir adopción como creación nueva. | F2 | P5 | Núcleo |  |
@@ -802,7 +802,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **R1.1** | `[-] Bloqueado` | Backup automático de RDS (7 días) verificado en consola | — | F4 | P2 | Núcleo |  |
 | **R1.2** | `[-] Bloqueado` | Snapshot manual de RDS tomado | — | F4 | P2 | Núcleo |  |
-| **R1.3** | `[-] Bloqueado` | Versionado de S3 verificado (recuperar objeto previo) | — | F4 | P2 | Núcleo |  |
+| **R1.3** | `[x] Completado` | Versionado de S3 verificado (recuperar objeto previo) | Sobrescribir objeto de prueba y recuperar contenido exacto de su versión previa; limpiar objetos temporales. | F4 | P2 | Núcleo |  2026-11-18: S3 assets validation/versioning-proof.txt: v1 VTh3BDBgpewlrSr0WX0BgeDMmCGGpz12 y v2 hN.exBIdiUKetbT_bi.gSCmjNEK58SSv. get-object --version-id v1 recuperó contenido NINJA-SEC version 1 tras sobrescritura. RESTORE_VERSION_PASS, SSE-KMS verificado. Ambas versiones temporales eliminadas. |
 
 
 <a id="comp-r2"></a>
