@@ -16,7 +16,13 @@ if ($WebhookData) {
         $uri = [uri]$url
         if ($uri.Scheme -ne 'https' -or $uri.Host -notmatch '^ninjasec-audit-533267256700\.s3[.-]us-east-1\.amazonaws\.com$') { throw 'Unexpected delivery endpoint' }
     }
-    try { $raw = Invoke-WebRequest -Uri $delivery.sourceUrl -TimeoutSec 60 } catch { throw 'Source download failed' }
+    try { $raw = Invoke-WebRequest -Uri $delivery.sourceUrl -TimeoutSec 60 } catch {
+        $status = [int]$_.Exception.Response.StatusCode
+        $awsCode = 'Unknown'
+        try { [xml]$failure = $_.ErrorDetails.Message; $awsCode = [string]$failure.Error.Code } catch {}
+        # Do not expose the signed URL or session token in job output.
+        throw "Source download failed HTTP $status AWS=$awsCode"
+    }
     $rawBytes = [Text.Encoding]::UTF8.GetBytes($raw.Content)
     $rawHash = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($rawBytes)).ToLowerInvariant()
     if ($delivery.blob -ne "aws-audit-$rawHash.json") { throw 'Delivery hash mismatch' }
