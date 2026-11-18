@@ -20,6 +20,37 @@
               },
               "Action": "kms:*",
               "Resource": "*"
+            },
+            {
+              "Sid": "CloudTrailDataKeys",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+              },
+              "Action": "kms:GenerateDataKey*",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceArn": "arn:aws:cloudtrail:us-east-1:533267256700:trail/ninjasec-audit"
+                },
+                "StringLike": {
+                  "kms:EncryptionContext:aws:cloudtrail:arn": "arn:aws:cloudtrail:us-east-1:533267256700:trail/ninjasec-audit"
+                }
+              }
+            },
+            {
+              "Sid": "CloudTrailDescribe",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+              },
+              "Action": "kms:DescribeKey",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceArn": "arn:aws:cloudtrail:us-east-1:533267256700:trail/ninjasec-audit"
+                }
+              }
             }
           ]
         },
@@ -212,6 +243,35 @@
                   "aws:SecureTransport": "false"
                 }
               }
+            },
+            {
+              "Sid": "CloudTrailAclCheck",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+              },
+              "Action": "s3:GetBucketAcl",
+              "Resource": "arn:aws:s3:::ninjasec-audit-533267256700",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceArn": "arn:aws:cloudtrail:us-east-1:533267256700:trail/ninjasec-audit"
+                }
+              }
+            },
+            {
+              "Sid": "CloudTrailWrite",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "cloudtrail.amazonaws.com"
+              },
+              "Action": "s3:PutObject",
+              "Resource": "arn:aws:s3:::ninjasec-audit-533267256700/AWSLogs/533267256700/*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceArn": "arn:aws:cloudtrail:us-east-1:533267256700:trail/ninjasec-audit",
+                  "s3:x-amz-acl": "bucket-owner-full-control"
+                }
+              }
             }
           ]
         }
@@ -304,6 +364,42 @@
           ]
         }
       }
+    },
+    "AuditTrail": {
+      "Type": "AWS::CloudTrail::Trail",
+      "DependsOn": [
+        "AuditPolicy",
+        "KeyAlias"
+      ],
+      "Properties": {
+        "TrailName": "ninjasec-audit",
+        "S3BucketName": {
+          "Ref": "AuditBucket"
+        },
+        "KMSKeyId": {
+          "Fn::GetAtt": [
+            "StorageKey",
+            "Arn"
+          ]
+        },
+        "EnableLogFileValidation": true,
+        "IncludeGlobalServiceEvents": true,
+        "IsMultiRegionTrail": true,
+        "IsLogging": true,
+        "EventSelectors": [
+          {
+            "IncludeManagementEvents": true,
+            "ReadWriteType": "All",
+            "DataResources": []
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Project",
+            "Value": "NINJA-SEC"
+          }
+        ]
+      }
     }
   },
   "Outputs": {
@@ -325,6 +421,14 @@
     "StateBucket": {
       "Value": {
         "Ref": "StateBucket"
+      }
+    },
+    "TrailArn": {
+      "Value": {
+        "Fn::GetAtt": [
+          "AuditTrail",
+          "Arn"
+        ]
       }
     }
   }
