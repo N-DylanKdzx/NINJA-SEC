@@ -41,7 +41,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 4 | 14 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 76 | 19 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 71 | 24 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
@@ -50,7 +50,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 7 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 5 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **167** | **117** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **162** | **122** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -180,13 +180,13 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A4.1** | `[-] Bloqueado` | Launch Template privado con Nginx, ModSecurity y API | t3.micro inicial, EBS gp3 cifrado; seleccionar modo de créditos CPU y medir rendimiento/costo. Imagen/configuración reproducible en ambas AZ. | F1 | — | Núcleo |   2026-11-18: Avance parcial: stack ninjasec-app CREATE_COMPLETE. Launch Template lt-0f227b7318fb4b07d versión 1, t3.micro Standard, AMI AL2023, gp3 8 GiB cifrado, IMDSv2 obligatorio y SG APP. Plantilla cloudformation/app-stack.json. Falta bootstrap reproducible de Nginx/ModSecurity/API y pruebas de capacidad; no se lanzaron nodos ni ASG con esta plantilla. Estado bloqueado por configuración y validación del software. |
+| **A4.1** | `[-] Bloqueado` | Launch Template privado con Nginx, ModSecurity y API | t3.micro inicial, EBS gp3 cifrado; seleccionar modo de créditos CPU y medir rendimiento/costo. Imagen/configuración reproducible en ambas AZ. | F1 | — | Núcleo |   2026-11-18: Avance parcial: stack ninjasec-app CREATE_COMPLETE. Launch Template lt-0f227b7318fb4b07d versión 1, t3.micro Standard, AMI AL2023, gp3 8 GiB cifrado, IMDSv2 obligatorio y SG APP. Plantilla cloudformation/app-stack.json. Falta bootstrap reproducible de Nginx/ModSecurity/API y pruebas de capacidad; no se lanzaron nodos ni ASG con esta plantilla. Estado bloqueado por configuración y validación del software.  2026-11-18: Launch Template lt-0f227b7318fb4b07d versión 2 con UserData que empaqueta portal y script; ninjasec-app UPDATE_COMPLETE. Bootstrap corregido probado mediante SSM eedc099a-c996-47f8-bbea-c04deca3e34b Success en nodo privado. API requiere /etc/ninjasec-portal.env real: unit habilitada con ConditionPathExists, sin arrancar aún. Falta API/BD, sesiones entre nodos y prueba de carga, por ello mantiene estado pendiente de verificación completa. MemAvailable de prueba 549 MiB. Nodo temporal eliminado al finalizar. |
 | **A4.2** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1a | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
 | **A4.3** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1b | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
 | **A4.4** | `[-] Bloqueado` | Nginx instalado y sirviendo el frontend del portal | — | F1 | — | Núcleo |  |
 | **A4.5** | `[-] Bloqueado` | Frontend del portal NINJA-SEC desplegado | — | F1 | — | Núcleo |  |
 | **A4.6** | `[-] Bloqueado` | Proxy inverso /api hacia API local:8080 | Probar CRUD y autenticación en ambos nodos; ninguna dependencia de un app-backend único. | F1 | — | Núcleo |  |
-| **A4.7** | `[-] Bloqueado` | User Data: servicios arrancan solos al reiniciar la instancia | — | F1 | — | Núcleo |  |
+| **A4.7** | `[-] Bloqueado` | User Data: servicios arrancan solos al reiniciar la instancia | — | F1 | — | Núcleo |   2026-11-18: Reinicio comprobó nginx active y WAF funcional. API habilitada pero sin credenciales reales; falta comprobar su arranque automático con RDS/Secrets Manager. |
 | **A4.8** | `[-] Bloqueado` | Volúmenes EBS cifrados | — | F1 | — | Núcleo |  |
 
 
@@ -197,12 +197,12 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A5.1** | `[-] Bloqueado` | ModSecurity v3 + conector nginx instalados | — | F1 | P3a | Núcleo |  |
-| **A5.2** | `[-] Bloqueado` | OWASP Core Rule Set instalado y cargado | — | F1 | P3a | Núcleo |  |
-| **A5.3** | `[-] Bloqueado` | Motor en modo bloqueo (SecRuleEngine On, no DetectionOnly) | — | F1 | P3a | Núcleo |  |
+| **A5.1** | `[x] Completado` | ModSecurity v3 + conector nginx instalados | ModSecurity v3 y conector Nginx instalados desde paquetes mantenidos; nginx -t correcto. | F1 | P3a | Núcleo |  2026-11-18: Ubuntu 24.04 oficial ami-08b275ac6cc5dbefb, nodo temporal privado i-0b5661030d59652c7. Paquete libnginx-mod-http-modsecurity 1.0.3-1build3; nginx 1.24.0-2ubuntu7.19; nginx -t exitoso. Script scripts/bootstrap-aws-app.sh y Launch Template versión 2 contienen correcciones de rutas y mapa Unicode. |
+| **A5.2** | `[x] Completado` | OWASP Core Rule Set instalado y cargado | CRS instalado e incluido efectivamente en la configuración activa. | F1 | P3a | Núcleo |  2026-11-18: modsecurity-crs 3.3.5-2. Nginx reportó rules loaded inline/local/remote: 0/921/0. Se usa crs-setup.conf y rules/*.conf directamente, evitando IncludeOptional incompatible con el conector. |
+| **A5.3** | `[x] Completado` | Motor en modo bloqueo (SecRuleEngine On, no DetectionOnly) | SecRuleEngine On efectivo y petición de prueba bloqueada, con solicitud legítima permitida. | F1 | P3a | Núcleo |  2026-11-18: SSM 70ff529b-d9f1-4cc5-9122-aa349ecc733b Success: SecRuleEngine On, NORMAL=200, XSS=403, SQLI=403. Motor y 921 reglas cargados. |
 | **A5.4** | `[-] Bloqueado` | Mismo WAF activo en web-01 y web-02 | — | F1 | P3a | Núcleo |  |
-| **A5.5** | `[-] Bloqueado` | Payload SQLi → HTTP 403 (regla 942xxx en log) | — | F1 | P3a | Núcleo |  |
-| **A5.6** | `[-] Bloqueado` | Payload XSS → HTTP 403 | — | F1 | P3a | Núcleo |  |
+| **A5.5** | `[x] Completado` | Payload SQLi → HTTP 403 (regla 942xxx en log) | Payload SQLi controlado contra el nodo propio devuelve 403 y registra regla 942xxx. | F1 | P3a | Núcleo |  2026-11-18: SSM 70ff529b-d9f1-4cc5-9122-aa349ecc733b: SQLI=403 en localhost /portal.css; audit log /var/log/nginx/modsec_audit.log confirmó 942100 mediante SSM 91586e74-2be6-4fc5-8a14-73e97fb0efbf. Solicitud legítima=200. Prueba por ALB y en ambos nodos queda en A5.4/A7. |
+| **A5.6** | `[x] Completado` | Payload XSS → HTTP 403 | Payload XSS controlado bloqueado HTTP403, con evidencia local y repetición tras reinicio. | F1 | P3a | Núcleo |  2026-11-18: SSM 70ff529b-d9f1-4cc5-9122-aa349ecc733b XSS=403, log con bloqueo 949110; después de reboot, bc5edec4-a075-4747-95cc-f3f1fc4d4a6b mostró uptime 0 min, nginx active, NORMAL=200 y XSS=403. |
 | **A5.7** | `[-] Bloqueado` | Log de ModSecurity enviado a CloudWatch Logs (/ninjasec/waf/blocked) | — | F1 | P3a | Núcleo |  |
 | **A5.8** | `[-] Bloqueado` | Metric filter + alarma sobre bloqueos WAF | — | F1 | P3a | Secundario |  |
 | **A5.9** | `[-] Bloqueado` | AWS WAF administrado como alternativa opcional | Alternativa secundaria, no desplegar por defecto. ModSecurity/CRS es la protección elegida; activar AWS WAF solo si un requisito explícito lo exige y se recalcula el presupuesto. | F1 | P3a | Secundario |  |
@@ -217,7 +217,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **A6.1** | `[-] Bloqueado` | API desplegada en los dos nodos privados del ASG | Sustituye la EC2 app-backend única; verificar misma versión, secretos y esquema en ambos nodos. | F1 | — | Núcleo |  |
 | **A6.2** | `[-] Bloqueado` | API REST Flask con CRUD de incidentes | — | F1 | — | Núcleo |  |
-| **A6.3** | `[-] Bloqueado` | Servicio systemd con arranque automático | — | F1 | — | Núcleo |  |
+| **A6.3** | `[-] Bloqueado` | Servicio systemd con arranque automático | — | F1 | — | Núcleo |   2026-11-18: Unit systemd preparada, DynamicUser, NoNewPrivileges, ProtectSystem=strict, API ligada a 127.0.0.1. Falta entorno real y prueba de servicio con BD. |
 | **A6.4** | `[-] Bloqueado` | Endpoint /health respondiendo | — | F1 | — | Núcleo |  |
 | **A6.5** | `[-] Bloqueado` | Acceso a API restringido al proxy local | Verificar loopback y rechazo de acceso directo al puerto de la API. | F1 | — | Núcleo |  |
 | **A6.6** | `[-] Bloqueado` | Credenciales leídas desde Secrets Manager (sin texto plano) | — | F1 | — | Núcleo |  |
