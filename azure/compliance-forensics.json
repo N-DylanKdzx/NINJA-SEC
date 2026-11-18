@@ -1,0 +1,216 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/tables",
+      "apiVersion": "2022-10-01",
+      "name": "ninjasec-law/NINJASECOCIAudit_CL",
+      "properties": {
+        "schema": {
+          "name": "NINJASECOCIAudit_CL",
+          "columns": [
+            {
+              "name": "TimeGenerated",
+              "type": "datetime",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "EventId",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "EventName",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "Region",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "ResourceId",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "ResponseStatus",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "Identity",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "SourceIp",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "SourceBlob",
+              "type": "string",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "EventTime",
+              "type": "datetime",
+              "isDefaultDisplay": false,
+              "isHidden": false
+            },
+            {
+              "name": "OriginalEventTime",
+              "type": "string"
+            }
+          ]
+        },
+        "retentionInDays": 30,
+        "totalRetentionInDays": 30,
+        "plan": "Analytics"
+      }
+    },
+    {
+      "type": "Microsoft.Insights/dataCollectionRules",
+      "apiVersion": "2023-03-11",
+      "name": "ninjasec-oci-audit",
+      "location": "westus",
+      "kind": "Direct",
+      "properties": {
+        "streamDeclarations": {
+          "Custom-NINJASECOCIAudit_CL": {
+            "columns": [
+              {
+                "name": "TimeGenerated",
+                "type": "datetime"
+              },
+              {
+                "name": "EventId",
+                "type": "string"
+              },
+              {
+                "name": "EventName",
+                "type": "string"
+              },
+              {
+                "name": "Region",
+                "type": "string"
+              },
+              {
+                "name": "ResourceId",
+                "type": "string"
+              },
+              {
+                "name": "ResponseStatus",
+                "type": "string"
+              },
+              {
+                "name": "Identity",
+                "type": "string"
+              },
+              {
+                "name": "SourceIp",
+                "type": "string"
+              },
+              {
+                "name": "SourceBlob",
+                "type": "string"
+              },
+              {
+                "name": "EventTime",
+                "type": "datetime"
+              },
+              {
+                "name": "OriginalEventTime",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "destinations": {
+          "logAnalytics": [
+            {
+              "workspaceResourceId": "/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law",
+              "workspaceId": "6f4e5048-fa5d-4917-9ad3-a86edf6bf44a",
+              "name": "ninjasec-law"
+            }
+          ]
+        },
+        "dataFlows": [
+          {
+            "streams": [
+              "Custom-NINJASECOCIAudit_CL"
+            ],
+            "destinations": [
+              "ninjasec-law"
+            ],
+            "transformKql": "source",
+            "outputStream": "Custom-NINJASECOCIAudit_CL"
+          }
+        ]
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/tables', 'ninjasec-law', 'NINJASECOCIAudit_CL')]"
+      ]
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "ninjasec-law/NINJASECMulticloudAudit",
+      "properties": {
+        "category": "NINJA-SEC",
+        "displayName": "AWS and OCI audit deduplicated by provider and eventID",
+        "functionAlias": "NINJASECMulticloudAudit",
+        "query": "union\n(NINJASECAWSAudit_CL | project TimeGenerated=coalesce(todatetime(column_ifexists(\"OriginalEventTime\",\"\")),column_ifexists(\"EventTime\",datetime(null)),TimeGenerated), TimestampOrigin=iff(isnotnull(coalesce(todatetime(column_ifexists(\"OriginalEventTime\",\"\")),column_ifexists(\"EventTime\",datetime(null)))),\"SOURCE_EVENT_TIME\",\"LEGACY_AZURE_TIME_UNVERIFIED\"), Provider=\"AWS\", EventId, EventName, Identity=UserArn, Region, ResourceId, ResponseStatus, SourceIp, SourceBlob, IngestedAt=ingestion_time()),\n(NINJASECOCIAudit_CL | project TimeGenerated=coalesce(todatetime(column_ifexists(\"OriginalEventTime\",\"\")),column_ifexists(\"EventTime\",datetime(null)),TimeGenerated), TimestampOrigin=iff(isnotnull(coalesce(todatetime(column_ifexists(\"OriginalEventTime\",\"\")),column_ifexists(\"EventTime\",datetime(null)))),\"SOURCE_EVENT_TIME\",\"LEGACY_AZURE_TIME_UNVERIFIED\"), Provider=\"OCI\", EventId, EventName, Identity=tostring(column_ifexists(\"Identity\", \"\")), Region, ResourceId, ResponseStatus, SourceIp=tostring(column_ifexists(\"SourceIp\", \"\")), SourceBlob=tostring(column_ifexists(\"SourceBlob\", \"\")), IngestedAt=ingestion_time())\n| where isnotempty(EventId)\n| summarize arg_max(IngestedAt, *) by Provider, EventId",
+        "version": 1
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
+      "apiVersion": "2020-08-01",
+      "name": "ninjasec-law/NINJASECNetworkForensics",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/savedSearches', 'ninjasec-law', 'NINJASECMulticloudAudit')]"
+      ],
+      "properties": {
+        "category": "NINJA-SEC",
+        "displayName": "Network security changes in AWS and OCI over 24h",
+        "functionAlias": "NINJASECNetworkForensics",
+        "query": "NINJASECMulticloudAudit()\n| where TimeGenerated > ago(24h)\n| where EventName in~ (\"CreateSecurityGroup\", \"DeleteSecurityGroup\", \"AuthorizeSecurityGroupIngress\", \"RevokeSecurityGroupIngress\", \"AuthorizeSecurityGroupEgress\", \"RevokeSecurityGroupEgress\", \"ModifySecurityGroupRules\", \"CreateRoute\", \"DeleteRoute\", \"ReplaceRoute\", \"CreateNetworkAclEntry\", \"ReplaceNetworkAclEntry\", \"DeleteNetworkAclEntry\", \"CreateNetworkSecurityGroup\", \"DeleteNetworkSecurityGroup\", \"UpdateNetworkSecurityGroup\", \"AddNetworkSecurityGroupSecurityRules\", \"UpdateNetworkSecurityGroupSecurityRules\", \"RemoveNetworkSecurityGroupSecurityRules\", \"UpdateSecurityList\", \"UpdateRouteTable\", \"CreateSecurityList\", \"CreateRouteTable\")\n| extend Identity=iff(isempty(Identity), \"NO CAPTURADA (histórico)\", Identity)\n| project TimeGenerated, TimestampOrigin, Provider, EventName, Identity, ResourceId, Region, ResponseStatus, SourceIp, EventId, SourceBlob\n| order by TimeGenerated desc",
+        "version": 1
+      }
+    },
+    {
+      "type": "Microsoft.Insights/workbooks",
+      "apiVersion": "2023-06-01",
+      "name": "5ec9a0d2-1a5a-4e81-a7a4-698f9e43b035",
+      "location": "westus",
+      "kind": "shared",
+      "properties": {
+        "displayName": "ninjasec-compliance-workbook",
+        "version": "Notebook/1.0",
+        "category": "workbook",
+        "sourceId": "/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourcegroups/rg-ninjasec-compliance/providers/microsoft.operationalinsights/workspaces/ninjasec-law",
+        "tags": null,
+        "serializedData": "{\"version\": \"Notebook/1.0\", \"items\": [{\"type\": 1, \"content\": {\"json\": \"## NINJA-SEC · Cumplimiento y trazabilidad\\nAuditoría real de AWS y OCI centralizada en Azure. Revise primero la antigüedad de cada fuente y después los cambios de seguridad y red. Las tablas muestran UTC con sufijo Z; los gráficos usan la zona horaria del portal.\"}, \"showPin\": false, \"name\": \"texto - 2\"}, {\"type\": 1, \"name\": \"ninjasec-multicloud-notice\", \"content\": {\"json\": \"## Cumplimiento multicloud · AWS y OCI → Azure\\nExportación periódica, no streaming. Tablas en UTC (sufijo Z); gráficos en zona del portal. La consulta prioriza OriginalEventTime (ISO UTC original); Azure puede sustituir su TimeGenerated nativo en relecturas de más de dos días. TimestampOrigin distingue fuente verificada y datos heredados. El estado compara última ingesta y último evento por separado; reingresar historia no demuestra actividad reciente. SIN DATOS y datos antiguos se muestran explícitamente. La continuidad de AWS al finalizar Academy sigue pendiente en K2.3. Las filas anteriores al enriquecimiento pueden carecer de identidad y fecha fuente verificada.\"}}, {\"type\": 3, \"name\": \"ninjasec-multicloud-freshness\", \"content\": {\"version\": \"KqlItem/1.0\", \"title\": \"Fuentes · antigüedad real de eventos e ingesta\", \"query\": \"let observed=NINJASECMulticloudAudit()\\n| summarize Events=count(), LastEvent=max(TimeGenerated), LastIngestion=max(IngestedAt) by Provider;\\ndatatable(Provider:string)[\\\"AWS\\\",\\\"OCI\\\"]\\n| join kind=leftouter observed on Provider\\n| extend AgeHours=round(datetime_diff('second', now(), LastIngestion)/3600.0,2), EventAgeHours=round(datetime_diff('second', now(), LastEvent)/3600.0,2)\\n| extend Status=case(isnull(LastIngestion),\\\"SIN DATOS\\\",AgeHours>26,\\\"INGESTA ATRASADA\\\",EventAgeHours>26,\\\"EVENTOS ANTIGUOS / REVISAR ORIGEN\\\",\\\"DENTRO DE VENTANA DIARIA\\\")\\n| project Provider, Status, LastEventUTC=iff(isnull(LastEvent),\\\"—\\\",strcat(format_datetime(LastEvent,'yyyy-MM-dd HH:mm:ss.fff'),'Z')), LastIngestionUTC=iff(isnull(LastIngestion),\\\"—\\\",strcat(format_datetime(LastIngestion,'yyyy-MM-dd HH:mm:ss.fff'),'Z')), AgeHours, EventAgeHours, Events=coalesce(Events,0)\\n| order by Provider asc\", \"size\": 0, \"queryType\": 0, \"resourceType\": \"microsoft.operationalinsights/workspaces\", \"crossComponentResources\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law\"], \"timeContext\": {\"durationMs\": 2592000000}, \"visualization\": \"table\"}}, {\"type\": 3, \"name\": \"ninjasec-multicloud-volume\", \"content\": {\"version\": \"KqlItem/1.0\", \"title\": \"Eventos únicos · 24 h (zona horaria del portal)\", \"query\": \"NINJASECMulticloudAudit() | where TimeGenerated > ago(24h) | summarize Eventos=count() by bin(TimeGenerated,1h), Provider | order by TimeGenerated asc\", \"size\": 0, \"queryType\": 0, \"resourceType\": \"microsoft.operationalinsights/workspaces\", \"crossComponentResources\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law\"], \"timeContext\": {\"durationMs\": 86400000}, \"visualization\": \"timechart\"}}, {\"type\": 3, \"name\": \"ninjasec-multicloud-forensic\", \"content\": {\"version\": \"KqlItem/1.0\", \"title\": \"Cambios de seguridad y red · últimas 24 h\", \"query\": \"NINJASECMulticloudAudit()\\n| where TimeGenerated > ago(24h)\\n| where EventName in~ (\\\"CreateSecurityGroup\\\", \\\"DeleteSecurityGroup\\\", \\\"AuthorizeSecurityGroupIngress\\\", \\\"RevokeSecurityGroupIngress\\\", \\\"AuthorizeSecurityGroupEgress\\\", \\\"RevokeSecurityGroupEgress\\\", \\\"ModifySecurityGroupRules\\\", \\\"CreateRoute\\\", \\\"DeleteRoute\\\", \\\"ReplaceRoute\\\", \\\"CreateNetworkAclEntry\\\", \\\"ReplaceNetworkAclEntry\\\", \\\"DeleteNetworkAclEntry\\\", \\\"CreateNetworkSecurityGroup\\\", \\\"DeleteNetworkSecurityGroup\\\", \\\"UpdateNetworkSecurityGroup\\\", \\\"AddNetworkSecurityGroupSecurityRules\\\", \\\"UpdateNetworkSecurityGroupSecurityRules\\\", \\\"RemoveNetworkSecurityGroupSecurityRules\\\", \\\"UpdateSecurityList\\\", \\\"UpdateRouteTable\\\", \\\"CreateSecurityList\\\", \\\"CreateRouteTable\\\")\\n| extend Identity=iff(isempty(Identity), \\\"NO CAPTURADA (histórico)\\\", Identity)\\n| project TimeGenerated, TimestampOrigin, Provider, EventName, Identity, ResourceId, Region, ResponseStatus, SourceIp, EventId, SourceBlob\\n| order by TimeGenerated desc | extend EventTimeUTC=strcat(format_datetime(TimeGenerated,'yyyy-MM-dd HH:mm:ss.fff'),'Z') | project-away TimeGenerated\", \"size\": 0, \"queryType\": 0, \"resourceType\": \"microsoft.operationalinsights/workspaces\", \"crossComponentResources\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law\"], \"timeContext\": {\"durationMs\": 86400000}, \"visualization\": \"table\"}}, {\"type\": 3, \"name\": \"ninjasec-multicloud-history\", \"content\": {\"version\": \"KqlItem/1.0\", \"title\": \"Cambios de seguridad y red · histórico retenido (30 días)\", \"query\": \"NINJASECMulticloudAudit()\\n| where TimeGenerated > ago(30d)\\n| where EventName in~ (\\\"CreateSecurityGroup\\\", \\\"DeleteSecurityGroup\\\", \\\"AuthorizeSecurityGroupIngress\\\", \\\"RevokeSecurityGroupIngress\\\", \\\"AuthorizeSecurityGroupEgress\\\", \\\"RevokeSecurityGroupEgress\\\", \\\"ModifySecurityGroupRules\\\", \\\"CreateRoute\\\", \\\"DeleteRoute\\\", \\\"ReplaceRoute\\\", \\\"CreateNetworkAclEntry\\\", \\\"ReplaceNetworkAclEntry\\\", \\\"DeleteNetworkAclEntry\\\", \\\"CreateNetworkSecurityGroup\\\", \\\"DeleteNetworkSecurityGroup\\\", \\\"UpdateNetworkSecurityGroup\\\", \\\"AddNetworkSecurityGroupSecurityRules\\\", \\\"UpdateNetworkSecurityGroupSecurityRules\\\", \\\"RemoveNetworkSecurityGroupSecurityRules\\\", \\\"UpdateSecurityList\\\", \\\"UpdateRouteTable\\\", \\\"CreateSecurityList\\\", \\\"CreateRouteTable\\\")\\n| extend Identity=iff(isempty(Identity), \\\"NO CAPTURADA (histórico)\\\", Identity)\\n| project TimeGenerated, TimestampOrigin, Provider, EventName, Identity, ResourceId, Region, ResponseStatus, SourceIp, EventId, SourceBlob\\n| order by TimeGenerated desc | take 200 | extend EventTimeUTC=strcat(format_datetime(TimeGenerated,'yyyy-MM-dd HH:mm:ss.fff'),'Z') | project-away TimeGenerated\", \"size\": 0, \"queryType\": 0, \"resourceType\": \"microsoft.operationalinsights/workspaces\", \"crossComponentResources\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law\"], \"timeContext\": {\"durationMs\": 2592000000}, \"visualization\": \"table\"}}, {\"type\": 3, \"content\": {\"version\": \"KqlItem/1.0\", \"query\": \"NINJASECMulticloudAudit() | where TimeGenerated > ago(24h) | summarize Eventos=count() by Provider | render barchart\", \"size\": 1, \"timeContext\": {\"durationMs\": 86400000}, \"queryType\": 0, \"resourceType\": \"microsoft.operationalinsights/workspaces\", \"title\": \"Eventos reales por proveedor · 24 h\", \"crossComponentResources\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law\"]}, \"showPin\": false, \"name\": \"consulta - 2\"}, {\"type\": 3, \"content\": {\"version\": \"KqlItem/1.0\", \"query\": \"NINJASECMulticloudAudit() | where TimeGenerated > ago(24h) | project TimeGenerated, Provider, EventName, Identity, ResourceId, EventId | order by TimeGenerated desc | take 100 | extend EventTimeUTC=strcat(format_datetime(TimeGenerated,'yyyy-MM-dd HH:mm:ss.fff'),'Z') | project-away TimeGenerated\", \"size\": 0, \"timeContext\": {\"durationMs\": 86400000}, \"queryType\": 0, \"resourceType\": \"microsoft.operationalinsights/workspaces\", \"title\": \"Últimos eventos reales AWS / OCI\", \"crossComponentResources\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law\"]}, \"name\": \"consulta - 2\"}, {\"content\": {\"size\": 0, \"query\": \"NINJASECMulticloudAudit() | where Provider == \\\"OCI\\\" and TimeGenerated > ago(24h) | project TimeGenerated, TimestampOrigin, EventName, Identity, Region, ResourceId, ResponseStatus, EventId | order by TimeGenerated desc | take 100 | extend EventTimeUTC=strcat(format_datetime(TimeGenerated,'yyyy-MM-dd HH:mm:ss.fff'),'Z') | project-away TimeGenerated\", \"version\": \"KqlItem/1.0\", \"title\": \"OCI Audit · eventos de las últimas 24 horas\", \"resourceType\": \"microsoft.operationalinsights/workspaces\", \"crossComponentResources\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourcegroups/rg-ninjasec-compliance/providers/microsoft.operationalinsights/workspaces/ninjasec-law\"], \"queryType\": 0}, \"name\": \"ninjasec-oci-network-audit\", \"type\": 3}], \"isLocked\": false, \"fallbackResourceIds\": [\"/subscriptions/020556eb-782f-4afc-84d3-39cd392763ba/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.OperationalInsights/workspaces/ninjasec-law\"]}"
+      },
+      "tags": {
+        "hidden-title": "ninjasec-compliance-workbook"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces/savedSearches', 'ninjasec-law', 'NINJASECMulticloudAudit')]"
+      ]
+    }
+  ]
+}

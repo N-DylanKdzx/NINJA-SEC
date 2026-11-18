@@ -2,6 +2,21 @@ param([string] $BlobName = '', [object] $WebhookData)
 $ErrorActionPreference = 'Stop'
 $target = Get-AutomationVariable -Name 'AwsAuditDestination'
 if ($target -is [string]) { $target = $target | ConvertFrom-Json }
+function Resolve-AwsResourceId([object] $record) {
+    $ids = [Collections.Generic.List[string]]::new()
+    foreach ($resource in @($record.resources)) {
+        if ($resource.ARN) { $ids.Add([string]$resource.ARN) }
+    }
+    foreach ($part in @($record.requestParameters,$record.responseElements)) {
+        foreach ($property in @('groupId','vpcId','subnetId','routeTableId','networkAclId','instanceId','resourceId','allocationId')) {
+            if ($part.$property -is [string] -and $part.$property) { $ids.Add([string]$part.$property) }
+        }
+        foreach ($item in @($part.resourcesSet.items)) {
+            if ($item.resourceId) { $ids.Add([string]$item.resourceId) }
+        }
+    }
+    return (@($ids | Sort-Object -Unique) -join ',')
+}
 function Token([string]$resource) {
     (Invoke-RestMethod -Uri ($env:IDENTITY_ENDPOINT + '?resource=' + [uri]::EscapeDataString($resource)) -Headers @{Metadata='true';'X-IDENTITY-HEADER'=$env:IDENTITY_HEADER}).access_token
 }
@@ -47,7 +62,7 @@ $ingested = $skipped = 0
 foreach ($name in $names) {
     if ($name -notmatch '^aws-audit-([a-f0-9]{64})\.json$') { throw 'Invalid batch name' }
     $expected = $Matches[1]
-    $checkpoint = $target.checkpoints + '/' + $expected + '-v2.json'
+    $checkpoint = $target.checkpoints + '/' + $expected + '-v5.json'
     $seen = Invoke-WebRequest -Uri $checkpoint -Method Head -Headers $headers -SkipHttpErrorCheck
     if ($seen.StatusCode -eq 200) { $skipped++; continue }
     if ($seen.StatusCode -ne 404) { throw "Checkpoint read HTTP $($seen.StatusCode)" }
@@ -60,7 +75,7 @@ foreach ($name in $names) {
     foreach ($source in $batch.sources) { if ($source.sha256 -notmatch '^[a-f0-9]{64}$') { throw 'Missing source hash' } }
     $events = @($batch.Records | ForEach-Object {
         if (!$_.eventID) { throw 'Missing eventID' }
-        [ordered]@{TimeGenerated=$_.eventTime;EventId=$_.eventID;EventName=$_.eventName;Region=$_.awsRegion;ResourceId=[string]($_.resources.ARN -join ',');ResponseStatus=[string]$_.errorCode;SourceIp=[string]$_.sourceIPAddress;UserArn=[string]$_.userIdentity.arn;AWSAccountId=[string]$_.recipientAccountId;SourceBlob=$name}
+        [ordered]@{TimeGenerated=$_.eventTime;EventTime=$_.eventTime;OriginalEventTime=([datetimeoffset]$_.eventTime).ToUniversalTime().ToString('o');EventId=$_.eventID;EventName=$_.eventName;Region=$_.awsRegion;ResourceId=(Resolve-AwsResourceId $_);ResponseStatus=[string]$_.errorCode;SourceIp=[string]$_.sourceIPAddress;UserArn=[string]$_.userIdentity.arn;AWSAccountId=[string]$_.recipientAccountId;SourceBlob=$name}
     })
     if (@($events | ForEach-Object {$_['EventId']} | Select-Object -Unique).Count -ne $events.Count) { throw 'Duplicate event IDs in normalized batch' }
     for ($offset=0; $offset -lt $events.Count; $offset+=250) {

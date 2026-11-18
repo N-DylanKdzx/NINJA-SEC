@@ -43,22 +43,31 @@ try {
             if (!$event.eventId) { throw 'OCI returned an audit event without an event ID.' }
             $records[[string]$event.eventId] = [ordered]@{
                 TimeGenerated = $event.eventTime
+                EventTime = $event.eventTime
+                OriginalEventTime = ([datetimeoffset]$event.eventTime).ToUniversalTime().ToString('o')
                 EventId = [string]$event.eventId
                 EventName = [string]$event.data.eventName
                 Region = [string]$source.region
                 ResourceId = [string]$event.data.resourceId
                 ResponseStatus = [string]$event.data.response.status
+                Identity = [string]$event.data.identity.principalId
+                SourceIp = [string]$event.data.identity.ipAddress
             }
         }
         $page = [string]($response.Headers['opc-next-page'] | Select-Object -First 1)
     } while ($page)
 } finally { $rsa.Dispose() }
 
-$events = @($records.Values | Sort-Object EventId)
+$events = @($records.Values | Sort-Object -Property { $_['EventId'] })
 $json = ConvertTo-Json -InputObject $events -Depth 8 -Compress
+if ($events.Count -gt 0 -and ($json -notmatch '"EventTime":' -or !$events[0]['EventTime'])) {
+    throw 'Original event time missing from archive payload.'
+}
+if ($events.Count -gt 0) { Write-Output "OCI_SOURCE_TIME schema=2 first=$($events[0]['EventTime']) count=$($events.Count)" }
 $bytes = [Text.Encoding]::UTF8.GetBytes($json)
 $sha = [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
 $name = "oci-audit-$UtcDay-$sha.json"
+foreach ($event in $events) { $event['SourceBlob'] = $name }
 $storageToken = Get-ManagedIdentityToken 'https://storage.azure.com/'
 $archive = Invoke-WebRequest -Method Put -Uri "$($target.container)/$name" -Headers @{
     Authorization = "Bearer $storageToken"

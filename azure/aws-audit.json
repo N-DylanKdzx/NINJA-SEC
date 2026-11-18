@@ -49,6 +49,14 @@
             {
               "name": "SourceBlob",
               "type": "string"
+            },
+            {
+              "name": "EventTime",
+              "type": "datetime"
+            },
+            {
+              "name": "OriginalEventTime",
+              "type": "string"
             }
           ]
         },
@@ -116,6 +124,14 @@
               },
               {
                 "name": "SourceBlob",
+                "type": "string"
+              },
+              {
+                "name": "EventTime",
+                "type": "datetime"
+              },
+              {
+                "name": "OriginalEventTime",
                 "type": "string"
               }
             ]

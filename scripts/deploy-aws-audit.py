@@ -9,7 +9,8 @@ import zipfile
 import boto3
 
 def az(*args):
-    result = subprocess.run(['C:/Program Files/Microsoft SDKs/Azure/CLI2/wbin/az.cmd',*args,'-o','json'],capture_output=True,text=True)
+    # Invoke the installed CLI Python directly: az.cmd would reinterpret '&' in URLs.
+    result = subprocess.run(['C:/Program Files/Microsoft SDKs/Azure/CLI2/python.exe','-IBm','azure.cli',*args,'-o','json'],capture_output=True,text=True)
     if result.returncode:
         raise RuntimeError(result.stderr[:1800])
     return json.loads(result.stdout) if result.stdout.strip() else None
