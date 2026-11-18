@@ -12,7 +12,8 @@ import oci
 
 ROOT = Path('E:/NINJA-SEC/Credenciales de Acceso')
 BASTION = 'ocid1.bastion.oc1.iad.amaaaaaa3nxgmgaaa6fbn3e4bcmrbb2akgog6jawbjgnoyhdamlgiyznfnwq'
-INSTANCE = 'ocid1.instance.oc1.iad.anuwcljt3nxgmgacy6ljbmb5iateotxlcnh5x4hl43o3ywricnav6kav3qla'
+INSTANCE = 'ocid1.instance.oc1.iad.anuwcljt3nxgmgac3gpot2j44ddf23mngyckjnq5qqae4va7xfibbjmlrutq'
+PRIVATE_IP = '10.20.10.40'
 KNOWN_HOSTS = 'C:/Users/DYLAN/.ssh/ninjasec_oci_known_hosts'
 
 def ssh_command(session_id, command):
@@ -23,7 +24,7 @@ def ssh_command(session_id, command):
     return ['ssh','-i','C:/Users/DYLAN/.ssh/ninjasec_oci_ed25519','-o','BatchMode=yes',
             '-o','ConnectTimeout=25','-o','StrictHostKeyChecking=accept-new',
             '-o','UserKnownHostsFile='+KNOWN_HOSTS,'-o','ProxyCommand='+proxy,
-            'opc@10.20.10.212',command]
+            'opc@'+PRIVATE_IP,command]
 
 def main():
     cfg=oci.config.from_file(profile_name='NINJA_SEC_TERRAFORM')
@@ -41,7 +42,7 @@ def main():
     if ip+'/32' not in bastion.client_cidr_block_allow_list:
         raise RuntimeError('Bastion does not authorize current client IP; review /32 allowlist before connecting')
     public=subprocess.run(['ssh-keygen','-y','-f','C:/Users/DYLAN/.ssh/ninjasec_oci_bastion_rsa'],capture_output=True,text=True,check=True).stdout.strip()
-    target=oci.bastion.models.CreatePortForwardingSessionTargetResourceDetails(target_resource_private_ip_address='10.20.10.212',target_resource_port=22)
+    target=oci.bastion.models.CreatePortForwardingSessionTargetResourceDetails(target_resource_private_ip_address=PRIVATE_IP,target_resource_port=22)
     details=oci.bastion.models.CreateSessionDetails(bastion_id=BASTION,target_resource_details=target,key_details=oci.bastion.models.PublicKeyDetails(public_key_content=public),display_name='ninjasec-wireguard-setup',session_ttl_in_seconds=1800)
     session=client.create_session(details).data
     for attempt in range(30):
@@ -50,7 +51,7 @@ def main():
         if session.lifecycle_state in ('FAILED','DELETED'):raise RuntimeError('Bastion session failed')
         time.sleep(2)
     else:raise RuntimeError('Bastion activation timed out')
-    ROOT.joinpath('oci-wireguard-session.json').write_text(json.dumps({'sessionId':session.id,'privateIp':'10.20.10.212','instanceId':INSTANCE}),encoding='utf-8')
+    ROOT.joinpath('oci-wireguard-session.json').write_text(json.dumps({'sessionId':session.id,'privateIp':PRIVATE_IP,'instanceId':INSTANCE}),encoding='utf-8')
     result=subprocess.run(ssh_command(session.id,"hostname; uname -r; free -m; df -h /; command -v wg || true; sudo -n systemctl --failed --no-pager"),capture_output=True,text=True,timeout=60)
     print('OCI_SSH_PROBE',result.returncode,result.stdout,result.stderr,flush=True)
     if result.returncode:raise RuntimeError('Private OCI SSH probe failed')
