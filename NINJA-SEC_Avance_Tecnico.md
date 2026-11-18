@@ -41,7 +41,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 4 | 14 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 71 | 24 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 69 | 26 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
@@ -50,7 +50,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 7 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 5 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **162** | **122** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **19** | **160** | **124** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -180,7 +180,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A4.1** | `[-] Bloqueado` | Launch Template privado con Nginx, ModSecurity y API | t3.micro inicial, EBS gp3 cifrado; seleccionar modo de créditos CPU y medir rendimiento/costo. Imagen/configuración reproducible en ambas AZ. | F1 | — | Núcleo |   2026-11-18: Avance parcial: stack ninjasec-app CREATE_COMPLETE. Launch Template lt-0f227b7318fb4b07d versión 1, t3.micro Standard, AMI AL2023, gp3 8 GiB cifrado, IMDSv2 obligatorio y SG APP. Plantilla cloudformation/app-stack.json. Falta bootstrap reproducible de Nginx/ModSecurity/API y pruebas de capacidad; no se lanzaron nodos ni ASG con esta plantilla. Estado bloqueado por configuración y validación del software.  2026-11-18: Launch Template lt-0f227b7318fb4b07d versión 2 con UserData que empaqueta portal y script; ninjasec-app UPDATE_COMPLETE. Bootstrap corregido probado mediante SSM eedc099a-c996-47f8-bbea-c04deca3e34b Success en nodo privado. API requiere /etc/ninjasec-portal.env real: unit habilitada con ConditionPathExists, sin arrancar aún. Falta API/BD, sesiones entre nodos y prueba de carga, por ello mantiene estado pendiente de verificación completa. MemAvailable de prueba 549 MiB. Nodo temporal eliminado al finalizar. |
+| **A4.1** | `[-] Bloqueado` | Launch Template privado con Nginx, ModSecurity y API | t3.micro inicial, EBS gp3 cifrado; seleccionar modo de créditos CPU y medir rendimiento/costo. Imagen/configuración reproducible en ambas AZ. | F1 | — | Núcleo |   2026-11-18: Avance parcial: stack ninjasec-app CREATE_COMPLETE. Launch Template lt-0f227b7318fb4b07d versión 1, t3.micro Standard, AMI AL2023, gp3 8 GiB cifrado, IMDSv2 obligatorio y SG APP. Plantilla cloudformation/app-stack.json. Falta bootstrap reproducible de Nginx/ModSecurity/API y pruebas de capacidad; no se lanzaron nodos ni ASG con esta plantilla. Estado bloqueado por configuración y validación del software.  2026-11-18: Launch Template lt-0f227b7318fb4b07d versión 2 con UserData que empaqueta portal y script; ninjasec-app UPDATE_COMPLETE. Bootstrap corregido probado mediante SSM eedc099a-c996-47f8-bbea-c04deca3e34b Success en nodo privado. API requiere /etc/ninjasec-portal.env real: unit habilitada con ConditionPathExists, sin arrancar aún. Falta API/BD, sesiones entre nodos y prueba de carga, por ello mantiene estado pendiente de verificación completa. MemAvailable de prueba 549 MiB. Nodo temporal eliminado al finalizar.  2026-11-18: Launch Template actualizada con bootstrap completo WAF y CloudWatch Agent. Prueba nueva desde cero en i-0a227e3c9bb4d00a5: cloud-init done y servicios activos. Sigue pendiente API con datos y nodos definitivos. Nodo temporal terminado después de la prueba. |
 | **A4.2** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1a | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
 | **A4.3** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1b | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
 | **A4.4** | `[-] Bloqueado` | Nginx instalado y sirviendo el frontend del portal | — | F1 | — | Núcleo |  |
@@ -203,8 +203,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **A5.4** | `[-] Bloqueado` | Mismo WAF activo en web-01 y web-02 | — | F1 | P3a | Núcleo |  |
 | **A5.5** | `[x] Completado` | Payload SQLi → HTTP 403 (regla 942xxx en log) | Payload SQLi controlado contra el nodo propio devuelve 403 y registra regla 942xxx. | F1 | P3a | Núcleo |  2026-11-18: SSM 70ff529b-d9f1-4cc5-9122-aa349ecc733b: SQLI=403 en localhost /portal.css; audit log /var/log/nginx/modsec_audit.log confirmó 942100 mediante SSM 91586e74-2be6-4fc5-8a14-73e97fb0efbf. Solicitud legítima=200. Prueba por ALB y en ambos nodos queda en A5.4/A7. |
 | **A5.6** | `[x] Completado` | Payload XSS → HTTP 403 | Payload XSS controlado bloqueado HTTP403, con evidencia local y repetición tras reinicio. | F1 | P3a | Núcleo |  2026-11-18: SSM 70ff529b-d9f1-4cc5-9122-aa349ecc733b XSS=403, log con bloqueo 949110; después de reboot, bc5edec4-a075-4747-95cc-f3f1fc4d4a6b mostró uptime 0 min, nginx active, NORMAL=200 y XSS=403. |
-| **A5.7** | `[-] Bloqueado` | Log de ModSecurity enviado a CloudWatch Logs (/ninjasec/waf/blocked) | — | F1 | P3a | Núcleo |  |
-| **A5.8** | `[-] Bloqueado` | Metric filter + alarma sobre bloqueos WAF | — | F1 | P3a | Secundario |  |
+| **A5.7** | `[x] Completado` | Log de ModSecurity enviado a CloudWatch Logs (/ninjasec/waf/blocked) | Verificar entrega por identidad EC2 de un bloqueo real de ModSecurity a /ninjasec/waf/blocked, con retención acotada. | F1 | P3a | Núcleo |  2026-11-18: SSM 0b7d0a0d-4528-49cf-9249-c3ac3e3f2e63 Success: cloud-init done, nginx y amazon-cloudwatch-agent active; NORMAL=200, XSS=403. filter-log-events devolvió evento real 403, regla 949110, stream i-0a227e3c9bb4d00a5. CloudWatch Agent 1.300074.1b2005 usa LabInstanceProfile, sin credenciales estáticas. Retención verificada 7 días. |
+| **A5.8** | `[x] Completado` | Metric filter + alarma sobre bloqueos WAF | Filtro sobre bloqueos reales produce métrica y alarma evaluada; verificar transición real. Entrega por correo corresponde a A13.5. | F1 | P3a | Secundario |  2026-11-18: Filtro WafMetric en /ninjasec/waf/blocked con patrón "ModSecurity: Access denied" publica NINJA-SEC/Security/WafBlockedRequests. describe-alarms: ninjasec-waf-blocked ALARM, datapoint=1, threshold>=1, Sum en 300 s. Sin inyección artificial de métrica. No tiene suscripción de correo todavía; pendiente A13.5. |
 | **A5.9** | `[-] Bloqueado` | AWS WAF administrado como alternativa opcional | Alternativa secundaria, no desplegar por defecto. ModSecurity/CRS es la protección elegida; activar AWS WAF solo si un requisito explícito lo exige y se recalcula el presupuesto. | F1 | P3a | Secundario |  |
 
 
@@ -328,8 +328,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **A13.4** | `[-] Bloqueado` | Alarma: ALB 5xx | — | F1 | P4 | Núcleo |  |
 | **A13.5** | `[-] Bloqueado` | Tópico SNS con suscripción de correo confirmada | — | F1 | P4 | Núcleo |  |
 | **A13.6** | `[-] Bloqueado` | Alarma disparada de verdad (carga CPU) y correo recibido | — | F1 | P4 | Núcleo |  |
-| **A13.7** | `[-] Bloqueado` | CloudWatch Agent en EC2 (memoria y disco) | Recoger solo métricas necesarias de memoria/disco y medir consumo; alertar presión de memoria antes de OOM. | F1 | P4 | Secundario |  |
-| **A13.8** | `[-] Bloqueado` | Log groups de nginx y aplicación | — | F1 | P4 | Secundario |  |
+| **A13.7** | `[-] Bloqueado` | CloudWatch Agent en EC2 (memoria y disco) | Recoger solo métricas necesarias de memoria/disco y medir consumo; alertar presión de memoria antes de OOM. | F1 | P4 | Secundario |   2026-11-18: Agente instalado automáticamente desde AWS oficial, configuración scripts/cloudwatch-agent-aws.json. get-metric-statistics del nodo temporal i-0a227e3c9bb4d00a5 devolvió mem_used_percent=28.2605 y disk_used_percent=37.4321, cada 60 s. Bootstrap completo probado desde cero; memoria disponible local 536 MiB con agente y WAF. Falta aplicar/medir en nodos definitivos y configurar alerta de presión de memoria; mantiene estado bloqueado por despliegue final. |
+| **A13.8** | `[-] Bloqueado` | Log groups de nginx y aplicación | — | F1 | P4 | Secundario |   2026-11-18: Log groups /ninjasec/waf/blocked, /ninjasec/nginx/access y /ninjasec/app creados con retención 7 días. WAF real recibido; nginx access configurado. Unit API escribe a /var/log/ninjasec-portal.log, colector preparado. Falta ejecución real de API con credenciales/BD y evidencia de sus logs. |
 
 
 <a id="comp-a14"></a>
