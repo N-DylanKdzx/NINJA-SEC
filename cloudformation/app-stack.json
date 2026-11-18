@@ -1,0 +1,72 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "NINJA-SEC compute preparation only. No ASG or EC2 instances. Bootstrap and software verification pending A4.1/A5/A6. Select private subnets in ASG.",
+  "Resources": {
+    "AppLaunchTemplate": {
+      "Type": "AWS::EC2::LaunchTemplate",
+      "Properties": {
+        "LaunchTemplateName": "ninjasec-app-private",
+        "LaunchTemplateData": {
+          "ImageId": "ami-00f43ee0e98d52529",
+          "InstanceType": "t3.micro",
+          "IamInstanceProfile": {
+            "Name": "LabInstanceProfile"
+          },
+          "SecurityGroupIds": [
+            "sg-0e248bc79d72b4c69"
+          ],
+          "CreditSpecification": {
+            "CpuCredits": "standard"
+          },
+          "MetadataOptions": {
+            "HttpTokens": "required",
+            "HttpEndpoint": "enabled",
+            "HttpPutResponseHopLimit": 1
+          },
+          "BlockDeviceMappings": [
+            {
+              "DeviceName": "/dev/xvda",
+              "Ebs": {
+                "Encrypted": true,
+                "VolumeType": "gp3",
+                "VolumeSize": 8,
+                "DeleteOnTermination": true
+              }
+            }
+          ],
+          "TagSpecifications": [
+            {
+              "ResourceType": "instance",
+              "Tags": [
+                {
+                  "Key": "Project",
+                  "Value": "NINJA-SEC"
+                },
+                {
+                  "Key": "Name",
+                  "Value": "ninjasec-app"
+                }
+              ]
+            },
+            {
+              "ResourceType": "volume",
+              "Tags": [
+                {
+                  "Key": "Project",
+                  "Value": "NINJA-SEC"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "LaunchTemplateId": {
+      "Value": {
+        "Ref": "AppLaunchTemplate"
+      }
+    }
+  }
+}
