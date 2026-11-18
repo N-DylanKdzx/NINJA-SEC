@@ -35,8 +35,8 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 3 | 4 | 12 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 95 | 0 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 1 | 4 | 14 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 1 | 81 | 13 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 3 | 8 | 50 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 3 | 1 | 13 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
@@ -45,7 +45,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 7 | 0 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 5 | 0 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **21** | **186** | **96** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **20** | **172** | **111** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -74,7 +74,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **G1.1** | `[ ] Pendiente` | AWS Academy Learner Lab iniciado (lab activo en us-east-1) | Verificar cuenta del nuevo Lab, saldo inicial y región; no reutilizar recursos ni atribuir evidencias del Lab anterior. | F0 | — | Núcleo |  |
+| **G1.1** | `[x] Completado` | AWS Academy Learner Lab iniciado (lab activo en us-east-1) | Verificar cuenta del nuevo Lab, saldo inicial y región; no reutilizar recursos ni atribuir evidencias del Lab anterior. | F0 | — | Núcleo |  2026-11-18: Lab 194766 listo, cuenta 533267256700, us-east-1. Interfaz Academy mostró Used $0 of $50; saldo sujeto a demora del proveedor. STS confirmó identidad voclabs. |
 | **G1.2** | `[x] Completado` | Cuenta OCI creada con home region elegida | — | F0 | — | Núcleo |OCI CLI: iam region-subscription list confirmó us-ashburn-1 como región principal; os ns get respondió correctamente. |
 | **G1.3** | `[x] Completado` | OCI Free Trial activado (US$300 / 30 días) si hay tarjeta disponible | Opcional: solo si se quiere probar OCI WAF u otros servicios de pago | F0 | — | Secundario | OCI Organizations ListAssignedSubscriptions confirmó una suscripción CLOUDCM ACTIVE con vigencia de 30 días, del 2026-11-05 al 2026-12-04 UTC. El titular confirmó que corresponde al Free Trial activado al abrir la cuenta. La API consultada no muestra el saldo de créditos restante. |
 | **G1.4** | `[x] Completado` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo | az account show confirma Azure for Students, Enabled, suscripción 020556eb-782f-4afc-84d3-39cd392763ba. |
@@ -91,7 +91,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **G2.1** | `[x] Completado` | Terraform instalado (terraform --version responde) | — | F0 | P5 | Núcleo | terraform version devolvió Terraform v1.13.5 (windows_amd64) al ejecutar el binario local. |
-| **G2.2** | `[ ] Pendiente` | AWS CLI configurado con credenciales del Lab | Autenticar la nueva cuenta y verificar STS; credenciales locales fuera de Git. | F0 | P5 | Núcleo |  |
+| **G2.2** | `[x] Completado` | AWS CLI configurado con credenciales del Lab | Autenticar la nueva cuenta y verificar STS; credenciales locales fuera de Git. | F0 | P5 | Núcleo |  2026-11-18: AWS CLI local 1.46.3, perfil ninjasec-academy-194766. sts get-caller-identity respondió Account=533267256700. Credenciales fuera de Git en carpeta local autorizada; HTTPS validado con CA de Windows. |
 | **G2.3** | `[x] Completado` | OCI CLI configurado con API key | — | F0 | P5 | Núcleo | OCI CLI 3.96.2: oci os ns get --profile NINJA_SEC_TERRAFORM devolvió el namespace con autenticación por API key. |
 | **G2.4** | `[x] Completado` | Azure CLI autenticado (az login) | — | F0 | P5 | Núcleo | Inicio de sesión completado; az account show y az resource list devolvieron la suscripción y sus recursos. |
 | **G2.5** | `[x] Completado` | Repositorio Git creado con estructura terraform/ (environments/prod + modules) | — | F0 | P5 | Núcleo | main contiene terraform/environments/prod/.gitkeep y los módulos terraform/modules/oci_infra y terraform/modules/azure_storage. La composición multi-provider corresponde a M10. |
@@ -126,17 +126,17 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A1.1** | `[-] Bloqueado` | VPC 10.10.0.0/16 creada | — | F1 | — | Núcleo |  |
-| **A1.2** | `[-] Bloqueado` | Subred pública edge-01 10.10.1.0/24 (AZ-1a) | Para ALB y router NAT/VPN; las instancias de aplicación son privadas. | F1 | — | Núcleo |  |
-| **A1.3** | `[-] Bloqueado` | Subred pública edge-02 10.10.2.0/24 (AZ-1b) | Segunda zona del ALB; no exponer las instancias de aplicación. | F1 | — | Núcleo |  |
-| **A1.4** | `[-] Bloqueado` | Dos subredes privadas APP: 10.10.10.0/24 y 10.10.11.0/24 | Una por AZ; ASG con Nginx, ModSecurity y API en cada instancia, sin IP pública. | F1 | — | Núcleo |  |
-| **A1.5** | `[-] Bloqueado` | Subred privada BD 10.10.20.0/24 (AZ-1a) | — | F1 | — | Núcleo |  |
-| **A1.6** | `[-] Bloqueado` | Subred privada BD secundaria 10.10.21.0/24 (AZ-1b) | RDS exige un DB Subnet Group con subredes en al menos 2 AZ | F1 | — | Núcleo |  |
-| **A1.7** | `[-] Bloqueado` | Internet Gateway creado y adjunto a la VPC | — | F1 | — | Núcleo |  |
-| **A1.8** | `[-] Bloqueado` | Route Table pública (0.0.0.0/0 → IGW) asociada a subredes públicas | — | F1 | — | Núcleo |  |
-| **A1.9** | `[-] Bloqueado` | Route Table privada (0.0.0.0/0 → NAT Instance) asociada a subredes privadas | — | F1 | — | Núcleo |  |
-| **A1.10** | `[-] Bloqueado` | NACLs por capa configuradas | — | F1 | — | Secundario |  |
-| **A1.11** | `[-] Bloqueado` | VPC Flow Logs hacia CloudWatch Logs | — | F1 | — | Secundario |  |
+| **A1.1** | `[x] Completado` | VPC 10.10.0.0/16 creada | — | F1 | — | Núcleo |  2026-11-18: describe-vpcs: vpc-04a4e75e8ce10f512, 10.10.0.0/16. Stack ninjasec-network CREATE_COMPLETE. |
+| **A1.2** | `[x] Completado` | Subred pública edge-01 10.10.1.0/24 (AZ-1a) | Para ALB y router NAT/VPN; las instancias de aplicación son privadas. | F1 | — | Núcleo |  2026-11-18: describe-subnets: subnet-0d522fd2c57432492, 10.10.1.0/24, us-east-1a; ruta pública al IGW verificada. Autoasignación de IP pública deshabilitada. |
+| **A1.3** | `[x] Completado` | Subred pública edge-02 10.10.2.0/24 (AZ-1b) | Segunda zona del ALB; no exponer las instancias de aplicación. | F1 | — | Núcleo |  2026-11-18: describe-subnets: subnet-0db4cc52e9629542e, 10.10.2.0/24, us-east-1b; ruta pública al IGW verificada. |
+| **A1.4** | `[x] Completado` | Dos subredes privadas APP: 10.10.10.0/24 y 10.10.11.0/24 | Una por AZ; ASG con Nginx, ModSecurity y API en cada instancia, sin IP pública. | F1 | — | Núcleo |  2026-11-18: describe-subnets: subnet-037021561c226567d (10.10.10.0/24, us-east-1a) y subnet-08ae8fbddcde616c5 (10.10.11.0/24, us-east-1b); sin IP pública automática ni ruta por defecto. |
+| **A1.5** | `[x] Completado` | Subred privada BD 10.10.20.0/24 (AZ-1a) | — | F1 | — | Núcleo |  2026-11-18: describe-subnets: subnet-0ca5df1dc6f8f85f9, 10.10.20.0/24, us-east-1a; asociación a tabla privada verificada. |
+| **A1.6** | `[x] Completado` | Subred privada BD secundaria 10.10.21.0/24 (AZ-1b) | RDS exige un DB Subnet Group con subredes en al menos 2 AZ | F1 | — | Núcleo |  2026-11-18: describe-subnets: subnet-0c7f28639cb2522f5, 10.10.21.0/24, us-east-1b; asociación a tabla privada verificada. DB Subnet Group corresponde a A9.1. |
+| **A1.7** | `[x] Completado` | Internet Gateway creado y adjunto a la VPC | — | F1 | — | Núcleo |  2026-11-18: igw-07ea5a4f645e90b6f adjunto a vpc-04a4e75e8ce10f512 por CloudFormation. |
+| **A1.8** | `[x] Completado` | Route Table pública (0.0.0.0/0 → IGW) asociada a subredes públicas | — | F1 | — | Núcleo |  2026-11-18: describe-route-tables: ambas subredes edge asociadas a tabla pública con 0.0.0.0/0 → igw-07ea5a4f645e90b6f. Cuatro subredes privadas con tablas separadas sin ruta por defecto. |
+| **A1.9** | `[-] Bloqueado` | Route Table privada (0.0.0.0/0 → NAT Instance) asociada a subredes privadas | — | F1 | — | Núcleo |  2026-11-18: Cuatro tablas privadas creadas y asociadas. Falta router A2 para agregar la ruta NAT y probar salida. |
+| **A1.10** | `[ ] Pendiente` | NACLs por capa configuradas | — | F1 | — | Secundario |  2026-11-18: Lista para configurar NACL por capa tras base de red; mantener puertos efímeros y tráfico de retorno. |
+| **A1.11** | `[-] Bloqueado` | VPC Flow Logs hacia CloudWatch Logs | — | F1 | — | Secundario |  2026-11-18: Flow Logs aún sin crear; falta verificar rol de entrega permitido por Academy y dimensionar ingesta/retención. |
 
 
 <a id="comp-a2"></a>
@@ -159,13 +159,13 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A3.1** | `[-] Bloqueado` | alb-sg: 80/443 desde 0.0.0.0/0 (única regla abierta al mundo) | — | F1 | — | Núcleo |  |
-| **A3.2** | `[-] Bloqueado` | web-sg: 80/443 solo desde alb-sg | — | F1 | — | Núcleo |  |
-| **A3.3** | `[-] Bloqueado` | API local accesible solo desde Nginx en cada nodo | Escuchar en loopback:8080; sin acceso directo desde Internet ni desde otras instancias. | F1 | — | Núcleo |  |
-| **A3.4** | `[-] Bloqueado` | db-sg: MySQL privado desde aplicación y réplica autorizadas | 3306 desde SG de los nodos APP y origen efectivo de HeatWave por túnel; verificar si existe SNAT y restringir el origen observado. | F1 | — | Núcleo |  |
-| **A3.5** | `[-] Bloqueado` | router-sg: NAT privada y túnel limitado al peer OCI | Solo subredes privadas para NAT; UDP de WireGuard solo desde IP del peer; administración restringida. | F1 | — | Núcleo |  |
-| **A3.6** | `[-] Bloqueado` | SSH sin 0.0.0.0/0 (acceso restringido a origen conocido) | — | F1 | — | Núcleo |  |
-| **A3.7** | `[-] Bloqueado` | Revisión final: ninguna regla 0.0.0.0/0 salvo alb-sg | — | F1 | — | Núcleo |  |
+| **A3.1** | `[x] Completado` | alb-sg: 80/443 desde 0.0.0.0/0 (única regla abierta al mundo) | — | F1 | — | Núcleo |  2026-11-18: describe-security-groups: sg-0f3a49f1b8681fb83 admite TCP 80/443 desde 0.0.0.0/0; salida 80/443 al SG APP. No hay ALB desplegado. |
+| **A3.2** | `[x] Completado` | web-sg: 80/443 solo desde alb-sg | — | F1 | — | Núcleo |  2026-11-18: describe-security-groups: sg-0e248bc79d72b4c69 admite TCP 80/443 únicamente desde sg-0f3a49f1b8681fb83. Prueba de tráfico se ejecutará con A7. |
+| **A3.3** | `[-] Bloqueado` | API local accesible solo desde Nginx en cada nodo | Escuchar en loopback:8080; sin acceso directo desde Internet ni desde otras instancias. | F1 | — | Núcleo |  2026-11-18: Sin nodos aún; falta comprobar API ligada a loopback al desplegar A6. |
+| **A3.4** | `[-] Bloqueado` | db-sg: MySQL privado desde aplicación y réplica autorizadas | 3306 desde SG de los nodos APP y origen efectivo de HeatWave por túnel; verificar si existe SNAT y restringir el origen observado. | F1 | — | Núcleo |  2026-11-18: SG DB sg-0531d28610dff991e admite 3306 desde SG APP. Falta origen efectivo del canal OCI y pruebas positivas/negativas con RDS y M1. |
+| **A3.5** | `[-] Bloqueado` | router-sg: NAT privada y túnel limitado al peer OCI | Solo subredes privadas para NAT; UDP de WireGuard solo desde IP del peer; administración restringida. | F1 | — | Núcleo |  2026-11-18: Router SG sg-05bb30eb371db4487 creado sin ingreso. Falta peer público OCI verificado, reglas NAT/VPN y pruebas. |
+| **A3.6** | `[x] Completado` | SSH sin 0.0.0.0/0 (acceso restringido a origen conocido) | — | F1 | — | Núcleo |  2026-11-18: describe-security-groups: ninguno de los cuatro SG del stack tiene ingreso TCP 22. Acceso administrativo final y pruebas de hosts siguen en T3. |
+| **A3.7** | `[x] Completado` | Revisión final: ninguna regla 0.0.0.0/0 salvo alb-sg | — | F1 | — | Núcleo |  2026-11-18: Inspección de ingreso de los cuatro SG: solo sg-0f3a49f1b8681fb83 contiene 0.0.0.0/0 en TCP 80/443. Revalidar al configurar peer VPN y desplegar cómputo. |
 
 
 <a id="comp-a4"></a>
@@ -334,7 +334,7 @@ La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialment
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A14.1** | `[-] Bloqueado` | Stack 1 vpc-stack.yaml (VPC, subredes, SG) desplegado | — | F1 | P5 | Núcleo |  |
+| **A14.1** | `[x] Completado` | Stack de red CloudFormation (vpc-stack.json) desplegado | — | F1 | P5 | Núcleo |  2026-11-18: cloudformation/vpc-stack.json publicado en commit 554a838e6a0ddd46b7510ab6cc9a57bce3408f4f. Stack arn:aws:cloudformation:us-east-1:533267256700:stack/ninjasec-network/6b1b2b30-e31f-11f1-8bc0-12ffe8386a1d CREATE_COMPLETE, 33 recursos. API verificó 6 subredes, rutas y 4 SG. Sin cómputo, IPv4 pública asignada, ALB, RDS ni Flow Logs. |
 | **A14.2** | `[-] Bloqueado` | Stack 2 compute-stack.yaml (EC2, RDS, ALB, ASG) desplegado | — | F1 | P5 | Núcleo |  |
 | **A14.3** | `[-] Bloqueado` | Módulo Terraform aws_infra con variables y outputs | — | F1 | P5 | Núcleo |  |
 | **A14.4** | `[-] Bloqueado` | terraform apply del módulo aws_infra crea la infraestructura | Crear y verificar la topología definitiva. Evitar que Terraform y CloudFormation administren simultáneamente el mismo recurso; pruebas alternativas en stacks aislados. | F1 | P5 | Núcleo |  |
