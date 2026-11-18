@@ -1,0 +1,171 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Explicit OCI routes and minimum private MySQL rules on the existing NINJA-SEC network. No RDS creation. Single WireGuard router.",
+  "Resources": {
+    "AppAOciRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": "rtb-00dee5f461315f16c",
+        "DestinationCidrBlock": "10.20.0.0/16",
+        "InstanceId": "i-0e3a000a38a35f248"
+      }
+    },
+    "AppBOciRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": "rtb-04554f10214de262e",
+        "DestinationCidrBlock": "10.20.0.0/16",
+        "InstanceId": "i-0e3a000a38a35f248"
+      }
+    },
+    "DbAOciRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": "rtb-018a8695248ceca55",
+        "DestinationCidrBlock": "10.20.0.0/16",
+        "InstanceId": "i-0e3a000a38a35f248"
+      }
+    },
+    "DbBOciRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": "rtb-0b599cc1839a77859",
+        "DestinationCidrBlock": "10.20.0.0/16",
+        "InstanceId": "i-0e3a000a38a35f248"
+      }
+    },
+    "RouterFromAppA": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.10.10.0/24",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "RouterFromAppB": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.10.11.0/24",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "RouterFromHeatwave": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.20.10.191/32",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "RouterToHeatwave": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.20.10.191/32",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "AppToHeatwave": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": "sg-0e248bc79d72b4c69",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.20.10.191/32",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "DbFromHeatwave": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": "sg-0531d28610dff991e",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.20.10.191/32",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "RouterToDbA": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.10.20.0/24",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "RouterToDbB": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": "sg-05bb30eb371db4487",
+        "IpProtocol": "tcp",
+        "FromPort": 3306,
+        "ToPort": 3306,
+        "CidrIp": "10.10.21.0/24",
+        "Description": "NINJA-SEC private MySQL over WireGuard; TLS required by database"
+      }
+    },
+    "AppToHeatwaveAcl": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": "acl-06c58359b12563e1f",
+        "RuleNumber": 140,
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "Egress": true,
+        "CidrBlock": "10.20.10.191/32",
+        "PortRange": {
+          "From": 3306,
+          "To": 3306
+        }
+      }
+    },
+    "DbFromHeatwaveAcl": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": "acl-0138e843767e5fc68",
+        "RuleNumber": 120,
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "Egress": false,
+        "CidrBlock": "10.20.10.191/32",
+        "PortRange": {
+          "From": 3306,
+          "To": 3306
+        }
+      }
+    },
+    "DbReturnHeatwaveAcl": {
+      "Type": "AWS::EC2::NetworkAclEntry",
+      "Properties": {
+        "NetworkAclId": "acl-0138e843767e5fc68",
+        "RuleNumber": 110,
+        "Protocol": 6,
+        "RuleAction": "allow",
+        "Egress": true,
+        "CidrBlock": "10.20.10.191/32",
+        "PortRange": {
+          "From": 1024,
+          "To": 65535
+        }
+      }
+    }
+  }
+}
