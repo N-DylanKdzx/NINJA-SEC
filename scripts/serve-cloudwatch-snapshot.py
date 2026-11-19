@@ -25,7 +25,7 @@ def fresh_document(body):
 
 class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
-        if self.path not in ('/latest.json', '/oci-cpu.json', '/azure-freshness.json'):
+        if self.path not in ('/latest.json', '/oci-cpu.json', '/azure-freshness.json', '/alarms.json'):
             self.send_error(404)
             return
         try:
@@ -33,6 +33,8 @@ class Handler(BaseHTTPRequestHandler):
                 body = oci_cpu(self.server.monitoring)
             elif self.path == '/azure-freshness.json':
                 body = azure_freshness()
+            elif self.path == '/alarms.json':
+                body = alarm_status(self.server.monitoring)
             else:
                 obj = self.server.storage.get_object(os.environ['NINJASEC_OCI_NAMESPACE'],
                                                       'ninjasec-grafana-aws-metrics', 'latest.json')
@@ -71,6 +73,17 @@ def azure_freshness():
     hours = (datetime.now(timezone.utc) - stamp).total_seconds() / 3600
     return json.dumps({'points': [{'exported_at': exported, 'age_hours': round(hours, 2),
                                   'state': 'vigente' if 0 <= hours < 26 else 'atrasado'}]}).encode()
+
+
+def alarm_status(client):
+    names = ('ninjasec-portal-backend-unhealthy', 'ninjasec-utility-memory-pressure',
+             'ninjasec-incidents-replication-lag', 'ninjasec-wireguard-peer-down',
+             'ninjasec-wireguard-telemetry-absent')
+    status = {alarm.display_name: alarm for alarm in client.list_alarms_status(
+        os.environ['NINJASEC_OCI_COMPARTMENT']).data}
+    now = datetime.now(timezone.utc).isoformat()
+    return json.dumps({'points': [{'alarm': name, 'state': status[name].status if name in status else 'UNKNOWN',
+                                  'observed_at': now} for name in names]}).encode()
 
 
 if __name__ == '__main__':
