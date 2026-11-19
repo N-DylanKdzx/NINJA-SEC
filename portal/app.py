@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import hmac
 import json
 import os
@@ -114,13 +115,34 @@ def session_header(value, max_age):
     return ('Set-Cookie', f'{SESSION_COOKIE}={value}; Path=/; Max-Age={max_age}; Secure; HttpOnly; SameSite=Strict')
 
 
+def shared_session(token, previous=None, create=False):
+    def digest(value):
+        return hashlib.sha256(value.encode()).digest()
+
+    with connect() as db, db.cursor() as cur:
+        if previous:
+            cur.execute('DELETE FROM ninjasec_auth.portal_sessions WHERE token_hash=%s', (digest(previous),))
+        if create:
+            cur.execute('DELETE FROM ninjasec_auth.portal_sessions WHERE expires_at<=UTC_TIMESTAMP()')
+            cur.execute('INSERT INTO ninjasec_auth.portal_sessions VALUES (%s, DATE_ADD(UTC_TIMESTAMP(), INTERVAL %s SECOND))',
+                        (digest(token), SESSION_SECONDS))
+        elif token:
+            cur.execute('SELECT 1 FROM ninjasec_auth.portal_sessions WHERE token_hash=%s AND expires_at>UTC_TIMESTAMP()',
+                        (digest(token),))
+            return cur.fetchone() is not None
+
+
 def session_endpoint(environ, start, path, method):
     if method != 'POST':
         return respond(start, '405 Method Not Allowed', headers=(('Allow', 'POST'),))
     if environ.get('HTTP_X_NINJASEC_ACTION') != '1':
         return respond(start, '403 Forbidden', {'error': 'Solicitud de acceso no permitida.'})
     if path == '/auth/logout':
-        SESSIONS.pop(session_token(environ), None)
+        token = session_token(environ)
+        if token and os.environ.get('DB_SECRET_ARN'):
+            shared_session(None, previous=token)
+        else:
+            SESSIONS.pop(token, None)
         return respond(start, '204 No Content', headers=(session_header('', 0),))
     try:
         if environ.get('CONTENT_TYPE', '').split(';')[0].strip() != 'application/json':
@@ -138,6 +160,10 @@ def session_endpoint(environ, start, path, method):
         return respond(start, '400 Bad Request', {'error': 'Completa los datos de acceso.'})
     if not (user_ok and password_ok):
         return respond(start, '401 Unauthorized', {'error': 'Usuario o contraseña incorrectos.'})
+    if os.environ.get('DB_SECRET_ARN'):
+        token = secrets.token_hex(32)
+        shared_session(token, previous=session_token(environ), create=True)
+        return respond(start, '204 No Content', headers=(session_header(token, SESSION_SECONDS),))
     now = time.monotonic()
     for token, expiry in list(SESSIONS.items()):
         if expiry <= now:
@@ -177,11 +203,16 @@ def application(environ, start):
         except (pymysql.MySQLError, OSError, ValueError, RuntimeError):
             return respond(start, '503 Service Unavailable', {'status': 'unavailable'})
 
-    if path in ('/auth/login', '/auth/logout'):
-        return session_endpoint(environ, start, path, method)
-    # Keep explicit Basic auth for scripts; browser requests use the session.
-    signed_in = (SESSIONS.get(session_token(environ), 0) > time.monotonic()
-                 or ('HTTP_SEC_FETCH_SITE' not in environ and authorized(environ)))
+    try:
+        if path in ('/auth/login', '/auth/logout'):
+            return session_endpoint(environ, start, path, method)
+        token = session_token(environ)
+        signed_in = 'HTTP_SEC_FETCH_SITE' not in environ and authorized(environ)
+        if token and not signed_in:
+            signed_in = (shared_session(token) if os.environ.get('DB_SECRET_ARN')
+                         else SESSIONS.get(token, 0) > time.monotonic())
+    except (pymysql.MySQLError, OSError, RuntimeError):
+        return respond(start, '503 Service Unavailable', {'error': 'Servicio de sesión no disponible.'})
     assets = {
         '/': ('index.html' if signed_in else 'login.html', 'text/html'),
         '/portal.css': ('portal.css', 'text/css'),
