@@ -33,10 +33,26 @@ def vault_credentials(secret_ocid):
         raise RuntimeError('No se pudo obtener la credencial de Vault.') from error
 
 
+def aws_credentials(secret_arn):
+    import boto3
+    from botocore.exceptions import BotoCoreError, ClientError
+
+    try:
+        client = boto3.client('secretsmanager', region_name=secret_arn.split(':')[3])
+        response = client.get_secret_value(SecretId=secret_arn)
+        credentials = json.loads(response['SecretString'])
+        return credentials['username'], credentials['password']
+    except (BotoCoreError, ClientError, ValueError, KeyError, IndexError) as error:
+        raise RuntimeError('No se pudo obtener la credencial de Secrets Manager.') from error
+
+
 def connect():
     secret_ocid = os.environ.get('DB_SECRET_OCID')
+    secret_arn = os.environ.get('DB_SECRET_ARN')
     if secret_ocid:
         user, password = vault_credentials(secret_ocid)
+    elif secret_arn:
+        user, password = aws_credentials(secret_arn)
     else:
         user, password = os.environ['DB_USER'], os.environ['DB_PASSWORD']
     context = ssl.create_default_context(cafile=os.environ['DB_CA_FILE'])
@@ -222,7 +238,7 @@ def application(environ, start):
 
 if __name__ == '__main__':
     required = ('PORTAL_USER', 'PORTAL_PASSWORD', 'DB_HOST', 'DB_CA_FILE')
-    if not os.environ.get('DB_SECRET_OCID'):
+    if not (os.environ.get('DB_SECRET_OCID') or os.environ.get('DB_SECRET_ARN')):
         required += ('DB_USER', 'DB_PASSWORD')
     for variable in required:
         if not os.environ.get(variable):
