@@ -113,24 +113,31 @@ resource "oci_core_instance" "this" {
   dynamic "shape_config" {
     for_each = each.value.shape_config[*]
     content {
-      ocpus         = shape_config.value.ocpus
-      memory_in_gbs = shape_config.value.memory_in_gbs
+      ocpus                     = shape_config.value.ocpus
+      memory_in_gbs             = shape_config.value.memory_in_gbs
+      baseline_ocpu_utilization = shape_config.value.baseline_ocpu_utilization
     }
   }
 
   create_vnic_details {
-    subnet_id        = oci_core_subnet.this["private"].id
-    assign_public_ip = false
-    private_ip       = each.value.private_ip
-    nsg_ids          = [for role in each.value.nsg_roles : oci_core_network_security_group.this[role].id]
+    subnet_id              = oci_core_subnet.this["private"].id
+    assign_public_ip       = false
+    private_ip             = each.value.private_ip
+    skip_source_dest_check = each.value.skip_source_dest_check
+    nsg_ids                = [for role in each.value.nsg_roles : oci_core_network_security_group.this[role].id]
   }
 
-  metadata = { ssh_authorized_keys = var.ssh_public_key }
+  metadata = merge(
+    { ssh_authorized_keys = var.ssh_public_key },
+    contains(var.disable_dnf_makecache_on, each.key) ? {
+      user_data = base64encode("#cloud-config\nruncmd:\n  - [systemctl, disable, --now, dnf-makecache.timer]\n")
+    } : {}
+  )
 
   source_details {
-    source_type             = "image"
-    source_id               = each.value.image_id
-    boot_volume_size_in_gbs = 50
+    source_type             = each.value.boot_volume_id == null ? "image" : "bootVolume"
+    source_id               = coalesce(each.value.boot_volume_id, each.value.image_id)
+    boot_volume_size_in_gbs = each.value.boot_volume_id == null ? 50 : null
   }
 
   is_pv_encryption_in_transit_enabled = true

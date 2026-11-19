@@ -39,6 +39,20 @@ def backup(args):
         command = [args.mysqldump, f'--defaults-file={options}', '--single-transaction',
                    '--quick', '--no-tablespaces', '--set-gtid-purged=OFF',
                    '--skip-lock-tables', '--', args.database]
+        if os.environ.get('DB_PIN_CERT') == '1':
+            # MySQL's CLI lacks PARTIAL_CHAIN, used by the portal's pinned-leaf
+            # trust. Authenticate a fresh TLS1.2 session with OpenSSL, then force
+            # the official client to reuse it. Never permit an unverified retry.
+            session = temporary / 'verified-session.pem'
+            result = subprocess.run(['openssl', 's_client', '-starttls', 'mysql',
+                '-connect', args.host + ':3306', '-CAfile', args.ca_file,
+                '-partial_chain', '-verify_return_error', '-tls1_2',
+                '-sess_out', str(session), '-quiet', '-no_ign_eof'],
+                input=b'', stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=20)
+            if result.returncode or not session.exists() or not session.stat().st_size:
+                raise RuntimeError('Pinned certificate TLS session verification failed')
+            command[2:2] = ['--tls-version=TLSv1.2', f'--ssl-session-data={session}',
+                            '--ssl-session-data-continue-on-failed-reuse=OFF']
         with subprocess.Popen(command, stdout=subprocess.PIPE) as process:
             try:
                 with gzip.open(archive, 'wb') as compressed:
@@ -59,6 +73,8 @@ def backup(args):
                 digest.update(chunk)
         archive.rename(destination)
     print(f'BACKUP_OK {destination} bytes={destination.stat().st_size} sha256={digest.hexdigest()}')
+    return {'path': str(destination), 'bytes': destination.stat().st_size,
+            'sha256': digest.hexdigest(), 'createdAt': datetime.now(timezone.utc).isoformat()}
 
 
 if __name__ == '__main__':
