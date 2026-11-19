@@ -45,12 +45,12 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 1 | 8 | 52 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 1 | 0 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 19 | 30 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 6 | 18 | 31 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 11 | 7 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 6 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **15** | **83** | **205** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **15** | **82** | **206** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -637,8 +637,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M4.1** | `[-] Bloqueado` | Connection string conmutable (secreto/variable de entorno) | — | F4 | P2 | Núcleo |  |
-| **M4.2** | `[-] Bloqueado` | Detección de falla de RDS en la aplicación | Detectar fallo sin promocionar por un error transitorio; distinguir fallo de RDS, del túnel y de toda la nube. | F4 | P2 | Núcleo |  |
+| **M4.1** | `[x] Completado` | Connection string conmutable (secreto/variable de entorno) | Seleccionar el esquema con DB_NAME y validar ambas conexiones con la identidad real del portal y TLS. Mantener la réplica en lectura hasta promoción. | F4 | P2 | Núcleo |   2026-11-19: Prueba en utility .40 con código y Vault reales del portal, app.connect() y SELECT DATABASE() confirmaron DB_NAME=ninjasec (1 incidente) y DB_NAME=ninjasec_aws_replica (0), ambas con Ssl_cipher negociado. Se otorgó SELECT sobre incidents de la réplica a la cuenta de .40. Prueba aislada sin reiniciar el servicio. |
+| **M4.2** | `[-] Bloqueado` | Detección de falla de RDS en la aplicación | Detectar fallo sin promocionar por un error transitorio; distinguir fallo de RDS, del túnel y de toda la nube. | F4 | P2 | Núcleo |   2026-11-19: El /health de AWS ejecuta SELECT sobre RDS y devuelve 503 si no puede consultar. Queda pendiente validar clasificación con señales independientes de RDS, túnel y entrada AWS y probar fallas controladas. |
 | **M4.3** | `[-] Bloqueado` | Conmutación a HeatWave ejecutada | Antes de habilitar escrituras OCI, aislar escrituras AWS, comprobar última transacción recibida y promover de forma controlada; impedir dos primarios activos. | F4 | P2 | Núcleo |  |
 | **M4.4** | `[-] Bloqueado` | Con RDS detenido el portal sigue operativo con los datos | Probar CRUD con datos replicados y medir RTO/RPO; una respuesta /health o HTML sin acceso a datos no acredita continuidad. | F4 | P2 | Núcleo |  |
 
@@ -650,8 +650,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M5.1** | `[ ] Pendiente` | Portal standby operativo en OCI | Verificar CRUD y estabilidad del host bajo carga representativa, memoria/OOM y reinicio. Coordinar rol de escritura con M4; no basta /health. | F3 | P3b | Núcleo | OCI GetLoadBalancerHealth OK; https://129.159.170.148/health HTTP 200 en prueba por IP con certificado sin validar. Por Bastion, ninjasec-portal active y /health local devolvió status=ok. 2026-11-17: tras el incidente de B5.2, ninjasec-portal quedó active y /health privado y público devolvieron status ok. Estabilidad posterior en observación. Revisión 2026-11-17: Reabierta para preparación real de recuperación tras el incidente y el nuevo rol multicloud. Pruebas de disponibilidad anteriores conservadas; estabilidad/capacidad y promoción pendientes. |
-| **M5.2** | `[-] Bloqueado` | Cloudflare redirige al LB de OCI al caer el endpoint AWS | Cambio controlado del origen del dominio principal, coordinado con promoción de datos; verificar HTTPS y sesiones. No confundir portal-oci independiente con failover. | F3 | P3b | Núcleo |  |
+| **M5.1** | `[ ] Pendiente` | Portal standby operativo en OCI | Verificar CRUD y estabilidad del host bajo carga representativa, memoria/OOM y reinicio. Coordinar rol de escritura con M4; no basta /health. | F3 | P3b | Núcleo | OCI GetLoadBalancerHealth OK; https://129.159.170.148/health HTTP 200 en prueba por IP con certificado sin validar. Por Bastion, ninjasec-portal active y /health local devolvió status=ok. 2026-11-17: tras el incidente de B5.2, ninjasec-portal quedó active y /health privado y público devolvieron status ok. Estabilidad posterior en observación. Revisión 2026-11-17: Reabierta para preparación real de recuperación tras el incidente y el nuevo rol multicloud. Pruebas de disponibilidad anteriores conservadas; estabilidad/capacidad y promoción pendientes.  2026-11-19: Portal OCI probado con DB_NAME conmutable y cuenta real por TLS. Réplica con SELECT en incidents antes de promoción; falta validar CRUD pospromoción, reinicio y capacidad del standby final. |
+| **M5.2** | `[-] Bloqueado` | Cloudflare redirige al LB de OCI al caer el endpoint AWS | Cambio controlado del origen del dominio principal, coordinado con promoción de datos; verificar HTTPS y sesiones. No confundir portal-oci independiente con failover. | F3 | P3b | Núcleo |   2026-11-19: Dependencia operativa: promoción M4.3 y aislamiento de escrituras AWS antes de mover tráfico del dominio principal. Prueba de cambio de origen y sesión pendientes. |
 | **M5.3** | `[-] Bloqueado` | Prueba real: AWS fuera de servicio → portal servido desde OCI | — | F3 | P3b | Núcleo |  |
 | **M5.4** | `[-] Bloqueado` | Retorno a AWS verificado | Resincronizar datos creados en OCI, comprobar consistencia y transferir escritura exclusiva a AWS antes del retorno; sin sobrescribir datos nuevos. | F3 | P3b | Núcleo |  |
 
@@ -703,10 +703,10 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M9.1** | `[-] Bloqueado` | Métricas de CloudWatch (AWS) visibles en Grafana OCI | — | F3 | P4 | Núcleo |  |
+| **M9.1** | `[-] Bloqueado` | Métricas de CloudWatch (AWS) visibles en Grafana OCI | Mostrar métricas recientes de CloudWatch en Grafana OCI y verificar consulta y origen sin exponer credenciales. | F3 | P4 | Núcleo |   2026-11-19: CloudWatch GetMetricStatistics confirmó CPUUtilization reciente de ambos nodos AWS (i-01df388babdb521e5 e i-013f55c8513e564e5). Grafana OCI activo. Falta conectar una fuente o exportación y comprobar consulta desde Grafana. |
 | **M9.2** | `[x] Completado` | Métricas de OCI visibles en Grafana | — | F3 | P4 | Núcleo | Evidencia cruzada con B9.6 y B9.10: Grafana POST /api/ds/query devolvió 6 puntos de CpuUtilization del datasource OCI nativo ninjasec-oci-native, y el panel 3 mostró 3 conexiones MySQL. En esta revisión Grafana 10.4.19 respondió HTTP 200 en /api/health con database=ok por Bastion. |
 | **M9.3** | `[x] Completado` | Datos de Azure Log Analytics visibles en Grafana | Datos de Azure disponibles en Grafana del host vigente mediante consulta real y lectura con identidad minima. | F3 | P4 | Núcleo | Flujo verificado: Azure Automation consulta ninjasec-law, publica latest.json en OCI, y el panel 6 de Grafana en replica-agent-01 devuelve el EventId 8c52fabe-9f9d-4147-9f5d-57531250a36f del snapshot de 100 eventos. 2026-11-18: nueva .41 devuelve100 eventos del lector OCI latest.json; Grafana /api/ds/query panel6 status200, sin error y100filas. Grupo de identidad lector actualizado aocid1.instance.oc1.iad.anuwcljt3nxgmgac6suofn76uki3a25nciwdev35fvk2xk6l6lbz36dsmlrq, conservando alcance al objeto. Micro anterior STOPPED; ya no se utiliza como evidencia de servicio actual. |
-| **M9.4** | `[-] Bloqueado` | Dashboard unificado de las 3 nubes con datos en vivo | Mostrar AWS, OCI y Azure con timestamp/frescura; Azure exportado es periódico, no streaming. Probar alertas de indisponibilidad, memoria, túnel y retraso de replicación; no mostrar datos antiguos como actuales. | F3 | P4 | Núcleo |  |
+| **M9.4** | `[-] Bloqueado` | Dashboard unificado de las 3 nubes con datos en vivo | Mostrar AWS, OCI y Azure con timestamp/frescura; Azure exportado es periódico, no streaming. Probar alertas de indisponibilidad, memoria, túnel y retraso de replicación; no mostrar datos antiguos como actuales. | F3 | P4 | Núcleo |   2026-11-19: Grafana principal activo en OCI .40; Grafana alterno y lector Azure activos en .41. AWS CPU existe en CloudWatch; faltan integración en el mismo dashboard, medidas de frescura y pruebas de alertas. |
 
 
 <a id="comp-m10"></a>
