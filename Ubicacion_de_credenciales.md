@@ -59,3 +59,6 @@ Carpeta canonica: `E:\NINJA-SEC\Credenciales de Acceso\SSH`. Acceso local restri
 - `ninjasec_oci_ed25519`: copia canonica de la llave de usuario `opc`, publica verificada en las dos VM OCI nuevas `.40` y `.41`.
 - `ninjasec_oci_bastion_rsa`: copia canonica de la llave para las sesiones del servicio OCI Bastion.
 - Los archivos `.pub` asociados son claves publicas, no secretos. Las copias anteriores en `C:\Users\DYLAN\.ssh` se conservan por compatibilidad de scripts y no se han rotado ni eliminado.
+
+
+- Portal AWS: acceso de operador en `E:\NINJA-SEC\Credenciales de Acceso\Portal NINJA-SEC AWS.md` con ACL restringida. El arranque lee el secreto `ninjasec/aws/portal-login` desde AWS Secrets Manager.
