@@ -41,7 +41,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 1 | 18 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 49 | 46 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 43 | 52 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 1 | 8 | 52 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 1 | 0 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
@@ -50,7 +50,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 6 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **15** | **121** | **167** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **15** | **115** | **173** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -180,14 +180,14 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A4.1** | `[-] Bloqueado` | Launch Template privado con Nginx, ModSecurity y API | t3.micro inicial, EBS gp3 cifrado; seleccionar modo de créditos CPU y medir rendimiento/costo. Imagen/configuración reproducible en ambas AZ. | F1 | — | Núcleo |   2026-11-18: Avance parcial: stack ninjasec-app CREATE_COMPLETE. Launch Template lt-0f227b7318fb4b07d versión 1, t3.micro Standard, AMI AL2023, gp3 8 GiB cifrado, IMDSv2 obligatorio y SG APP. Plantilla cloudformation/app-stack.json. Falta bootstrap reproducible de Nginx/ModSecurity/API y pruebas de capacidad; no se lanzaron nodos ni ASG con esta plantilla. Estado bloqueado por configuración y validación del software.  2026-11-18: Launch Template lt-0f227b7318fb4b07d versión 2 con UserData que empaqueta portal y script; ninjasec-app UPDATE_COMPLETE. Bootstrap corregido probado mediante SSM eedc099a-c996-47f8-bbea-c04deca3e34b Success en nodo privado. API requiere /etc/ninjasec-portal.env real: unit habilitada con ConditionPathExists, sin arrancar aún. Falta API/BD, sesiones entre nodos y prueba de carga, por ello mantiene estado pendiente de verificación completa. MemAvailable de prueba 549 MiB. Nodo temporal eliminado al finalizar.  2026-11-18: Launch Template actualizada con bootstrap completo WAF y CloudWatch Agent. Prueba nueva desde cero en i-0a227e3c9bb4d00a5: cloud-init done y servicios activos. Sigue pendiente API con datos y nodos definitivos. Nodo temporal terminado después de la prueba. |
+| **A4.1** | `[-] Bloqueado` | Launch Template privado con Nginx, ModSecurity y API | t3.micro inicial, EBS gp3 cifrado; seleccionar modo de créditos CPU y medir rendimiento/costo. Imagen/configuración reproducible en ambas AZ. | F1 | — | Núcleo |   2026-11-18: Avance parcial: stack ninjasec-app CREATE_COMPLETE. Launch Template lt-0f227b7318fb4b07d versión 1, t3.micro Standard, AMI AL2023, gp3 8 GiB cifrado, IMDSv2 obligatorio y SG APP. Plantilla cloudformation/app-stack.json. Falta bootstrap reproducible de Nginx/ModSecurity/API y pruebas de capacidad; no se lanzaron nodos ni ASG con esta plantilla. Estado bloqueado por configuración y validación del software.  2026-11-18: Launch Template lt-0f227b7318fb4b07d versión 2 con UserData que empaqueta portal y script; ninjasec-app UPDATE_COMPLETE. Bootstrap corregido probado mediante SSM eedc099a-c996-47f8-bbea-c04deca3e34b Success en nodo privado. API requiere /etc/ninjasec-portal.env real: unit habilitada con ConditionPathExists, sin arrancar aún. Falta API/BD, sesiones entre nodos y prueba de carga, por ello mantiene estado pendiente de verificación completa. MemAvailable de prueba 549 MiB. Nodo temporal eliminado al finalizar.  2026-11-18: Launch Template actualizada con bootstrap completo WAF y CloudWatch Agent. Prueba nueva desde cero en i-0a227e3c9bb4d00a5: cloud-init done y servicios activos. Sigue pendiente API con datos y nodos definitivos. Nodo temporal terminado después de la prueba.  2026-11-19: LT lt-0f227b7318fb4b07d v6 con bootstrap corregido para Secrets Manager y RDS TLS. v5 tuvo error de sintaxis en configuracion inicial; falta prueba de arranque limpio v6. |
 | **A4.2** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1a | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
 | **A4.3** | `[-] Bloqueado` | Nodo t3.micro privado del ASG operativo en AZ-1b | Nginx, WAF y API funcionales; validar CPU, memoria y ausencia de OOM bajo carga. | F1 | — | Núcleo |  |
 | **A4.4** | `[-] Bloqueado` | Nginx instalado y sirviendo el frontend del portal | — | F1 | — | Núcleo |  |
 | **A4.5** | `[-] Bloqueado` | Frontend del portal NINJA-SEC desplegado | — | F1 | — | Núcleo |  |
 | **A4.6** | `[-] Bloqueado` | Proxy inverso /api hacia API local:8080 | Probar CRUD y autenticación en ambos nodos; ninguna dependencia de un app-backend único. | F1 | — | Núcleo |  |
 | **A4.7** | `[-] Bloqueado` | User Data: servicios arrancan solos al reiniciar la instancia | — | F1 | — | Núcleo |   2026-11-18: Reinicio comprobó nginx active y WAF funcional. API habilitada pero sin credenciales reales; falta comprobar su arranque automático con RDS/Secrets Manager. |
-| **A4.8** | `[-] Bloqueado` | Volúmenes EBS cifrados | — | F1 | — | Núcleo |  |
+| **A4.8** | `[x] Completado` | Volúmenes EBS cifrados | — | F1 | — | Núcleo |   2026-11-19: DescribeInstances y DescribeVolumes: ambos nodos privados solo tienen raiz cifrada /dev/sda1: vol-00d7e26decdeac9bf y vol-0271ab29ea2a71025. Se reemplazaron los nodos v4 con raiz sin cifrar y el ASG ya apunta a v6. |
 
 
 <a id="comp-a5"></a>
@@ -218,7 +218,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **A6.1** | `[-] Bloqueado` | API desplegada en los dos nodos privados del ASG | Sustituye la EC2 app-backend única; verificar misma versión, secretos y esquema en ambos nodos. | F1 | — | Núcleo |  |
 | **A6.2** | `[-] Bloqueado` | API REST Flask con CRUD de incidentes | — | F1 | — | Núcleo |  |
 | **A6.3** | `[-] Bloqueado` | Servicio systemd con arranque automático | — | F1 | — | Núcleo |   2026-11-18: Unit systemd preparada, DynamicUser, NoNewPrivileges, ProtectSystem=strict, API ligada a 127.0.0.1. Falta entorno real y prueba de servicio con BD. |
-| **A6.4** | `[-] Bloqueado` | Endpoint /health respondiendo | — | F1 | — | Núcleo |  |
+| **A6.4** | `[-] Bloqueado` | Endpoint /health respondiendo | — | F1 | — | Núcleo |   2026-11-19: Nodo AZ1a respondio status=ok en /health por Nginx, con SELECT a RDS. Segundo nodo en configuracion SSM 5af8c4db-cef4-408b-83c0-646b776a200a. |
 | **A6.5** | `[-] Bloqueado` | Acceso a API restringido al proxy local | Verificar loopback y rechazo de acceso directo al puerto de la API. | F1 | — | Núcleo |  |
 | **A6.6** | `[-] Bloqueado` | Credenciales leídas desde Secrets Manager (sin texto plano) | — | F1 | — | Núcleo |  |
 | **A6.7** | `[-] Bloqueado` | Portal: crear / leer / actualizar / eliminar incidente funciona de extremo a extremo | CRUD y autenticación por ALB; sesiones válidas al alternar nodos, sin estado imprescindible solo en memoria local. Probar pérdida de un nodo sin duplicar escrituras. | F1 | — | Núcleo |  |
@@ -232,11 +232,11 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A7.1** | `[-] Bloqueado` | Un ALB en las dos subredes públicas | Verificar dos zonas de disponibilidad y un único balanceador para el entorno. | F1 | — | Núcleo |  |
-| **A7.2** | `[-] Bloqueado` | Target Group web con health check configurado | — | F1 | — | Núcleo |  |
-| **A7.3** | `[-] Bloqueado` | web-01 y web-02 registrados como targets saludables | — | F1 | — | Núcleo |  |
-| **A7.4** | `[-] Bloqueado` | Listener HTTPS 443 con certificado confiable | ACM con dominio validado; verificar cadena y nombre sin omitir validación TLS. No dar por válido un certificado autofirmado como acceso público final. | F1 | — | Núcleo |  |
-| **A7.5** | `[-] Bloqueado` | Listener HTTP 80 redirige a HTTPS | — | F1 | — | Núcleo |  |
+| **A7.1** | `[x] Completado` | Un ALB en las dos subredes públicas | Verificar dos zonas de disponibilidad y un único balanceador para el entorno. | F1 | — | Núcleo |   2026-11-19: ALB ninjasec-portal en las dos subredes publicas, ARN sufijo app/ninjasec-portal/64e2391b38da9bae y DNS ninjasec-portal-2082084587.us-east-1.elb.amazonaws.com. |
+| **A7.2** | `[x] Completado` | Target Group web con health check configurado | — | F1 | — | Núcleo |   2026-11-19: Target Group ninjasec-portal/82f3e88b36de174b para instancias HTTP 80 con /health y matcher 200. |
+| **A7.3** | `[-] Bloqueado` | web-01 y web-02 registrados como targets saludables | — | F1 | — | Núcleo |   2026-11-19: Ambos targets registrados en estado unused previa asociacion del listener HTTPS. |
+| **A7.4** | `[-] Bloqueado` | Listener HTTPS 443 con certificado confiable | ACM con dominio validado; verificar cadena y nombre sin omitir validación TLS. No dar por válido un certificado autofirmado como acceso público final. | F1 | — | Núcleo |   2026-11-19: CNAME de validacion y del portal guardados en Cloudflare y comprobados con 1.1.1.1. ACM e11f1f57-21cc-414b-aec2-915be72a3ae0 PENDING_VALIDATION, listener 443 pendiente. |
+| **A7.5** | `[-] Bloqueado` | Listener HTTP 80 redirige a HTTPS | — | F1 | — | Núcleo |   2026-11-19: Listener HTTP 80 creado con redireccion 301 a HTTPS/443. Falta prueba externa con HTTPS operativo. |
 | **A7.6** | `[-] Bloqueado` | Balanceo verificado (tráfico llega a ambas instancias) | — | F1 | — | Núcleo |  |
 | **A7.7** | `[-] Bloqueado` | Falla simulada de web-01 → servicio continúa por web-02 | — | F1 | — | Núcleo |  |
 
@@ -248,9 +248,9 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A8.1** | `[-] Bloqueado` | ASG con mínimo y capacidad deseada de 2 en 2 AZ | Máximo inicial de 3 si permite demostrar escalado y reemplazo. Ajustar con evidencia de carga y costo. | F1 | — | Núcleo |  |
-| **A8.2** | `[-] Bloqueado` | ASG asociado al Target Group del ALB | — | F1 | — | Núcleo |  |
-| **A8.3** | `[-] Bloqueado` | Política de escalado por CPU configurada | — | F1 | — | Núcleo |  |
+| **A8.1** | `[x] Completado` | ASG con mínimo y capacidad deseada de 2 en 2 AZ | Máximo inicial de 3 si permite demostrar escalado y reemplazo. Ajustar con evidencia de carga y costo. | F1 | — | Núcleo |   2026-11-19: ASG ninjasec-app min=2 deseado=2 max=3. EC2 i-01df388babdb521e5 us-east-1a e i-013f55c8513e564e5 us-east-1b, ambas sin IP publica. |
+| **A8.2** | `[x] Completado` | ASG asociado al Target Group del ALB | — | F1 | — | Núcleo |   2026-11-19: ASG ninjasec-app asociado al Target Group ninjasec-portal/82f3e88b36de174b; ambos IDs aparecen registrados. |
+| **A8.3** | `[x] Completado` | Política de escalado por CPU configurada | — | F1 | — | Núcleo |   2026-11-19: PutScalingPolicy confirma ninjasec-cpu-60, TargetTracking ASGAverageCPUUtilization 60%; prueba de escalado corresponde a A8.4. |
 | **A8.4** | `[-] Bloqueado` | Prueba de carga dispara una instancia nueva | Carga controlada: pasar de 2 a 3 nodos y volver a 2, comprobar targets saludables, errores, latencia y costo. Escalado acotado, no capacidad ilimitada. | F1 | — | Núcleo |  |
 | **A8.5** | `[-] Bloqueado` | Instancia terminada manualmente es reemplazada | — | F1 | — | Núcleo |  |
 
