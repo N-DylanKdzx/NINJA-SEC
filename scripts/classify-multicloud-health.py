@@ -14,6 +14,8 @@ def classify(signals):
 
     if aws is False and portal is False:
         return 'aws_access_unavailable'
+    if aws is False and portal is True:
+        return 'aws_management_unavailable'
     if sql is False and aws is True:
         return 'rds_sql_path_unavailable'
     if sql is True and tunnel is False:
