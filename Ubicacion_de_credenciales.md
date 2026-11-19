@@ -49,3 +49,13 @@ Hosts privados vigentes: `ninjasec-utility-stable-01` (`10.20.10.40`) y `ninjase
 | Usuario y contrasena Grafana Azure | `E:\NINJA-SEC\Credenciales de Acceso\Grafana OCI replica.md` | Grafana privado en `10.20.10.41:3000`, por Bastion. |
 
 Archivos de credenciales restringidos al usuario local DYLAN, SYSTEM y Administradores. El repositorio conserva solo tipo, ubicacion y funcion; no valores secretos. La credencial del portal existente no cambio.
+
+
+### Custodia SSH del proyecto verificada el 2026-11-18
+
+Carpeta canonica: `E:\NINJA-SEC\Credenciales de Acceso\SSH`. Acceso local restringido a DYLAN, SYSTEM y Administradores. Este documento contiene ubicaciones e identificadores, nunca el contenido privado.
+
+- `ninjasec_aws_academy_194766`: llave privada OpenSSH RSA para el key pair AWS `ninjasec-academy-194766`, ID `key-09065e26f1f153d87`, cuenta `533267256700`, region `us-east-1`. Publica contrastada con AWS. No habilita SSH publico ni cambia por si sola las instancias existentes; se conserva SSM como acceso operativo.
+- `ninjasec_oci_ed25519`: copia canonica de la llave de usuario `opc`, publica verificada en las dos VM OCI nuevas `.40` y `.41`.
+- `ninjasec_oci_bastion_rsa`: copia canonica de la llave para las sesiones del servicio OCI Bastion.
+- Los archivos `.pub` asociados son claves publicas, no secretos. Las copias anteriores en `C:\Users\DYLAN\.ssh` se conservan por compatibilidad de scripts y no se han rotado ni eliminado.
