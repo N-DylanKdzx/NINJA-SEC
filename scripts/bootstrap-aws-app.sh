@@ -15,6 +15,8 @@ sed -i 's/^SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/modsecurity/ninja
 cat > /etc/nginx/ninjasec-waf.conf <<'EOF'
 Include /etc/modsecurity/ninjasec.conf
 Include /etc/modsecurity/crs/crs-setup.conf
+SecRule REQUEST_FILENAME "@rx ^/api/incidents/[1-9][0-9]{0,18}$" "id:10001,phase:1,pass,nolog,chain"
+    SecRule REQUEST_METHOD "@rx ^(?:PUT|DELETE)$" "ctl:ruleRemoveById=911100"
 Include /usr/share/modsecurity-crs/rules/*.conf
 EOF
 cat > /etc/nginx/sites-available/default <<'EOF'
