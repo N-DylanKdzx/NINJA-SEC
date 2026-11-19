@@ -1,0 +1,19 @@
+{
+  "variable": {
+    "region": {
+      "type": "string",
+      "default": "us-ashburn-1"
+    },
+    "compartment_id": {
+      "type": "string",
+      "default": "ocid1.tenancy.oc1..aaaaaaaafm7spt5qimkhk5ofybvuxx7hmq33dcd74r6dsuhzkqbvir4qdgxq"
+    },
+    "boot_volume_ids": {
+      "type": "map(string)",
+      "default": {
+        "utility": "ocid1.bootvolume.oc1.iad.abuwcljt7egwyyz6uodskgfirolagtlrfy6jbl4arbdqtv2xt77jt342evqq",
+        "replica": "ocid1.bootvolume.oc1.iad.abuwcljtbjfqfwso4eqpdo4jv5xjc42bkbpmaohdh5m4ascq65uffr25tooq"
+      }
+    }
+  }
+}
