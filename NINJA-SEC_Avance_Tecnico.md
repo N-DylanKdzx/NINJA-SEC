@@ -41,7 +41,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 1 | 18 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 55 | 40 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 54 | 41 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 1 | 8 | 52 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 1 | 0 | 16 |
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
@@ -50,7 +50,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 6 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **15** | **127** | **161** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **15** | **126** | **162** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -262,7 +262,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **A9.1** | `[-] Bloqueado` | DB Subnet Group con subredes privadas de 2 AZ | — | F1 | P2 | Núcleo |  |
+| **A9.1** | `[x] Completado` | DB Subnet Group con subredes privadas de 2 AZ | Verificar grupo RDS con ambas subredes privadas de BD activas en zonas distintas. | F1 | P2 | Núcleo | 2026-11-19: DescribeDBSubnetGroups confirma ninjasec-db-private Complete (arn:aws:rds:us-east-1:533267256700:subgrp:ninjasec-db-private), subnet-0ca5df1dc6f8f85f9 us-east-1a Active y subnet-0c7f28639cb2522f5 us-east-1b Active. |
 | **A9.2** | `[-] Bloqueado` | RDS MySQL 8.4 Single-AZ en subred privada | Elegir db.t3.micro si está disponible en Academy, almacenamiento de propósito general sin IOPS provisionadas y RDS Extended Support deshabilitado. Verificar versión, clase, almacenamiento y soporte en la instancia creada. Probar conexión TLS y CRUD del portal. | F1 | P2 | Núcleo |  |
 | **A9.3** | `[-] Bloqueado` | Publicly accessible = No | — | F1 | P2 | Núcleo |  |
 | **A9.4** | `[-] Bloqueado` | Cifrado en reposo habilitado | — | F1 | P2 | Núcleo |  |
