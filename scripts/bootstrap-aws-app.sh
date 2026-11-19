@@ -7,6 +7,7 @@ apt-get -o Acquire::Retries=5 update
 apt-get -o Acquire::Retries=5 install -y nginx libnginx-mod-http-modsecurity modsecurity-crs python3-venv
 python3 -m venv /opt/ninjasec-venv
 /opt/ninjasec-venv/bin/pip install -r /opt/ninjasec-portal/requirements.txt
+/opt/ninjasec-venv/bin/pip install boto3
 mkdir -p /etc/modsecurity
 cp /etc/nginx/modsecurity.conf /etc/modsecurity/ninjasec.conf
 cp /etc/nginx/unicode.mapping /etc/modsecurity/unicode.mapping
