@@ -55,8 +55,14 @@ def tunnel_health():
     ssh = load_script('wireguard-oci-ssh.py')
     code = b'''import subprocess
 subprocess.run(['ping','-c','2','-W','2','10.255.254.1'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-r=subprocess.check_output(['/usr/local/bin/wg','show','wg0','latest-handshakes'],text=True)
-for line in r.splitlines():
+r=subprocess.run(['/usr/local/bin/wg','show','wg0','latest-handshakes'],capture_output=True,text=True)
+if r.returncode:
+ link=subprocess.run(['ip','link','show','dev','wg0'],capture_output=True,text=True)
+ if link.returncode and 'does not exist' in link.stderr:
+  print(0)
+  raise SystemExit(0)
+ raise RuntimeError('Could not inspect WireGuard')
+for line in r.stdout.splitlines():
  print(line.split()[-1])
 '''
     ages = [time.time() - int(value) for value in ssh.run('sudo -n python3 -', data=code, timeout=40).split()]
