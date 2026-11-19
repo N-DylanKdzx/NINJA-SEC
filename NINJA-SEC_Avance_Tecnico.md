@@ -40,7 +40,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 2 | 17 |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 1 | 18 |
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 55 | 40 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 2 | 8 | 51 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 1 | 0 | 16 |
@@ -50,7 +50,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 6 | 1 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **16** | **128** | **159** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **16** | **127** | **160** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -85,7 +85,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **G1.4** | `[x] Completado` | Azure for Students activado (sin tarjeta) | — | F0 | — | Núcleo | az account show confirma Azure for Students, Enabled, suscripción 020556eb-782f-4afc-84d3-39cd392763ba. |
 | **G1.5** | `[x] Completado` | Cuenta Cloudflare Free creada | — | F0 | — | Núcleo | Sesión autenticada verificada en Cloudflare Account Home y Domains Overview. Cuenta disponible para incorporar el dominio del proyecto. |
 | **G1.6** | `[x] Completado` | Dominio real registrado y delegado a Cloudflare | Cloudflare requiere un dominio que controles; un subdominio de nip.io no se puede delegar | F0 | — | Núcleo | ninjasec.dev registrado en Name.com y delegado a jessica.ns.cloudflare.com y wesley.ns.cloudflare.com. Cloudflare confirmó la activación. |
-| **G1.7** | `[-] Bloqueado` | Llaves SSH generadas (key pair AWS + llave OCI) | — | F0 | — | Núcleo |  |
+| **G1.7** | `[x] Completado` | Llaves SSH generadas (key pair AWS + llave OCI) | Generar y custodiar llave privada del proyecto fuera de Git; contrastar la publica con el key pair AWS y con las VM OCI; verificar ACL locales. | F0 | — | Núcleo | 2026-11-18 (19-nov UTC): AWS cuenta533267256700/us-east-1, key pair ninjasec-academy-194766 key-09065e26f1f153d87 importado; describe-key-pairs IncludePublicKey=true coincide exactamente con ssh-keygen -y de la privada local, fingerprint89:09:62:40:97:68:bb:db:e0:b1:2c:15:67:b8:e5:ea. Llave OCI ed25519 fingerprint SHA256:1Xffw2jfkXVFFtIFjyvuARaAlzO5VKYTk74uehknPE8 coincide con ssh_authorized_keys de utility-stable-01 y replica-stable-01. Custodia canonica E:\NINJA-SEC\Credenciales de Acceso\SSH: ninjasec_aws_academy_194766, ninjasec_oci_ed25519 y ninjasec_oci_bastion_rsa, con sus .pub; copias OCI iguales byte a byte a las de compatibilidad .ssh. icacls confirma acceso solo DYLAN/SYSTEM/Administradores. Sin llaves privadas en Git, sin abrir SSH publico ni modificar nodos AWS; llave generada/registrada no equivale a una prueba de acceso SSH a una EC2. |
 
 
 <a id="comp-g2"></a>
