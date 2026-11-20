@@ -453,6 +453,10 @@
       "type": "string",
       "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('ociRuleName'))]"
     },
+    "automationPrincipalId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName')), '2023-11-01', 'Full').identity.principalId]"
+    },
     "automationAccountResourceId": {
       "type": "string",
       "value": "[resourceId('Microsoft.Automation/automationAccounts', parameters('automationAccountName'))]"
