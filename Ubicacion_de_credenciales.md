@@ -62,3 +62,8 @@ Carpeta canonica: `E:\NINJA-SEC\Credenciales de Acceso\SSH`. Acceso local restri
 
 
 - Portal AWS: acceso de operador en `E:\NINJA-SEC\Credenciales de Acceso\Portal NINJA-SEC AWS.md` con ACL restringida. El arranque lee el secreto `ninjasec/aws/portal-login` desde AWS Secrets Manager.
+
+## Clave privada TLS del portal AWS en el balanceador de respaldo OCI
+
+- **Archivo local:** `E:\NINJA-SEC\Credenciales de Acceso\TLS OCI Failover\acme\certificates\portal-aws.ninjasec.dev.key`
+- **Uso:** instalar o renovar el certificado TLS de `portal-aws.ninjasec.dev` en el balanceador de respaldo OCI. El certificado y su cadena están en la misma carpeta.
