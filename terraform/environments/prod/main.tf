@@ -20,6 +20,22 @@ module "azure_storage" {
     automation = { name = "ninjasec-oci-audit", type = "Microsoft.Automation/automationAccounts" }
     aws_dcr    = { name = "ninjasec-aws-audit", type = "Microsoft.Insights/dataCollectionRules" }
     oci_dcr    = { name = "ninjasec-oci-audit", type = "Microsoft.Insights/dataCollectionRules" }
+    publish_oci_audit = {
+      name = "ninjasec-oci-audit/Publish-OciAudit"
+      type = "Microsoft.Automation/automationAccounts/runbooks"
+    }
+    export_azure_logs = {
+      name = "ninjasec-oci-audit/Export-AzureLogsToOci"
+      type = "Microsoft.Automation/automationAccounts/runbooks"
+    }
+    import_aws_audit = {
+      name = "ninjasec-oci-audit/Import-AwsAudit"
+      type = "Microsoft.Automation/automationAccounts/runbooks"
+    }
+    copy_mysql_backup = {
+      name = "ninjasec-oci-audit/Copy-MysqlBackupToAzure"
+      type = "Microsoft.Automation/automationAccounts/runbooks"
+    }
   }
 }
 
