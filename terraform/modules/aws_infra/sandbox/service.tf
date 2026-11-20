@@ -46,7 +46,7 @@ resource "aws_security_group" "service_demo" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "alb_http" {
-  count             = var.enable_service_demo ? 1 : 0
+  count             = var.enable_service_demo && var.portal_replay == null ? 1 : 0
   security_group_id = aws_security_group.service_demo["alb"].id
   cidr_ipv4         = var.cidr
   ip_protocol       = "tcp"
@@ -59,8 +59,8 @@ resource "aws_vpc_security_group_egress_rule" "alb_app" {
   security_group_id            = aws_security_group.service_demo["alb"].id
   referenced_security_group_id = aws_security_group.service_demo["app"].id
   ip_protocol                  = "tcp"
-  from_port                    = 8080
-  to_port                      = 8080
+  from_port                    = local.backend_port
+  to_port                      = local.backend_port
 }
 
 resource "aws_vpc_security_group_ingress_rule" "app_alb" {
@@ -68,8 +68,8 @@ resource "aws_vpc_security_group_ingress_rule" "app_alb" {
   security_group_id            = aws_security_group.service_demo["app"].id
   referenced_security_group_id = aws_security_group.service_demo["alb"].id
   ip_protocol                  = "tcp"
-  from_port                    = 8080
-  to_port                      = 8080
+  from_port                    = local.backend_port
+  to_port                      = local.backend_port
 }
 
 resource "aws_vpc_security_group_egress_rule" "app_db" {
@@ -102,18 +102,18 @@ resource "aws_lb" "service_demo" {
 resource "aws_lb_target_group" "service_demo" {
   count       = var.enable_service_demo ? 1 : 0
   name        = var.name
-  port        = 8080
+  port        = local.backend_port
   protocol    = "HTTP"
   target_type = "instance"
   vpc_id      = aws_vpc.sandbox.id
 
   health_check {
-    path = "/"
+    path = var.portal_replay != null ? "/health" : "/"
   }
 }
 
 resource "aws_lb_listener" "service_demo" {
-  count             = var.enable_service_demo ? 1 : 0
+  count             = var.enable_service_demo && var.portal_replay == null ? 1 : 0
   load_balancer_arn = aws_lb.service_demo[0].arn
   port              = 80
   protocol          = "HTTP"
@@ -130,7 +130,14 @@ resource "aws_launch_template" "service_demo" {
   image_id               = var.demo_ami_id
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.service_demo["app"].id]
-  user_data              = base64encode(replace(file("${path.module}/service-demo.sh"), "\r\n", "\n"))
+  user_data              = var.portal_replay == null ? base64encode(replace(file("${path.module}/service-demo.sh"), "\r\n", "\n")) : local.portal_user_data
+
+  dynamic "iam_instance_profile" {
+    for_each = var.portal_replay == null ? [] : [var.portal_replay.instance_profile]
+    content {
+      name = iam_instance_profile.value
+    }
+  }
 
   metadata_options {
     http_tokens = "required"
@@ -145,20 +152,33 @@ resource "aws_launch_template" "service_demo" {
       condition     = var.demo_ami_id != null
       error_message = "Set demo_ami_id when enabling the isolated service demo."
     }
+    precondition {
+      condition     = var.portal_replay == null ? true : length(local.portal_user_data) <= 21844
+      error_message = "Compressed portal user data exceeds the EC2 16 KiB limit."
+    }
   }
 }
 
 resource "aws_autoscaling_group" "service_demo" {
-  count               = var.enable_service_demo ? 1 : 0
-  name                = var.name
-  min_size            = 2
-  max_size            = 2
-  desired_capacity    = 2
-  vpc_zone_identifier = [aws_subnet.service_demo_tier["app_a"].id, aws_subnet.service_demo_tier["app_b"].id]
-  target_group_arns   = [aws_lb_target_group.service_demo[0].arn]
-  health_check_type   = "ELB"
+  count                     = var.enable_service_demo ? 1 : 0
+  name                      = var.name
+  min_size                  = local.portal_enabled && !var.start_portal_instances ? 0 : 2
+  max_size                  = 2
+  desired_capacity          = local.portal_enabled && !var.start_portal_instances ? 0 : 2
+  vpc_zone_identifier       = [aws_subnet.service_demo_tier["app_a"].id, aws_subnet.service_demo_tier["app_b"].id]
+  target_group_arns         = [aws_lb_target_group.service_demo[0].arn]
+  health_check_type         = "ELB"
+  health_check_grace_period = var.portal_replay == null ? null : 900
 
-  depends_on = [aws_lb_listener.service_demo]
+  depends_on = [
+    aws_lb_listener.service_demo,
+    aws_lb_listener.portal,
+    aws_route.portal_nat,
+    aws_route_table_association.portal_app,
+    aws_secretsmanager_secret_policy.portal,
+    aws_vpc_security_group_egress_rule.portal_https,
+    aws_cloudwatch_log_group.portal,
+  ]
 
   launch_template {
     id      = aws_launch_template.service_demo[0].id
@@ -179,7 +199,7 @@ resource "aws_db_parameter_group" "service_demo" {
 
   parameter {
     name  = "require_secure_transport"
-    value = "ON"
+    value = "1"
   }
 }
 

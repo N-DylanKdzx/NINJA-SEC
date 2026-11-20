@@ -8,8 +8,9 @@ variable "name" { type = string }
 variable "cidr" { type = string }
 
 resource "aws_vpc" "sandbox" {
-  cidr_block = var.cidr
-  tags       = { Name = var.name, Purpose = "IaC lifecycle test" }
+  cidr_block           = var.cidr
+  enable_dns_hostnames = var.portal_replay != null
+  tags                 = { Name = var.name, Purpose = "IaC lifecycle test" }
 }
 
 resource "aws_subnet" "sandbox" {

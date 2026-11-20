@@ -1,0 +1,44 @@
+#!/bin/bash
+set -euo pipefail
+umask 022
+
+install -d /opt/ninjasec-portal
+base64 -d <<'ARCHIVE' | tar -xz -C /opt/ninjasec-portal
+${archive_b64}
+ARCHIVE
+
+base64 -d <<'BOOTSTRAP' > /run/ninjasec-bootstrap.sh
+${bootstrap}
+BOOTSTRAP
+bash /run/ninjasec-bootstrap.sh
+rm -f /run/ninjasec-bootstrap.sh
+
+install -d -m 0755 /etc/ninjasec
+curl --fail --retry 5 -o /etc/ninjasec/rds-ca.pem \
+    'https://truststore.pki.rds.amazonaws.com/${region}/${region}-bundle.pem'
+
+umask 077
+/opt/ninjasec-venv/bin/python - <<'CONFIGURE'
+import boto3
+import json
+import pathlib
+import re
+
+client = boto3.client('secretsmanager', region_name='${region}')
+secret = json.loads(client.get_secret_value(SecretId='${secret_arn}')['SecretString'])
+settings = {
+    'PORTAL_USER': secret['portal_user'],
+    'PORTAL_PASSWORD': secret['portal_password'],
+    'DB_HOST': '${database}',
+    'DB_SECRET_ARN': '${secret_arn}',
+    'DB_NAME': 'ninjasec',
+    'DB_CA_FILE': '/etc/ninjasec/rds-ca.pem',
+}
+if not all(re.fullmatch(r'[A-Za-z0-9_./:\-]+', value) for value in settings.values()):
+    raise ValueError('Unexpected portal runtime configuration format')
+pending = pathlib.Path('/etc/ninjasec-portal.env.new')
+pending.write_text(''.join(f'{key}={value}\n' for key, value in settings.items()))
+pending.chmod(0o600)
+pending.replace('/etc/ninjasec-portal.env')
+CONFIGURE
+systemctl restart ninjasec-portal
