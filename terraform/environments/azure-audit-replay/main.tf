@@ -9,6 +9,12 @@ variable "subscription_id" {
   type = string
 }
 
+variable "automation_location" {
+  description = "Automation region with a free account slot in the target subscription."
+  type        = string
+  default     = "northcentralus"
+}
+
 variable "suffix" {
   description = "Unique name suffix for a disposable Azure audit deployment."
   type        = string
@@ -41,8 +47,8 @@ locals {
   storage_account    = "nsaudit${var.suffix}"
   workspace          = "law-${local.name}"
   automation_account = "aa-${local.name}"
-  aws_rule           = "aws-${local.name}"
-  oci_rule           = "oci-${local.name}"
+  aws_rule           = "aws-audit-${var.suffix}"
+  oci_rule           = "oci-audit-${var.suffix}"
   template           = jsondecode(file("${path.module}/../../../azure/audit-replay.json"))
   checkpoint_scope   = "${module.archive.storage_account_id}/blobServices/default/containers/pipeline-state"
 }
@@ -68,6 +74,7 @@ resource "azurerm_resource_group_template_deployment" "audit" {
     awsRuleName                 = { value = local.aws_rule }
     ociRuleName                 = { value = local.oci_rule }
     location                    = { value = local.location }
+    automationLocation          = { value = var.automation_location }
     enableWebhookAuthentication = { value = false }
   })
   depends_on = [module.archive]

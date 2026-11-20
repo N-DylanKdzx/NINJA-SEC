@@ -26,7 +26,7 @@ def main():
     automation_name = f"aa-ninjasec-audit-replay-{suffix}"
     storage_name = f"nsaudit{suffix}"
     if (resource.lower() != f"microsoft.automation/automationaccounts/{automation_name}".lower()
-            or dcr.lower() != (group + f"/providers/Microsoft.Insights/dataCollectionRules/aws-ninjasec-audit-replay-{suffix}").lower()
+            or dcr.lower() != (group + f"/providers/Microsoft.Insights/dataCollectionRules/aws-audit-{suffix}").lower()
             or storage.lower() != (group + f"/providers/Microsoft.Storage/storageAccounts/{storage_name}").lower()):
         raise ValueError("Replay resource names or resource group do not match")
 
