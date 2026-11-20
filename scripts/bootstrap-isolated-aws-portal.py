@@ -135,7 +135,30 @@ def verify(event):
 
 def run(event, context):
     try:
-        return seed(event) if event['mode'] == 'seed' else verify(event)
+        if event['mode'] == 'seed':
+            return seed(event)
+        if event['mode'] == 'verify':
+            return verify(event)
+        marker = event['replication_marker']
+        tls = ssl.create_default_context(cafile='/var/task/rds-ca.pem')
+        credentials = event['runtime']
+        with pymysql.connect(host=event['database'], user=credentials['username'],
+                             password=credentials['password'], database='ninjasec',
+                             autocommit=True, ssl=tls, connect_timeout=5, read_timeout=5) as conn, conn.cursor() as cur:
+            title = f'NINJA-SEC M10.5 {marker}'
+            if event['mode'] == 'repl-insert':
+                cur.execute('SELECT id FROM incidents WHERE title=%s AND description=%s',
+                            (title, marker))
+                row = cur.fetchone()
+                if row:
+                    return {'marker': marker, 'row_id': row[0], 'created': False}
+                cur.execute('INSERT INTO incidents (title, description, status) VALUES (%s, %s, %s)',
+                            (title, marker, 'abierto'))
+                return {'marker': marker, 'row_id': cur.lastrowid, 'created': True}
+            if event['mode'] == 'repl-delete':
+                cur.execute('DELETE FROM incidents WHERE title=%s AND description=%s', (title, marker))
+                return {'marker': marker, 'deleted': cur.rowcount}
+            raise ValueError('Unexpected mode')
     except (pymysql.Error, KeyError) as error:
         raise RuntimeError(f"Isolated portal probe failed: {type(error).__name__}") from None
 """
@@ -180,7 +203,7 @@ def main():
     parser.add_argument("--root", required=True)
     parser.add_argument("--role-arn", required=True)
     parser.add_argument("--hostname", required=True)
-    parser.add_argument("--phase", choices=["seed", "verify"], required=True)
+    parser.add_argument("--phase", choices=["seed", "verify", "repl-insert", "repl-delete"], required=True)
     parser.add_argument("--prepare-replication", action="store_true")
     args = parser.parse_args()
     if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9.-]+", args.hostname):
@@ -226,6 +249,9 @@ def main():
             event["replication_password"] = password
     elif args.prepare_replication:
         parser.error("Replication setup is only supported in the seed phase")
+    elif args.phase.startswith("repl-"):
+        marker = str(__import__("uuid").UUID(os.environ["NINJASEC_REPLAY_MARKER"]))
+        event.update(database=portal["database_host"], replication_marker=marker)
     else:
         targets = session.client("elbv2").describe_target_health(
             TargetGroupArn=base["target_group_arn"])["TargetHealthDescriptions"]

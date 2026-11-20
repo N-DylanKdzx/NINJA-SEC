@@ -173,6 +173,20 @@ resource "oci_core_network_security_group_security_rule" "bastion_ssh" {
   }
 }
 
+resource "oci_core_network_security_group_security_rule" "bastion_mysql" {
+  network_security_group_id = module.oci_infra.nsg_ids["db"]
+  direction                 = "INGRESS"
+  protocol                  = "6"
+  source                    = "${oci_bastion_bastion.peer.private_endpoint_ip_address}/32"
+  source_type               = "CIDR_BLOCK"
+  tcp_options {
+    destination_port_range {
+      min = 3306
+      max = 3306
+    }
+  }
+}
+
 output "wireguard" {
   value = {
     aws_peer_id  = aws_instance.wireguard.id

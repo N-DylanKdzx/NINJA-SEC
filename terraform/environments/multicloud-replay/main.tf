@@ -56,6 +56,19 @@ variable "oci_mysql_admin_password" {
   description = "Temporary database password. Keep local Terraform state private."
   type        = string
   sensitive   = true
+  nullable    = false
+
+  validation {
+    condition = (
+      length(var.oci_mysql_admin_password) >= 8 &&
+      length(var.oci_mysql_admin_password) <= 32 &&
+      can(regex("[A-Z]", var.oci_mysql_admin_password)) &&
+      can(regex("[a-z]", var.oci_mysql_admin_password)) &&
+      can(regex("[0-9]", var.oci_mysql_admin_password)) &&
+      can(regex("[^A-Za-z0-9[:space:]]", var.oci_mysql_admin_password))
+    )
+    error_message = "Use 8 to 32 characters with at least one uppercase letter, lowercase letter, digit, and non-alphanumeric character."
+  }
 }
 
 variable "azure_subscription_id" {

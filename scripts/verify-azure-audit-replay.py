@@ -2,7 +2,7 @@
 
 import argparse
 import base64
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 import hashlib
 import json
 import os
@@ -18,9 +18,51 @@ import urllib.request
 import uuid
 
 
+def find_replay_cloudtrail_batch(vpc_id, suffix):
+    import boto3
+    from read_cloudtrail import canonical_bytes, read_batch
+
+    session = boto3.Session(region_name="us-east-1")
+    account = session.client("sts").get_caller_identity()["Account"]
+    if account != "533267256700":
+        raise ValueError("Unexpected AWS account for the audit check")
+    [vpc] = session.client("ec2").describe_vpcs(VpcIds=[vpc_id])["Vpcs"]
+    if (vpc["CidrBlock"] != "10.243.0.0/16"
+            or {t["Key"]: t["Value"] for t in vpc.get("Tags", [])}.get("Name") != "ninjasec-iac-service-demo"):
+        raise ValueError("Unexpected VPC for the isolated audit check")
+    s3 = session.client("s3")
+    bucket = f"ninjasec-audit-{account}"
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=2)
+    seen = set()
+    for attempt in range(45):
+        today = datetime.now(timezone.utc)
+        for date in {today, today - timedelta(days=1)}:
+            prefix = f"AWSLogs/{account}/CloudTrail/us-east-1/{date:%Y/%m/%d}/"
+            for page in s3.get_paginator("list_objects_v2").paginate(Bucket=bucket, Prefix=prefix):
+                for item in page.get("Contents", []):
+                    key = item["Key"]
+                    if key in seen or item["LastModified"] < cutoff or not key.endswith(".json.gz"):
+                        continue
+                    seen.add(key)
+                    batch = read_batch(s3, bucket, [key])
+                    for record in batch["Records"]:
+                        response = record.get("responseElements") or {}
+                        if (record.get("eventName") == "CreateVpc"
+                                and (response.get("vpc") or {}).get("vpcId") == vpc_id):
+                            batch["Records"] = [record]
+                            print("M105_CLOUDTRAIL_EVENT", suffix, vpc_id, record["eventID"], key, flush=True)
+                            return canonical_bytes(batch)
+        if attempt % 5 == 0:
+            print("M105_WAITING_FOR_CLOUDTRAIL", vpc_id, flush=True)
+        time.sleep(20)
+    raise RuntimeError("The isolated VPC CreateVpc event did not arrive in CloudTrail S3")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--aws-batch-sha", help="SHA-256 of an existing CloudTrail export batch in S3")
+    sources = parser.add_mutually_exclusive_group()
+    sources.add_argument("--aws-batch-sha", help="SHA-256 of an existing CloudTrail export batch in S3")
+    sources.add_argument("--aws-source-vpc", help="Find the new replay VPC creation event in CloudTrail S3")
     args = parser.parse_args()
     if args.aws_batch_sha and not re.fullmatch(r"[0-9a-f]{64}", args.aws_batch_sha):
         parser.error("The batch SHA-256 must contain exactly 64 lowercase hexadecimal digits")
@@ -85,7 +127,12 @@ def main():
     else:
         raise RuntimeError("Azure runbook did not reach Published")
 
-    if args.aws_batch_sha:
+    if args.aws_source_vpc:
+        if not re.fullmatch(r"vpc-[0-9a-f]{8,17}", args.aws_source_vpc):
+            parser.error("Invalid VPC identifier")
+        raw = find_replay_cloudtrail_batch(args.aws_source_vpc, suffix)
+        sample = json.loads(raw)
+    elif args.aws_batch_sha:
         import boto3
 
         session = boto3.Session(region_name="us-east-1")
