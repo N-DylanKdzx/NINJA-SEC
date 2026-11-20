@@ -48,9 +48,9 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 5 | 10 | 40 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 7 | 11 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 5 | 2 |
-| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 10 | 2 |
+| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 9 | 3 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **14** | **61** | **228** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **14** | **60** | **229** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -851,7 +851,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **P2.1** | `[-] Bloqueado` | Dashboard Grafana precargado con los 6 paneles | — | F4 | — | Núcleo |  |
 | **P2.2** | `[ ] Pendiente` | Payloads SQLi/XSS preparados | — | F4 | — | Núcleo |  |
-| **P2.3** | `[-] Bloqueado` | Consolas listas (RDS y HeatWave en paralelo) | Abrir en paralelo las páginas de detalle de RDS y HeatWave con sesiones vigentes y verificar nombre y estado del recurso en cada consola. | F4 | — | Núcleo |  DescribeDBInstances confirmó ninjasec-mysql-primary available; GetDbSystem confirmó ninjasec-mysql-private ACTIVE y su canal ACTIVE. Las páginas se abrieron en el navegador integrado, pero RDS indicó sesión caducada, Academy pidió Student Login y OCI solicitó autenticación. Falta verificar ambas páginas de detalle con las sesiones renovadas. |
+| **P2.3** | `[x] Completado` | Consolas listas (RDS y HeatWave en paralelo) | Abrir en paralelo las páginas de detalle de RDS y HeatWave con sesiones vigentes y verificar nombre y estado del recurso en cada consola. | F4 | — | Núcleo |  DescribeDBInstances confirmó ninjasec-mysql-primary available; GetDbSystem confirmó ninjasec-mysql-private ACTIVE y su canal ACTIVE. Las páginas se abrieron en el navegador integrado, pero RDS indicó sesión caducada, Academy pidió Student Login y OCI solicitó autenticación. Falta verificar ambas páginas de detalle con las sesiones renovadas.  2026-11-19 22:16 UTC-5: Verificadas en paralelo en el navegador integrado ambas páginas de detalle autenticadas: AWS RDS (us-east-1), ninjasec-mysql-primary Disponible; OCI HeatWave (US East Ashburn), ninjasec-mysql-private Activo. |
 | **P2.4** | `[-] Bloqueado` | Infraestructura levantada tras reinicio de sesión del Lab | — | F4 | — | Núcleo |  |
 | **P2.5** | `[-] Bloqueado` | Credenciales del Lab refrescadas en Grafana y Terraform | — | F4 | — | Núcleo |  |
 
