@@ -12,6 +12,7 @@ Este documento refleja el checklist técnico del proyecto NINJA-SEC estructurado
 - `[ ] Pendiente`: Tarea planificada lista para ejecución técnica.
 - `[-] Bloqueado`: Tarea bloqueada o aplazada por decisión del proyecto (ej. entorno AWS).
 - `[x] Completado`: Tarea ejecutada y verificada (al marcar, consignar la evidencia en el apartado correspondiente).
+- `[n/a] No aplica`: Alternativa condicional no activada en el despliegue vigente. Se conserva como referencia y se contabiliza por separado de las tareas ejecutadas.
 
 ### Registro de Justificación y Evidencia (Uso Futuro)
 La columna **`Justificación / Sustento de Evidencia`** se encuentra inicialmente vacía y lista para documentar el respaldo técnico cuando una tarea se complete:
@@ -38,19 +39,19 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 ## 2. Resumen Ejecutivo por Dominio
 
-| Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` |
-| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 0 | 19 |
-| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 13 | 82 |
-| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 1 | 6 | 54 |
-| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 0 | 0 | 17 |
-| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 1 | 6 |
-| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 1 | 6 | 48 |
-| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 1 | 18 |
-| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 2 | 6 |
-| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 4 | 8 |
-| **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 2 | 4 | 2 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **4** | **14** | **285** |
+| Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` | No aplican `[n/a]` |
+| :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 0 | 19 | 0 |
+| **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 3 | 92 | 0 |
+| **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 0 | 0 | 61 | 0 |
+| **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 0 | 0 | 17 | 0 |
+| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 1 | 6 | 0 |
+| **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 1 | 1 | 48 | 5 |
+| **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 0 | 0 | 20 | 0 |
+| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 1 | 7 | 0 |
+| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 1 | 11 | 0 |
+| **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 2 | 2 | 4 | 0 |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **4** | **9** | **285** | **5** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -623,11 +624,11 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **M3.1** | `[-] Bloqueado` | Alternativa de sincronización si M2 no es viable | Bloqueada por decisión: activar solo tras limitación técnica comprobada de M2; no ejecutar dual-write y replicación nativa sobre los mismos datos. | F2 | P2 | Núcleo |  |
-| **M3.2** | `[-] Bloqueado` | Alternativa: conexiones privadas con TLS | Sin etapa MySQL pública. Requiere M1; validar identidades, certificados y permisos. | F2 | P2 | Núcleo |  |
-| **M3.3** | `[-] Bloqueado` | Alternativa: entrega idempotente hacia HeatWave privado | Usar endpoint verificado 10.20.10.191:3306; cola/outbox persistente, identificadores únicos y reintentos acotados. | F2 | P2 | Núcleo |  |
-| **M3.4** | `[-] Bloqueado` | Alternativa: reconciliación ante escrituras parciales | Probar caída de destino y recuperación sin perder ni duplicar eventos; no considerar segura una doble escritura sin control. | F2 | P2 | Núcleo |  |
-| **M3.5** | `[-] Bloqueado` | Alternativa: consistencia y demora medidas | Validar inserciones, actualizaciones y borrados, atraso y reintentos. Si M2 es adoptado, conservar como alternativa no ejecutada; no marcar completada. | F2 | P2 | Núcleo |  |
+| **M3.1** | `[n/a] No aplica` | Alternativa de sincronización si M2 no es viable | Activar solo tras comprobar una limitación técnica de M2. Evitar la ejecución simultánea de dual-write y replicación nativa sobre los mismos datos. | F2 | P2 | Núcleo | 2026-11-20: Ruta alternativa no activada. M2.4–M2.7 acreditan el canal RDS → HeatWave ACTIVE con TLS VERIFY_IDENTITY, inserción y borrado del incidente de prueba replicados, y seguimiento del desfase. Reabrir M3 si se comprueba una limitación técnica de M2. |
+| **M3.2** | `[n/a] No aplica` | Alternativa: conexiones privadas con TLS | Sin etapa MySQL pública. Requiere M1; validar identidades, certificados y permisos. | F2 | P2 | Núcleo | 2026-11-20: Ruta alternativa no activada. M2.4–M2.7 acreditan el canal RDS → HeatWave ACTIVE con TLS VERIFY_IDENTITY, inserción y borrado del incidente de prueba replicados, y seguimiento del desfase. Reabrir M3 si se comprueba una limitación técnica de M2. |
+| **M3.3** | `[n/a] No aplica` | Alternativa: entrega idempotente hacia HeatWave privado | Usar endpoint verificado 10.20.10.191:3306; cola/outbox persistente, identificadores únicos y reintentos acotados. | F2 | P2 | Núcleo | 2026-11-20: Ruta alternativa no activada. M2.4–M2.7 acreditan el canal RDS → HeatWave ACTIVE con TLS VERIFY_IDENTITY, inserción y borrado del incidente de prueba replicados, y seguimiento del desfase. Reabrir M3 si se comprueba una limitación técnica de M2. |
+| **M3.4** | `[n/a] No aplica` | Alternativa: reconciliación ante escrituras parciales | Probar caída de destino y recuperación sin perder ni duplicar eventos; no considerar segura una doble escritura sin control. | F2 | P2 | Núcleo | 2026-11-20: Ruta alternativa no activada. M2.4–M2.7 acreditan el canal RDS → HeatWave ACTIVE con TLS VERIFY_IDENTITY, inserción y borrado del incidente de prueba replicados, y seguimiento del desfase. Reabrir M3 si se comprueba una limitación técnica de M2. |
+| **M3.5** | `[n/a] No aplica` | Alternativa: consistencia y demora medidas | Validar inserciones, actualizaciones y borrados, atraso y reintentos. Si M2 es adoptado, conservar como alternativa no ejecutada; no marcar completada. | F2 | P2 | Núcleo | 2026-11-20: Ruta alternativa no activada. M2.4–M2.7 acreditan el canal RDS → HeatWave ACTIVE con TLS VERIFY_IDENTITY, inserción y borrado del incidente de prueba replicados, y seguimiento del desfase. Reabrir M3 si se comprueba una limitación técnica de M2. |
 
 
 <a id="comp-m4"></a>
