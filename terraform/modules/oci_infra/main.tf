@@ -82,6 +82,19 @@ resource "oci_core_security_list" "subnet" {
       code = 4
     }
   }
+
+  dynamic "egress_security_rules" {
+    for_each = each.key == "private" ? local.replication_bastion_egress : tomap({})
+    content {
+      protocol    = "6"
+      destination = egress_security_rules.key
+      stateless   = false
+      tcp_options {
+        min = egress_security_rules.value
+        max = egress_security_rules.value
+      }
+    }
+  }
 }
 
 resource "oci_core_subnet" "this" {

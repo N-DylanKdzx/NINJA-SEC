@@ -16,6 +16,15 @@ variable "replication_bastion_cidr" {
   default     = null
 }
 
+locals {
+  replication_bastion_egress = (
+    var.replication_network == null ? tomap({}) : tomap({
+      "${var.replication_network.peer_ip}/32"     = 22
+      "${var.replication_network.database_ip}/32" = 3306
+    })
+  )
+}
+
 data "oci_core_private_ips" "replication_peer" {
   count      = var.replication_network == null ? 0 : 1
   subnet_id  = oci_core_subnet.this["private"].id
@@ -46,7 +55,7 @@ resource "oci_core_subnet" "replication" {
   prohibit_public_ip_on_vnic = true
   prohibit_internet_ingress  = true
   route_table_id             = oci_core_route_table.replication[0].id
-  security_list_ids          = [oci_core_security_list.subnet["private"].id, oci_core_security_list.replication[0].id]
+  security_list_ids          = [oci_core_security_list.replication[0].id]
 }
 
 # Restrict the dedicated database subnet without requiring an IAM grant for a
@@ -56,6 +65,15 @@ resource "oci_core_security_list" "replication" {
   compartment_id = var.compartment_id
   vcn_id         = oci_core_vcn.this.id
   display_name   = "${var.name_prefix}-sl-replication"
+
+  ingress_security_rules {
+    protocol = "1"
+    source   = "0.0.0.0/0"
+    icmp_options {
+      type = 3
+      code = 4
+    }
+  }
 
   dynamic "ingress_security_rules" {
     for_each = var.replication_bastion_cidr == null ? [] : [var.replication_bastion_cidr]
