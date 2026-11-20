@@ -1,18 +1,23 @@
 #!/bin/bash
-set -euo pipefail
+set -Eeuo pipefail
 umask 022
+stage=unpack
+note() { printf 'NINJASEC_REPLAY %s\n' "$1" > /dev/console; }
+trap 'note "failed stage=$stage line=$LINENO status=$?"' ERR
+note "start stage=$stage"
 
 install -d /opt/ninjasec-portal
 base64 -d <<'ARCHIVE' | tar -xz -C /opt/ninjasec-portal
 ${archive_b64}
 ARCHIVE
 
-base64 -d <<'BOOTSTRAP' > /run/ninjasec-bootstrap.sh
-${bootstrap}
-BOOTSTRAP
-bash /run/ninjasec-bootstrap.sh
-rm -f /run/ninjasec-bootstrap.sh
+stage=install
+note "start stage=$stage"
+bash /opt/ninjasec-portal/replay-bootstrap.sh
+rm -f /opt/ninjasec-portal/replay-bootstrap.sh
 
+stage=configure
+note "start stage=$stage"
 install -d -m 0755 /etc/ninjasec
 curl --fail --retry 5 -o /etc/ninjasec/rds-ca.pem \
     'https://truststore.pki.rds.amazonaws.com/${region}/${region}-bundle.pem'
@@ -41,4 +46,9 @@ pending.write_text(''.join(f'{key}={value}\n' for key, value in settings.items()
 pending.chmod(0o600)
 pending.replace('/etc/ninjasec-portal.env')
 CONFIGURE
+stage=health
+note "start stage=$stage"
 systemctl restart ninjasec-portal
+curl --fail --retry 8 --retry-connrefused --retry-delay 2 --max-time 8 --silent --show-error \
+    http://127.0.0.1:8080/health > /dev/null
+note "passed stage=$stage"

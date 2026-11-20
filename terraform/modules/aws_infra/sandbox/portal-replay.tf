@@ -18,13 +18,12 @@ variable "start_portal_instances" {
 locals {
   portal_enabled = var.enable_service_demo && var.portal_replay != null
   backend_port   = var.portal_replay == null ? 8080 : 80
-  portal_user_data = local.portal_enabled ? base64gzip(templatefile("${path.module}/portal-replay.sh.tftpl", {
+  portal_user_data = local.portal_enabled ? base64encode(replace(templatefile("${path.module}/portal-replay.sh.tftpl", {
     archive_b64 = filebase64(var.portal_replay.archive_path)
-    bootstrap   = base64encode(replace(replace(replace(file("${path.module}/../../../../scripts/bootstrap-aws-app.sh"), "\r\n", "\n"), "/ninjasec/", "/ninjasec-iac-service-demo/"), "NINJA-SEC/Host", "NINJA-SEC/IaCReplay"))
     secret_arn  = aws_secretsmanager_secret.portal[0].arn
     database    = aws_db_instance.service_demo[0].address
     region      = data.aws_region.portal[0].name
-  })) : null
+  }), "\r\n", "\n")) : null
 }
 
 data "aws_region" "portal" {

@@ -154,7 +154,7 @@ resource "aws_launch_template" "service_demo" {
     }
     precondition {
       condition     = var.portal_replay == null ? true : length(local.portal_user_data) <= 21844
-      error_message = "Compressed portal user data exceeds the EC2 16 KiB limit."
+      error_message = "Portal user data exceeds the EC2 16 KiB limit."
     }
   }
 }
