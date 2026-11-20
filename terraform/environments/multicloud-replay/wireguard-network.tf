@@ -118,13 +118,11 @@ resource "oci_core_network_security_group_security_rule" "peer_database" {
 }
 
 resource "oci_core_network_security_group_security_rule" "replication_to_rds" {
-  for_each = {
-    for pair in setproduct(toset(["soc", "db"]), local.aws_database_cidrs) : "${pair[0]}-${pair[1]}" => pair
-  }
-  network_security_group_id = module.oci_infra.nsg_ids[each.value[0]]
+  for_each                  = { for cidr in local.aws_database_cidrs : "soc-${cidr}" => cidr }
+  network_security_group_id = module.oci_infra.nsg_ids["soc"]
   direction                 = "EGRESS"
   protocol                  = "6"
-  destination               = each.value[1]
+  destination               = each.value
   destination_type          = "CIDR_BLOCK"
 
   tcp_options {
@@ -169,20 +167,6 @@ resource "oci_core_network_security_group_security_rule" "bastion_ssh" {
     destination_port_range {
       min = 22
       max = 22
-    }
-  }
-}
-
-resource "oci_core_network_security_group_security_rule" "bastion_mysql" {
-  network_security_group_id = module.oci_infra.nsg_ids["db"]
-  direction                 = "INGRESS"
-  protocol                  = "6"
-  source                    = "${oci_bastion_bastion.peer.private_endpoint_ip_address}/32"
-  source_type               = "CIDR_BLOCK"
-  tcp_options {
-    destination_port_range {
-      min = 3306
-      max = 3306
     }
   }
 }

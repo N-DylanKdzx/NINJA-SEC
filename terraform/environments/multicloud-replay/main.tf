@@ -113,11 +113,13 @@ module "oci_infra" {
   mysql_availability_domain = var.oci_replay.availability_domain
   mysql_admin_password      = var.oci_mysql_admin_password
   replication_network = {
-    subnet_cidr = "10.244.11.0/24"
-    peer_ip     = "10.244.10.10"
-    database_ip = "10.244.11.10"
-    source_cidr = "10.243.0.0/16"
+    subnet_cidr           = "10.244.11.0/24"
+    peer_ip               = "10.244.10.10"
+    database_ip           = "10.244.11.10"
+    source_cidr           = "10.243.0.0/16"
+    source_database_cidrs = local.aws_database_cidrs
   }
+  replication_bastion_cidr = "${oci_bastion_bastion.peer.private_endpoint_ip_address}/32"
   instances = {
     "ninjasec-m105-peer-${var.suffix}" = {
       availability_domain    = var.oci_replay.availability_domain
