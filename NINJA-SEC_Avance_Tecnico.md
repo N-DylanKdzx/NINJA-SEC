@@ -44,13 +44,13 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[A](#dominio-a---aws-us-east-1-vpc-10100016)** | AWS · us-east-1 (VPC 10.10.0.0/16) | 95 | 88 | 7 | 0 | 16 | 79 |
 | **[B](#dominio-b---oci-home-region-vcn-10200016)** | OCI · Home Region (VCN 10.20.0.0/16) | 61 | 56 | 5 | 1 | 7 | 53 |
 | **[C](#dominio-c---azure-east-us-cumplimiento-y-forense)** | Azure · West US (servicios; RG en East US) | 17 | 16 | 1 | 1 | 0 | 16 |
-| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 4 | 3 |
+| **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 1 | 6 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 5 | 10 | 40 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 2 | 7 | 11 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 1 | 5 | 2 |
-| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 11 | 1 |
+| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 10 | 2 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **14** | **65** | **224** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **14** | **61** | **228** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -566,11 +566,11 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **D1.1** | `[x] Completado` | Zona del dominio activa en Cloudflare | — | F3 | P3b | Núcleo | Cloudflare Overview de ninjasec.dev mostró Your domain is now protected by Cloudflare, DNS Setup Full y plan Free. |
-| **D1.2** | `[-] Bloqueado` | Registro primario (CNAME) hacia el ALB de AWS | — | F3 | P3b | Núcleo |  |
+| **D1.2** | `[x] Completado` | Registro primario (CNAME) hacia el ALB de AWS | Resolver el dominio principal portal-aws.ninjasec.dev mediante CNAME al ALB de AWS. | F3 | P3b | Núcleo |  2026-11-19 22:00 UTC-5: Resolve-DnsName -Type CNAME -Server 1.1.1.1 devolvió ninjasec-portal-2082084587.us-east-1.elb.amazonaws.com, TTL 60 s. |
 | **D1.3** | `[x] Completado` | Registro secundario hacia el LB de OCI | — | F3 | P3b | Núcleo | Cloudflare DNS Records confirmó el registro A portal-oci.ninjasec.dev hacia 129.159.170.148 con proxy habilitado. |
 | **D1.4** | `[x] Completado` | Proxy y TLS de Cloudflare configurados | — | F3 | P3b | Núcleo | 2026-11-13 UTC: recuperado el backend OCI 10.20.10.36:8080. curl HTTPS sin omitir la validación TLS confirmó /health HTTP 200 y status ok por Cloudflare (CF-RAY a59c27a2fcb5c199-EZE); GET / devolvió el formulario NINJA-SEC HTTP 200 sin WWW-Authenticate (CF-RAY a59c2877be37342e-EZE). 2026-11-17: /health público volvió a HTTP 200 con TLS verificado después de recuperar el backend OCI. Véase B5.2. |
-| **D1.5** | `[-] Bloqueado` | Mecanismo de failover definido (health check o cambio manual) | Implementar conmutación controlada de portal.ninjasec.dev y retorno, coordinada con M4. No asumir failover automático incluido en Cloudflare Free; registrar mecanismo, tiempos y costo. | F3 | P3b | Núcleo |  |
-| **D1.6** | `[-] Bloqueado` | portal.<dominio> resuelve y sirve el portal por HTTPS | — | F3 | P3b | Núcleo |  |
+| **D1.5** | `[x] Completado` | Mecanismo de failover definido (health check o cambio manual) | Conmutar manualmente el DNS de portal-aws.ninjasec.dev entre AWS y OCI, coordinando el cercado de escrituras, la promoción, el CRUD y el retorno verificable. | F3 | P3b | Núcleo |  2026-11-19 22:00 UTC-5: Ensayo M4.3/M5.1/M5.2/M5.4 en commit 697dbf51ca9a57dfb7c3f6361b92cf2ca2fd0160: CNAME ALB a registro A 129.159.170.148 y retorno al CNAME; DNS only, TTL 60 s. SSM registró cercado 21:10:53, inicio de reconciliación 21:15:06 y restitución de permisos AWS 21:17:08 (hora Perú). CRUD por HTTPS en OCI y lectura del incidente ID 14 tras volver a AWS. Cambio DNS manual sin contratar un servicio adicional de health check. |
+| **D1.6** | `[x] Completado` | portal-aws.ninjasec.dev resuelve y sirve el portal por HTTPS | Verificar DNS público y HTTPS con certificado válido para portal-aws.ninjasec.dev. | F3 | P3b | Núcleo |  2026-11-19 22:00 UTC-5: DNS público al ALB; curl con validación TLS devolvió HTTP 200 en /, TLS verify 0, y /health respondió HTTP 200 con status ok. |
 | **D1.7** | `[-] Bloqueado` | Route 53 Health Check + Failover (solo si Academy lo permite) | — | F3 | P3b | Secundario |  |
 
 
@@ -832,7 +832,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **P1.1** | `[-] Bloqueado` | Demo 1: portal por HTTPS con respuesta 200 | — | F4 | — | Núcleo | Variante OCI verificada: https://portal-oci.ninjasec.dev/ y /health devolvieron 200. Se conserva el estado de la demo final hasta confirmar si el criterio exige el punto de entrada principal. |
+| **P1.1** | `[x] Completado` | Demo 1: portal por HTTPS con respuesta 200 | Demostrar HTTP 200 por HTTPS en la entrada principal y su endpoint de salud. | F4 | — | Núcleo | Variante OCI verificada: https://portal-oci.ninjasec.dev/ y /health devolvieron 200. Se conserva el estado de la demo final hasta confirmar si el criterio exige el punto de entrada principal.  2026-11-19 22:00 UTC-5: Punto de entrada principal https://portal-aws.ninjasec.dev/: curl devolvió HTTP 200 con validación TLS; /health HTTP 200 con status ok. |
 | **P1.2** | `[-] Bloqueado` | Demo 2: ip route muestra la VPN hacia OCI | — | F4 | — | Núcleo |  |
 | **P1.3** | `[-] Bloqueado` | Demo 3: crear incidente → SELECT en OCI | — | F4 | — | Núcleo |  |
 | **P1.4** | `[-] Bloqueado` | Demo 4: terminar web-01 → portal sigue → Auto Scaling repone | — | F4 | — | Núcleo |  |
