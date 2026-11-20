@@ -39,6 +39,8 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 
 ## 2. Resumen Ejecutivo por Dominio
 
+**Avance del alcance aplicable: 285 de 298 tareas completadas. Faltan 13 (4 pendientes y 9 bloqueadas).** Las 5 alternativas no aplicables se conservan como referencia y se excluyen del cálculo.
+
 | Cód | Dominio Técnico | Total Tareas | Núcleo | Secundario | Pendientes `[ ]` | Bloqueadas `[-]` | Completadas `[x]` | No aplican `[n/a]` |
 | :---: | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **[G](#dominio-g---preparación-de-cuentas-y-herramientas)** | Preparación de cuentas y herramientas | 19 | 18 | 1 | 0 | 0 | 19 | 0 |
