@@ -14,12 +14,25 @@ data "aws_availability_zones" "demo" {
   state = "available"
 }
 
-resource "aws_subnet" "service_demo" {
-  count                   = var.enable_service_demo ? 2 : 0
+locals {
+  demo_subnets = var.enable_service_demo ? tomap({
+    alb_a = { az_index = 0, network = 10 }
+    alb_b = { az_index = 1, network = 11 }
+    app_a = { az_index = 0, network = 12 }
+    app_b = { az_index = 1, network = 13 }
+    db_a  = { az_index = 0, network = 14 }
+    db_b  = { az_index = 1, network = 15 }
+  }) : tomap({})
+}
+
+resource "aws_subnet" "service_demo_tier" {
+  for_each                = local.demo_subnets
   vpc_id                  = aws_vpc.sandbox.id
-  cidr_block              = cidrsubnet(var.cidr, 8, count.index + 10)
-  availability_zone       = data.aws_availability_zones.demo[0].names[count.index]
+  cidr_block              = cidrsubnet(var.cidr, 8, each.value.network)
+  availability_zone       = data.aws_availability_zones.demo[0].names[each.value.az_index]
   map_public_ip_on_launch = false
+
+  tags = { Name = "${var.name}-${each.key}" }
 }
 
 locals {
@@ -82,7 +95,7 @@ resource "aws_lb" "service_demo" {
   name               = var.name
   internal           = true
   load_balancer_type = "application"
-  subnets            = aws_subnet.service_demo[*].id
+  subnets            = [aws_subnet.service_demo_tier["alb_a"].id, aws_subnet.service_demo_tier["alb_b"].id]
   security_groups    = [aws_security_group.service_demo["alb"].id]
 }
 
@@ -141,7 +154,7 @@ resource "aws_autoscaling_group" "service_demo" {
   min_size            = 2
   max_size            = 2
   desired_capacity    = 2
-  vpc_zone_identifier = aws_subnet.service_demo[*].id
+  vpc_zone_identifier = [aws_subnet.service_demo_tier["app_a"].id, aws_subnet.service_demo_tier["app_b"].id]
   target_group_arns   = [aws_lb_target_group.service_demo[0].arn]
   health_check_type   = "ELB"
 
@@ -156,7 +169,7 @@ resource "aws_autoscaling_group" "service_demo" {
 resource "aws_db_subnet_group" "service_demo" {
   count      = var.enable_service_demo ? 1 : 0
   name       = var.name
-  subnet_ids = aws_subnet.service_demo[*].id
+  subnet_ids = [aws_subnet.service_demo_tier["db_a"].id, aws_subnet.service_demo_tier["db_b"].id]
 }
 
 resource "aws_db_parameter_group" "service_demo" {
