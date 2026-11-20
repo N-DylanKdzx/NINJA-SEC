@@ -833,27 +833,6 @@ resource "oci_core_network_security_group_security_rule" "group_0_rule_6" {
   }
 }
 
-resource "oci_core_network_security_group_security_rule" "group_3_rule_0" {
-  description               = "MySQL private monitor validation"
-  destination               = null
-  destination_type          = null
-  direction                 = "INGRESS"
-  network_security_group_id = oci_core_network_security_group.item_3.id
-  protocol                  = "6"
-  source                    = "10.20.10.36/32"
-  source_type               = "CIDR_BLOCK"
-  stateless                 = false
-  tcp_options {
-    destination_port_range {
-      max = 3306
-      min = 3306
-    }
-  }
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 resource "oci_core_network_security_group_security_rule" "group_0_rule_0" {
   description               = "WireGuard to existing AWS router only"
   destination               = "52.5.105.205/32"
