@@ -27,11 +27,14 @@ def main():
     storage = outputs["storage_account"]
     automation = outputs["automation_account_id"]
     workspace = outputs["workspace_id"]
-    root = automation.split("/providers/")[0]
+    root = workspace.split("/providers/")[0]
     sub = root.split("/")[2]
+    isolated = f"{root}/providers/Microsoft.Automation/automationAccounts/aa-ninjasec-audit-replay-{suffix}"
+    shared = f"/subscriptions/{sub}/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.Automation/automationAccounts/ninjasec-oci-audit"
+    using_shared = automation.lower() == shared.lower()
     if (not root.lower().endswith("/resourcegroups/" + group)
             or storage != f"nsaudit{suffix}"
-            or not automation.lower().endswith(f"/automationaccounts/aa-ninjasec-audit-replay-{suffix}")
+            or (not using_shared and automation.lower() != isolated.lower())
             or not workspace.lower().startswith(root.lower() + "/providers/microsoft.operationalinsights/workspaces/")):
         raise ValueError("Output resources are outside the expected test group")
 
@@ -64,7 +67,8 @@ def main():
     container = f"{root}/providers/Microsoft.Storage/storageAccounts/{storage}/blobServices/default/containers/audit-logs-aws"
     assignment = f"{container}/providers/Microsoft.Authorization/roleAssignments/{uuid.uuid4()}"
     role = f"/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe"
-    checkpoint = f"{automation}/runbooks/Import-AwsAudit"
+    runbook_name = f"Import-AwsAudit-Replay-{suffix}" if using_shared else "Import-AwsAudit"
+    checkpoint = f"{automation}/runbooks/{runbook_name}"
     rule_version = "2023-11-01"
     for attempt in range(18):
         status = arm("GET", checkpoint, rule_version)["properties"].get("state")
@@ -101,7 +105,7 @@ def main():
     job_id = str(uuid.uuid4())
     job_path = f"{automation}/jobs/{job_id}"
     arm("PUT", job_path, rule_version, {"properties": {
-        "runbook": {"name": "Import-AwsAudit"}, "parameters": {"BlobName": blob},
+        "runbook": {"name": runbook_name}, "parameters": {"BlobName": blob},
     }})
     print("AZURE_REPLAY_JOB", job_id, "EVENT", event, flush=True)
     for _ in range(54):

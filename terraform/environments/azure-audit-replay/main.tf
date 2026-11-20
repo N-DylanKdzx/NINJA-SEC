@@ -15,6 +15,12 @@ variable "automation_location" {
   default     = "northcentralus"
 }
 
+variable "existing_automation_principal_id" {
+  description = "Managed identity of the existing NINJA-SEC Automation account. Null creates an isolated account."
+  type        = string
+  default     = null
+}
+
 variable "suffix" {
   description = "Unique name suffix for a disposable Azure audit deployment."
   type        = string
@@ -49,8 +55,13 @@ locals {
   automation_account = "aa-${local.name}"
   aws_rule           = "aws-audit-${var.suffix}"
   oci_rule           = "oci-audit-${var.suffix}"
-  template           = jsondecode(file("${path.module}/../../../azure/audit-replay.json"))
-  checkpoint_scope   = "${module.archive.storage_account_id}/blobServices/default/containers/pipeline-state"
+  base_template      = jsondecode(file("${path.module}/../../../azure/audit-replay.json"))
+  shared_automation  = var.existing_automation_principal_id != null
+  template = merge(local.base_template, {
+    resources = [for r in local.base_template.resources : r if !local.shared_automation || !startswith(r.type, "Microsoft.Automation/")]
+    outputs   = { for key, value in local.base_template.outputs : key => value if !local.shared_automation || !startswith(key, "automation") }
+  })
+  checkpoint_scope = "${module.archive.storage_account_id}/blobServices/default/containers/pipeline-state"
 }
 
 module "archive" {
@@ -81,9 +92,10 @@ resource "azurerm_resource_group_template_deployment" "audit" {
 }
 
 locals {
-  deployment_outputs = jsondecode(azurerm_resource_group_template_deployment.audit.output_content)
-  aws_dcr_id         = local.deployment_outputs.awsDcrResourceId.value
-  automation_id      = local.deployment_outputs.automationAccountResourceId.value
+  deployment_outputs      = jsondecode(azurerm_resource_group_template_deployment.audit.output_content)
+  aws_dcr_id              = local.deployment_outputs.awsDcrResourceId.value
+  automation_id           = local.shared_automation ? "/subscriptions/${var.subscription_id}/resourceGroups/rg-ninjasec-compliance/providers/Microsoft.Automation/automationAccounts/ninjasec-oci-audit" : local.deployment_outputs.automationAccountResourceId.value
+  automation_principal_id = local.shared_automation ? var.existing_automation_principal_id : local.deployment_outputs.automationPrincipalId.value
   access = {
     aws_archive = {
       scope = module.archive.container_ids["audit-logs-aws"]
@@ -104,7 +116,7 @@ resource "azurerm_role_assignment" "receiver" {
   for_each                         = local.access
   scope                            = each.value.scope
   role_definition_name             = each.value.role
-  principal_id                     = local.deployment_outputs.automationPrincipalId.value
+  principal_id                     = local.automation_principal_id
   skip_service_principal_aad_check = true
 }
 
@@ -115,6 +127,18 @@ resource "terraform_data" "publish_receiver" {
     storage    = module.archive.storage_account_id
     source     = filesha256("${path.module}/../../../scripts/import-aws-audit.ps1")
     publisher  = filesha256("${path.module}/../../../scripts/publish-azure-audit-replay.py")
+    directory  = abspath("${path.module}/../../..")
+  }
+
+  provisioner "local-exec" {
+    when        = destroy
+    command     = "python scripts/publish-azure-audit-replay.py --remove"
+    working_dir = self.triggers_replace.directory
+    environment = {
+      NINJASEC_REPLAY_AUTOMATION = self.triggers_replace.automation
+      NINJASEC_REPLAY_DCR        = self.triggers_replace.dcr
+      NINJASEC_REPLAY_STORAGE    = self.triggers_replace.storage
+    }
   }
 
   provisioner "local-exec" {
