@@ -851,7 +851,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **P2.1** | `[-] Bloqueado` | Dashboard Grafana precargado con los 6 paneles | — | F4 | — | Núcleo |  |
 | **P2.2** | `[ ] Pendiente` | Payloads SQLi/XSS preparados | — | F4 | — | Núcleo |  |
-| **P2.3** | `[-] Bloqueado` | Consolas listas (RDS y HeatWave en paralelo) | — | F4 | — | Núcleo |  |
+| **P2.3** | `[-] Bloqueado` | Consolas listas (RDS y HeatWave en paralelo) | Abrir en paralelo las páginas de detalle de RDS y HeatWave con sesiones vigentes y verificar nombre y estado del recurso en cada consola. | F4 | — | Núcleo |  DescribeDBInstances confirmó ninjasec-mysql-primary available; GetDbSystem confirmó ninjasec-mysql-private ACTIVE y su canal ACTIVE. Las páginas se abrieron en el navegador integrado, pero RDS indicó sesión caducada, Academy pidió Student Login y OCI solicitó autenticación. Falta verificar ambas páginas de detalle con las sesiones renovadas. |
 | **P2.4** | `[-] Bloqueado` | Infraestructura levantada tras reinicio de sesión del Lab | — | F4 | — | Núcleo |  |
 | **P2.5** | `[-] Bloqueado` | Credenciales del Lab refrescadas en Grafana y Terraform | — | F4 | — | Núcleo |  |
 
