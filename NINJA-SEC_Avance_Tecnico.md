@@ -47,10 +47,10 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[D](#dominio-d---cloudflare-dns-y-borde)** | Cloudflare · DNS y borde | 7 | 6 | 1 | 0 | 1 | 6 |
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 2 | 9 | 44 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 3 | 16 |
-| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 4 | 4 |
+| **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 3 | 5 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 7 | 5 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 2 | 4 | 2 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **5** | **25** | **273** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **5** | **24** | **274** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -801,7 +801,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | Código | Estado | Tarea / Elemento Técnico | Detalle / Criterio de Completado | Fase | Pilar | Prioridad | Justificación / Sustento de Evidencia |
 | :---: | :---: | :--- | :--- | :---: | :---: | :---: | :--- |
 | **R1.1** | `[x] Completado` | Backup automático de RDS (7 días) verificado en consola | Confirmar con la API o consola que RDS conserva siete días y dispone de un respaldo automático utilizable. | F4 | P2 | Núcleo |   2026-11-19: DescribeDBInstances confirma retención 7 días y LatestRestorableTime 2026-11-19T22:38:55Z. DescribeDBSnapshots confirma automático rds:ninjasec-mysql-primary-2026-11-19-20-47 available. Restauración corresponde a R2.1. |
-| **R1.2** | `[-] Bloqueado` | Snapshot manual de RDS tomado | — | F4 | P2 | Núcleo |  |
+| **R1.2** | `[x] Completado` | Snapshot manual de RDS tomado | Crear un snapshot manual del RDS primario, comprobar estado available, cifrado y correspondencia con su origen, y conservarlo para el ensayo R2.1. | F4 | P2 | Núcleo | 2026-11-20: CreateDBSnapshot request 0e0ab103-2402-4738-8e8c-4987d643023e. ARN arn:aws:rds:us-east-1:533267256700:snapshot:ninjasec-r1-r2-proof-20261120. DescribeDBSnapshots: available, 100 %, cifrado, 20 GiB gp3 de ninjasec-mysql-primary, snapshot 07:18:19.520 UTC. Conservado para R2.1. |
 | **R1.3** | `[x] Completado` | Versionado de S3 verificado (recuperar objeto previo) | Sobrescribir objeto de prueba y recuperar contenido exacto de su versión previa; limpiar objetos temporales. | F4 | P2 | Núcleo |  2026-11-18: S3 assets validation/versioning-proof.txt: v1 VTh3BDBgpewlrSr0WX0BgeDMmCGGpz12 y v2 hN.exBIdiUKetbT_bi.gSCmjNEK58SSv. get-object --version-id v1 recuperó contenido NINJA-SEC version 1 tras sobrescritura. RESTORE_VERSION_PASS, SSE-KMS verificado. Ambas versiones temporales eliminadas. |
 
 
