@@ -48,9 +48,9 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[M](#dominio-m---integraciones-multicloud)** | Integraciones Multicloud | 55 | 53 | 2 | 2 | 8 | 45 |
 | **[T](#dominio-t---seguridad-transversal)** | Seguridad transversal | 20 | 19 | 1 | 1 | 1 | 18 |
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 2 | 6 |
-| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 6 | 6 |
+| **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 5 | 7 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 2 | 4 | 2 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **5** | **18** | **280** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **5** | **17** | **281** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -853,7 +853,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **P2.2** | `[ ] Pendiente` | Payloads SQLi/XSS preparados | — | F4 | — | Núcleo |  |
 | **P2.3** | `[x] Completado` | Consolas listas (RDS y HeatWave en paralelo) | Abrir en paralelo las páginas de detalle de RDS y HeatWave con sesiones vigentes y verificar nombre y estado del recurso en cada consola. | F4 | — | Núcleo |  DescribeDBInstances confirmó ninjasec-mysql-primary available; GetDbSystem confirmó ninjasec-mysql-private ACTIVE y su canal ACTIVE. Las páginas se abrieron en el navegador integrado, pero RDS indicó sesión caducada, Academy pidió Student Login y OCI solicitó autenticación. Falta verificar ambas páginas de detalle con las sesiones renovadas.  2026-11-19 22:16 UTC-5: Verificadas en paralelo en el navegador integrado ambas páginas de detalle autenticadas: AWS RDS (us-east-1), ninjasec-mysql-primary Disponible; OCI HeatWave (US East Ashburn), ninjasec-mysql-private Activo. |
 | **P2.4** | `[x] Completado` | Infraestructura levantada tras reinicio de sesión del Lab | Comprobar despues de un End Lab/Start Lab real que vuelvan el router, las instancias APP, los targets, el portal y el tunel; distinguir recuperacion de continuidad durante el Lab apagado. | F4 | — | Núcleo | 2026-11-20: En Lab 194766 CloudTrail StopInstances del router 05a69d57-1fdc-4bf7-aa4e-106886da1569 a 00:39:44 y StartInstances 3c83be4e-8265-43af-a1bc-f5900dd8ad76 a 00:40:13 hora local. SSM  e8776efe-34ce-48cb-a03a-558419eb3882 / bd97384c-21f1-4fa2-835d-043545b8483e / 1a1cbaa2-fedd-49ad-9eeb-1fe7aa339bb1: 3 hosts con arranque posterior, EIP NAT estable y handshake 56 s. ALB 2/2 healthy, portal AWS y OCI HTTP 200 y canal HeatWave ACTIVE. No acredita continuidad fuera de sesion (K2.3). |
-| **P2.5** | `[-] Bloqueado` | Credenciales del Lab refrescadas en Grafana y Terraform | — | F4 | — | Núcleo |  |
+| **P2.5** | `[x] Completado` | Credenciales del Lab refrescadas en Grafana y Terraform | Tras renovar Academy, verificar el plan Terraform autenticado y una muestra AWS reciente en Grafana mediante el exportador con rol EC2. | F4 | — | Núcleo | 2026-11-20: T2.4 y M10.4. Start Lab 00:40 hora local; plan autenticado en PowerShell a 06:58 UTC leyo ASG, ALB y RDS. Grafana OCI .41 con database ok y snapshot AWS generado a 07:57:25 UTC, ultima muestra 07:52 UTC, 4 puntos. El exportador usa LabRole; la renovacion manual se aplica al archivo local de AWS CLI/Terraform. |
 
 
 ---
