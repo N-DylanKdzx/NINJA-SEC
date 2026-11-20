@@ -51,6 +51,51 @@
                   "aws:SourceArn": "arn:aws:cloudtrail:us-east-1:533267256700:trail/ninjasec-audit"
                 }
               }
+            },
+            {
+              "Sid": "FlowLogsDelivery",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "delivery.logs.amazonaws.com"
+              },
+              "Action": [
+                "kms:Encrypt",
+                "kms:Decrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*",
+                "kms:DescribeKey"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "aws:SourceAccount": "533267256700"
+                },
+                "ArnLike": {
+                  "aws:SourceArn": "arn:aws:logs:us-east-1:533267256700:*"
+                }
+              }
+            },
+            {
+              "Sid": "DenyWorkloadStateKeyUse",
+              "Effect": "Deny",
+              "Principal": {
+                "AWS": "arn:aws:iam::533267256700:role/LabRole"
+              },
+              "Action": [
+                "kms:Decrypt",
+                "kms:Encrypt",
+                "kms:ReEncrypt*",
+                "kms:GenerateDataKey*"
+              ],
+              "Resource": "*",
+              "Condition": {
+                "StringLike": {
+                  "kms:EncryptionContext:aws:s3:arn": [
+                    "arn:aws:s3:::ninjasec-terraform-state-533267256700",
+                    "arn:aws:s3:::ninjasec-terraform-state-533267256700/*"
+                  ]
+                }
+              }
             }
           ]
         },
@@ -358,6 +403,21 @@
               "Condition": {
                 "Bool": {
                   "aws:SecureTransport": "false"
+                }
+              }
+            },
+            {
+              "Sid": "DenyWorkloadStateAccess",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                "arn:aws:s3:::ninjasec-terraform-state-533267256700",
+                "arn:aws:s3:::ninjasec-terraform-state-533267256700/*"
+              ],
+              "Condition": {
+                "ArnEquals": {
+                  "aws:PrincipalArn": "arn:aws:iam::533267256700:role/LabRole"
                 }
               }
             }

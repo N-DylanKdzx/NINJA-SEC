@@ -1014,8 +1014,10 @@
           "ServerSideEncryptionConfiguration": [
             {
               "ServerSideEncryptionByDefault": {
-                "SSEAlgorithm": "AES256"
-              }
+                "SSEAlgorithm": "aws:kms",
+                "KMSMasterKeyID": "arn:aws:kms:us-east-1:533267256700:key/d298d19a-46c6-4fd6-bbde-df3e59bce700"
+              },
+              "BucketKeyEnabled": true
             }
           ]
         },
