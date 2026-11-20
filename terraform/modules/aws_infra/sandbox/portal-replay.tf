@@ -193,5 +193,8 @@ output "portal_replay" {
     app_security_group = aws_security_group.service_demo["app"].id
     portal_secret_arn  = aws_secretsmanager_secret.portal[0].arn
     database_host      = aws_db_instance.service_demo[0].address
+    database_subnets   = [aws_subnet.service_demo_tier["db_a"].id, aws_subnet.service_demo_tier["db_b"].id]
+    database_sg_id     = aws_security_group.service_demo["db"].id
+    router_subnet_id   = aws_subnet.portal_egress[0].id
   } : null
 }

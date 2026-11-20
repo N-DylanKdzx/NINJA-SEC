@@ -9,6 +9,12 @@ variable "demo_ami_id" {
   default     = null
 }
 
+variable "enable_database_replication" {
+  description = "Enable logging and GTIDs for the isolated cross-cloud replication source."
+  type        = bool
+  default     = false
+}
+
 data "aws_availability_zones" "demo" {
   count = var.enable_service_demo ? 1 : 0
   state = "available"
@@ -201,6 +207,18 @@ resource "aws_db_parameter_group" "service_demo" {
     name  = "require_secure_transport"
     value = "1"
   }
+
+  dynamic "parameter" {
+    for_each = var.enable_database_replication ? {
+      "gtid-mode"              = "ON"
+      enforce_gtid_consistency = "ON"
+    } : {}
+    content {
+      name         = parameter.key
+      value        = parameter.value
+      apply_method = "pending-reboot"
+    }
+  }
 }
 
 resource "aws_db_instance" "service_demo" {
@@ -219,7 +237,7 @@ resource "aws_db_instance" "service_demo" {
   manage_master_user_password = true
   publicly_accessible         = false
   multi_az                    = false
-  backup_retention_period     = 0
+  backup_retention_period     = var.enable_database_replication ? 1 : 0
   skip_final_snapshot         = true
 }
 

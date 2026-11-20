@@ -56,6 +56,15 @@ def seed(event):
                     (runtime['password'],))
         cur.execute("GRANT SELECT, INSERT, UPDATE, DELETE ON ninjasec.incidents TO 'portal_replay'@'%'")
         cur.execute("GRANT SELECT, INSERT, DELETE ON ninjasec_auth.portal_sessions TO 'portal_replay'@'%'")
+        if event.get('replication_password'):
+            cur.execute('SELECT @@global.gtid_mode, @@global.log_bin')
+            if cur.fetchone() != ('ON', 1):
+                raise RuntimeError('Replication source is missing GTIDs or binary logging')
+            cur.execute("CREATE USER IF NOT EXISTS 'ninjasec_replay_replica'@'10.244.11.10' IDENTIFIED BY %s REQUIRE SSL",
+                        (event['replication_password'],))
+            cur.execute("ALTER USER 'ninjasec_replay_replica'@'10.244.11.10' IDENTIFIED BY %s REQUIRE SSL",
+                        (event['replication_password'],))
+            cur.execute("GRANT REPLICATION SLAVE ON *.* TO 'ninjasec_replay_replica'@'10.244.11.10'")
         cur.execute("SHOW SESSION STATUS LIKE 'Ssl_version'")
         return {'database_tls': cur.fetchone()[1]}
 
@@ -125,7 +134,10 @@ def verify(event):
 
 
 def run(event, context):
-    return seed(event) if event['mode'] == 'seed' else verify(event)
+    try:
+        return seed(event) if event['mode'] == 'seed' else verify(event)
+    except (pymysql.Error, KeyError) as error:
+        raise RuntimeError(f"Isolated portal probe failed: {type(error).__name__}") from None
 """
 
 
@@ -169,6 +181,7 @@ def main():
     parser.add_argument("--role-arn", required=True)
     parser.add_argument("--hostname", required=True)
     parser.add_argument("--phase", choices=["seed", "verify"], required=True)
+    parser.add_argument("--prepare-replication", action="store_true")
     args = parser.parse_args()
     if not re.fullmatch(r"[a-zA-Z0-9][a-zA-Z0-9.-]+", args.hostname):
         parser.error("Use the DNS hostname on the ACM certificate")
@@ -206,6 +219,13 @@ def main():
             master=json.loads(secrets_client.get_secret_value(
                 SecretId=db["MasterUserSecret"]["SecretArn"])["SecretString"]),
         )
+        if args.prepare_replication:
+            password = os.environ["NINJASEC_REPLAY_REPL_PASSWORD"]
+            if not re.fullmatch(r"[0-9a-f]{32,64}", password):
+                raise ValueError("Expected the temporary replay replication credential")
+            event["replication_password"] = password
+    elif args.prepare_replication:
+        parser.error("Replication setup is only supported in the seed phase")
     else:
         targets = session.client("elbv2").describe_target_health(
             TargetGroupArn=base["target_group_arn"])["TargetHealthDescriptions"]

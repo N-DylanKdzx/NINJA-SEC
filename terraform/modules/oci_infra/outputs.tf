@@ -21,3 +21,7 @@ output "mysql_id" {
 output "load_balancer_id" {
   value = oci_load_balancer_load_balancer.this.id
 }
+
+output "nat_public_ip" {
+  value = oci_core_nat_gateway.this.nat_ip
+}

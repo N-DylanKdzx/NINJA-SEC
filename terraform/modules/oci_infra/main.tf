@@ -149,7 +149,9 @@ resource "oci_mysql_mysql_db_system" "standby" {
   display_name            = "${var.name_prefix}-mysql-private"
   shape_name              = var.mysql_shape
   data_storage_size_in_gb = 50
-  subnet_id               = oci_core_subnet.this["private"].id
+  subnet_id               = var.replication_network == null ? oci_core_subnet.this["private"].id : oci_core_subnet.replication[0].id
+  nsg_ids                 = var.replication_network == null ? null : [oci_core_network_security_group.this["db"].id]
+  ip_address              = var.replication_network == null ? null : var.replication_network.database_ip
   admin_username          = var.mysql_admin_username
   admin_password          = var.mysql_admin_password
   port                    = 3306

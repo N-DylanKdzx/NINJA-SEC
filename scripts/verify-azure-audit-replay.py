@@ -1,5 +1,6 @@
-"""Verify an isolated Azure audit runbook with a synthetic record and its KQL result."""
+"""Verify an isolated Azure audit runbook with a synthetic record or a real S3 batch."""
 
+import argparse
 import base64
 from datetime import datetime, timezone
 import hashlib
@@ -18,6 +19,12 @@ import uuid
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--aws-batch-sha", help="SHA-256 of an existing CloudTrail export batch in S3")
+    args = parser.parse_args()
+    if args.aws_batch_sha and not re.fullmatch(r"[0-9a-f]{64}", args.aws_batch_sha):
+        parser.error("The batch SHA-256 must contain exactly 64 lowercase hexadecimal digits")
+
     outputs = json.load(sys.stdin)
     group = outputs["resource_group"]
     match = re.fullmatch(r"rg-ninjasec-audit-replay-([a-z0-9]{8,12})", group)
@@ -78,13 +85,35 @@ def main():
     else:
         raise RuntimeError("Azure runbook did not reach Published")
 
-    event = str(uuid.uuid4())
-    sample = {
-        "schemaVersion": 1, "sources": [{"sha256": hashlib.sha256(event.encode()).hexdigest()}],
-        "Records": [{"eventID": event, "eventTime": datetime.now(timezone.utc).isoformat(),
-                     "eventName": "NinjaSecSyntheticReplay", "awsRegion": "us-east-1"}],
-    }
-    raw = json.dumps(sample, sort_keys=True, separators=(",", ":")).encode()
+    if args.aws_batch_sha:
+        import boto3
+
+        session = boto3.Session(region_name="us-east-1")
+        account = session.client("sts").get_caller_identity()["Account"]
+        if account != "533267256700":
+            raise ValueError("Unexpected account for the AWS audit batch")
+        key = f"export-batches/{args.aws_batch_sha}.json"
+        response = session.client("s3").get_object(Bucket=f"ninjasec-audit-{account}", Key=key)
+        stream = response["Body"]
+        try:
+            raw = stream.read(8 * 1024 * 1024 + 1)
+        finally:
+            stream.close()
+        if len(raw) > 8 * 1024 * 1024 or hashlib.sha256(raw).hexdigest() != args.aws_batch_sha:
+            raise ValueError("Unexpected size or SHA-256 for the S3 audit batch")
+        sample = json.loads(raw)
+        print("AZURE_REPLAY_S3_BATCH", key, response["ResponseMetadata"]["RequestId"], flush=True)
+    else:
+        event = str(uuid.uuid4())
+        sample = {
+            "schemaVersion": 1, "sources": [{"sha256": hashlib.sha256(event.encode()).hexdigest()}],
+            "Records": [{"eventID": event, "eventTime": datetime.now(timezone.utc).isoformat(),
+                         "eventName": "NinjaSecSyntheticReplay", "awsRegion": "us-east-1"}],
+        }
+        raw = json.dumps(sample, sort_keys=True, separators=(",", ":")).encode()
+    events = {str(uuid.UUID(record["eventID"])) for record in sample["Records"]}
+    if sample.get("schemaVersion") != 1 or not sample.get("sources") or not events or len(events) != len(sample["Records"]):
+        raise ValueError("Expected a nonempty audit batch with unique event IDs")
     blob = "aws-audit-" + hashlib.sha256(raw).hexdigest() + ".json"
     blob_url = f"https://{storage}.blob.core.windows.net/audit-logs-aws/{blob}"
     arm("PUT", assignment, "2022-04-01", {"properties": {"principalId": operator, "roleDefinitionId": role}})
@@ -107,7 +136,7 @@ def main():
     arm("PUT", job_path, rule_version, {"properties": {
         "runbook": {"name": runbook_name}, "parameters": {"BlobName": blob},
     }})
-    print("AZURE_REPLAY_JOB", job_id, "EVENT", event, flush=True)
+    print("AZURE_REPLAY_JOB", job_id, "RECORDS", len(events), "BLOB", blob, flush=True)
     for _ in range(54):
         status = arm("GET", job_path, rule_version)["properties"]["status"]
         if status == "Completed":
@@ -119,18 +148,21 @@ def main():
         raise RuntimeError(f"Azure job {job_id} timed out")
     workspace_id = arm("GET", workspace, "2022-10-01")["properties"]["customerId"]
     analytics = token("https://api.loganalytics.io")
-    query = {"query": f"NINJASECAWSAudit() | where EventId == '{event}' | project EventId, SourceBlob"}
+    query = {"query": f"union (NINJASECAWSAudit_CL | extend Stage='Raw'), "
+                      f"(NINJASECAWSAudit() | extend Stage='Deduplicated') "
+                      f"| where SourceBlob == '{blob}' | project Stage, EventId"}
+    expected = {(stage, event) for stage in ("Raw", "Deduplicated") for event in events}
     for attempt in range(60):
         response = json.loads(request("POST", f"https://api.loganalytics.io/v1/workspaces/{workspace_id}/query",
                                       analytics, json.dumps(query).encode()))
         rows = response["tables"][0]["rows"]
-        if rows == [[event, blob]]:
-            print("AZURE_REPLAY_KQL_MATCH", event, blob, flush=True)
+        if {tuple(row) for row in rows} == expected and sum(row[0] == "Deduplicated" for row in rows) == len(events):
+            print("AZURE_REPLAY_KQL_MATCH", len(events), blob, flush=True)
             return
         if attempt % 8 == 0:
-            print("AZURE_REPLAY_WAITING_FOR_KQL", event, flush=True)
+            print("AZURE_REPLAY_WAITING_FOR_KQL", len(events), blob, flush=True)
         time.sleep(15)
-    raise RuntimeError(f"Azure job {job_id} completed but the synthetic event was not verified in KQL")
+    raise RuntimeError(f"Azure job {job_id} completed but the audit event set was not verified in KQL")
 
 
 if __name__ == "__main__":
