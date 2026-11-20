@@ -50,7 +50,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **[R](#dominio-r---continuidad-backup-y-dr)** | Continuidad: Backup y DR | 8 | 8 | 0 | 0 | 5 | 3 |
 | **[P](#dominio-p---ensayo-técnico-de-sustentación)** | Ensayo técnico de sustentación | 13 | 13 | 0 | 1 | 7 | 5 |
 | **[K](#dominio-k---operación-y-control-de-costos)** | Operación y control de costos | 8 | 8 | 0 | 3 | 4 | 1 |
-| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **13** | **46** | **244** |
+| **TOTAL** | **Consolidado General** | **303** | **285** | **18** | **13** | **45** | **245** |
 
 ### Índice de Dominios
 - [Dominio G: Preparación de cuentas y herramientas](#dominio-g---preparación-de-cuentas-y-herramientas) (19 tareas)
@@ -836,7 +836,7 @@ Cada tarea debe definir en Detalle / Criterio de Completado las condiciones obse
 | **P1.2** | `[x] Completado` | Demo 2: ip route muestra la VPN hacia OCI | Mostrar la ruta hacia la IP privada de HeatWave por wg0 en el router AWS y verificar handshake reciente. | F4 | — | Núcleo |  2026-11-19 22:21 UTC-5: SSM 486e6554-339a-417d-8a64-50a56874ebf9: ip route get 10.20.10.191 devolvió dev wg0 src 10.255.254.1; handshake de 38 s. Desde OCI, ip route get 10.10.21.167 devolvió dev wg0 src 10.255.254.2. |
 | **P1.3** | `[x] Completado` | Demo 3: crear incidente → SELECT en OCI | Demostrar alta de incidente en el portal AWS, lectura del mismo ID en la réplica HeatWave y limpieza replicada. | F4 | — | Núcleo |  2026-11-19 22:21 UTC-5: Se reutilizó la prueba integral de M2.5: alta desde portal AWS, SELECT del ID 7 en ninjasec_aws_replica.incidents, borrado en AWS replicado y tabla OCI original fuera del filtro. Revalidación actual: canal ACTIVE y receptor/aplicador ON; receptor con último error 0. |
 | **P1.4** | `[-] Bloqueado` | Demo 4: terminar web-01 → portal sigue → Auto Scaling repone | — | F4 | — | Núcleo |  |
-| **P1.5** | `[-] Bloqueado` | Demo 5: Grafana SOC con alarma activa | — | F4 | — | Núcleo |  |
+| **P1.5** | `[x] Completado` | Demo 5: Grafana SOC con alarma activa | Demostrar Grafana SOC con el estado activo de una alarma real y verificar su origen. | F4 | — | Núcleo |  2026-11-19 22:32 UTC-5: Grafana ninjasec-soc-six v2 panel 6, consulta B, mostró ninjasec-cpu-load-proof ALARM en snapshot 03:31:32 UTC. CloudWatch confirmó OK→ALARM 03:31:07 UTC por una muestra de CPU real 50,702 % y acción SNS exitosa. SSM 73b6feb1-d5e8-4cc9-9344-94d7e9760195. |
 | **P1.6** | `[x] Completado` | Demo 6: Azure WORM rechaza el borrado (409) | — | F4 | — | Núcleo | Demo Azure WORM en ninjaseccompliance63ba/audit-logs-oci/ninjasec-p1-6-demo-821107547d824b1683f540fabdb93a37.txt. Política Locked de 365 días. PUT 201; DELETE 409 BlobImmutableDueToPolicy (request ID bfef3883-f01e-001b-1a3e-73e4ba000000); GET 200 con ETag idéntico. Permiso temporal retirado. |
 | **P1.7** | `[-] Bloqueado` | Demo 7: terraform destroy → apply en vivo | Demo en stack aislado; preservar portal productivo y Azure WORM. Evidenciar creación, destrucción y reconstrucción funcional. | F4 | — | Núcleo |  |
 | **P1.8** | `[-] Bloqueado` | Ensayo completo cronometrado ≤ 15 min | — | F4 | — | Núcleo |  |
