@@ -1,4 +1,15 @@
-import boto3, io, json, pathlib, sys, tarfile
+import base64
+import gzip
+import io
+import json
+import pathlib
+import re
+import sys
+import tarfile
+
+import boto3
+
+
 repo, archive, config = [pathlib.Path(x) for x in sys.argv[1:4]]
 if len(sys.argv) == 5:
     state = json.loads(pathlib.Path(sys.argv[4]).read_text())
@@ -15,6 +26,13 @@ if len(sys.argv) == 5:
     role = json.loads(read('aws_vpc_endpoint')['policy'])['Statement'][0]['Principal']['AWS']
     cert = read('aws_lb_listener')['certificate_arn']
     image = launch['image_id']
+    user_data = base64.b64decode(launch['user_data'], validate=True)
+    if user_data.startswith(b'\x1f\x8b'):
+        user_data = gzip.decompress(user_data)
+    embedded = re.search(rb"base64 -d <<'ARCHIVE'[^\n]*\n([A-Za-z0-9+/=]+)\nARCHIVE\n", user_data)
+    if embedded is None:
+        raise ValueError('Archive missing from the isolated launch template')
+    archive.write_bytes(base64.b64decode(embedded[1], validate=True))
 else:
     session = boto3.Session(region_name='us-east-1')
     assert session.client('sts').get_caller_identity()['Account']=='533267256700'
@@ -24,16 +42,16 @@ else:
     certs = session.client('acm').list_certificates(CertificateStatuses=['ISSUED'])['CertificateSummaryList']
     cert = next(x['CertificateArn'] for x in certs if x['DomainName']=='portal-aws.ninjasec.dev')
     image = 'ami-08b275ac6cc5dbefb'
-with tarfile.open(archive, 'w:gz') as pkg:
-    for name in ('app.py','vault_credentials.py','requirements.txt','schema.sql','portal.js','login.js','portal.css','login.html','index.html'):
-        pkg.add(repo / 'portal' / name, arcname=name)
-    bootstrap = (repo / 'scripts' / 'bootstrap-aws-app.sh').read_text(encoding='utf-8')
-    bootstrap = bootstrap.replace('/ninjasec/', '/ninjasec-iac-service-demo/')
-    bootstrap = bootstrap.replace('NINJA-SEC/Host', 'NINJA-SEC/IaCReplay').encode()
-    member = tarfile.TarInfo('replay-bootstrap.sh')
-    member.size = len(bootstrap)
-    member.mode = 0o644
-    pkg.addfile(member, io.BytesIO(bootstrap))
+    with tarfile.open(archive, 'w:gz') as pkg:
+        for name in ('app.py','vault_credentials.py','requirements.txt','schema.sql','portal.js','login.js','portal.css','login.html','index.html'):
+            pkg.add(repo / 'portal' / name, arcname=name)
+        bootstrap = (repo / 'scripts' / 'bootstrap-aws-app.sh').read_text(encoding='utf-8')
+        bootstrap = bootstrap.replace('/ninjasec/', '/ninjasec-iac-service-demo/')
+        bootstrap = bootstrap.replace('NINJA-SEC/Host', 'NINJA-SEC/IaCReplay').encode()
+        member = tarfile.TarInfo('replay-bootstrap.sh')
+        member.size = len(bootstrap)
+        member.mode = 0o644
+        pkg.addfile(member, io.BytesIO(bootstrap))
 config.write_text(json.dumps({
     'enable_service_demo': True,
     'demo_ami_id':image,
