@@ -12,20 +12,40 @@ locals {
   proof_name = "ninjasec-m105-${var.proof_suffix}"
 }
 
-resource "aws_s3_bucket" "source" {
-  bucket = local.proof_name
+removed {
+  from = aws_s3_bucket.source
+  lifecycle {
+    destroy = false
+  }
+}
+
+resource "aws_cloudformation_stack" "source" {
+  name = "${local.proof_name}-source"
+  template_body = jsonencode({
+    AWSTemplateFormatVersion = "2010-09-09"
+    Resources = {
+      SourceBucket = {
+        Type                = "AWS::S3::Bucket"
+        DeletionPolicy      = "Retain"
+        UpdateReplacePolicy = "Retain"
+        Properties          = { BucketName = local.proof_name }
+      }
+    }
+  })
 }
 
 resource "aws_s3_bucket_public_access_block" "source" {
-  bucket                  = aws_s3_bucket.source.id
+  bucket                  = local.proof_name
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+  depends_on              = [aws_cloudformation_stack.source]
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "source" {
-  bucket = aws_s3_bucket.source.id
+  bucket     = local.proof_name
+  depends_on = [aws_cloudformation_stack.source]
 
   rule {
     apply_server_side_encryption_by_default {
@@ -70,7 +90,7 @@ resource "azurerm_storage_container" "destination" {
 
 output "proof_stores" {
   value = {
-    aws_bucket             = aws_s3_bucket.source.bucket
+    aws_bucket             = local.proof_name
     oci_namespace          = oci_objectstorage_bucket.relay.namespace
     oci_bucket             = oci_objectstorage_bucket.relay.name
     azure_storage_account  = azurerm_storage_account.destination.name

@@ -20,7 +20,11 @@ provider "oci" {
 provider "azurerm" {
   subscription_id                 = "020556eb-782f-4afc-84d3-39cd392763ba"
   resource_provider_registrations = "none"
-  features {}
+  features {
+    storage {
+      data_plane_available = false
+    }
+  }
 }
 
 variable "oci_compartment_id" { type = string }

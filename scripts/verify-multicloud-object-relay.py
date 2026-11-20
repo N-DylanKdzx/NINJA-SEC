@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 import ssl
+import time
+import urllib.error
 import urllib.request
 import uuid
 from importlib.machinery import SourceFileLoader
@@ -67,8 +69,15 @@ def main():
         cleanup.append(("OCI", lambda: storage.delete_object(namespace, oci_bucket, key)))
         with storage.get_object(namespace, oci_bucket, key).data as body:
             from_oci = body.content
-        with blob("PUT", from_oci) as response:
-            azure_write = response.headers.get("x-ms-request-id")
+        for attempt in range(18):
+            try:
+                with blob("PUT", from_oci) as response:
+                    azure_write = response.headers.get("x-ms-request-id")
+                break
+            except urllib.error.HTTPError as error:
+                if error.code != 403 or attempt == 17:
+                    raise
+                time.sleep(10)  # Allow the new container-scoped role to propagate.
         cleanup.append(("Azure", lambda: blob("DELETE").close()))
         with blob("GET") as response:
             from_azure = response.read()
