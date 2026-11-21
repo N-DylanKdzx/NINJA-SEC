@@ -78,7 +78,7 @@ def main():
         channel_id = found[0].id
     else:
         password = os.environ["NINJASEC_REPLAY_REPL_PASSWORD"]
-        if not re.fullmatch(r"[0-9a-f]{32,64}", password):
+        if not re.fullmatch(r"Aa9![0-9a-f]{28}", password):
             raise ValueError("Invalid temporary replication credential")
         context = ssl.create_default_context(cafile=os.getenv("REQUESTS_CA_BUNDLE"))
         with urllib.request.urlopen(
@@ -105,7 +105,11 @@ def main():
         try:
             result = channels.create_channel(details, opc_retry_token=suffix[1])
         except oci.exceptions.ServiceError as error:
-            raise RuntimeError(f"OCI create_channel failed: {error.status} {error.code} {error.request_id}") from None
+            detail = str(error.message).replace(password, "[redacted]")
+            raise RuntimeError(
+                f"OCI create_channel failed: {error.status} {error.code} "
+                f"{error.request_id}: {detail[:600]}"
+            ) from None
         channel_id = result.data.id
         print("M105_CHANNEL_CREATED", channel_id, result.request_id, flush=True)
     for _ in range(75):
