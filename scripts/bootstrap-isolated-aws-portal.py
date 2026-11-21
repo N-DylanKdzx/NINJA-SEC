@@ -244,7 +244,7 @@ def main():
         )
         if args.prepare_replication:
             password = os.environ["NINJASEC_REPLAY_REPL_PASSWORD"]
-            if not re.fullmatch(r"[0-9a-f]{32,64}", password):
+            if not re.fullmatch(r"Aa9![0-9a-f]{28}", password):
                 raise ValueError("Expected the temporary replay replication credential")
             event["replication_password"] = password
     elif args.prepare_replication:
