@@ -169,6 +169,22 @@ resource "oci_mysql_mysql_db_system" "standby" {
   port                    = 3306
   is_highly_available     = false
   freeform_tags           = local.tags
+
+  dynamic "backup_policy" {
+    for_each = var.replication_network == null ? [] : [true]
+    content {
+      is_enabled = false
+    }
+  }
+
+  dynamic "deletion_policy" {
+    for_each = var.replication_network == null ? [] : [true]
+    content {
+      automatic_backup_retention = "DELETE"
+      final_backup               = "SKIP_FINAL_BACKUP"
+      is_delete_protected        = false
+    }
+  }
 }
 
 resource "oci_mysql_heat_wave_cluster" "this" {
