@@ -24,9 +24,16 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 install -d -m 700 /etc/wireguard
 if ! command -v wg >/dev/null; then
-    sed -i 's|http://|https://|g' /etc/apt/sources.list.d/ubuntu.sources
-    apt-get -o Acquire::Retries=4 update > /var/log/ninjasec-replay-wireguard-install.log 2>&1
-    apt-get -o Acquire::Retries=4 install -y wireguard-tools >> /var/log/ninjasec-replay-wireguard-install.log 2>&1
+    for source in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
+        if test -f "$source"; then
+            sed -i 's|http://|https://|g' "$source"
+        fi
+    done
+    log=/var/log/ninjasec-replay-wireguard-install.log
+    if ! (apt-get -o Acquire::Retries=4 update && apt-get -o Acquire::Retries=4 install -y wireguard-tools) > "$log" 2>&1; then
+        tail -n 12 "$log" >&2
+        exit 1
+    fi
 fi
 umask 077
 if ! test -s {KEY_PATH}; then
@@ -159,10 +166,11 @@ def main():
                 "-o", "StrictHostKeyChecking=accept-new", "-o", "BatchMode=yes",
                 "-o", "ConnectTimeout=30", "-o", f"ProxyCommand={proxy}",
                 f"ubuntu@{wireguard['oci_peer_ip']}", "sudo -n bash -s",
-            ], input=script, text=True, capture_output=True, timeout=360)
+            ], input=script.encode("utf-8"), capture_output=True, timeout=360)
             if result.returncode:
-                raise RuntimeError(f"Isolated OCI peer command exited {result.returncode}")
-            return result.stdout.strip()
+                diagnostic = result.stderr.decode("utf-8", errors="replace").strip()
+                raise RuntimeError(f"Isolated OCI peer command exited {result.returncode}: {diagnostic[-800:]}")
+            return result.stdout.decode("utf-8").strip()
 
         ssm = aws.client("ssm")
         aws_key, key_command = aws_shell(ssm, instance_id, "bash -c " + shlex.quote(PREPARE))
