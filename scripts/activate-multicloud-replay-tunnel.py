@@ -1,5 +1,6 @@
 """Activate WireGuard between the isolated AWS and OCI replay routers."""
 
+import hashlib
 import ipaddress
 import json
 from pathlib import Path
@@ -97,6 +98,11 @@ def aws_shell(ssm, instance, script):
     raise RuntimeError(f"Isolated AWS SSM command {command} timed out")
 
 
+def peer_host_key_alias(instance_id):
+    fingerprint = hashlib.sha256(instance_id.encode("utf-8")).hexdigest()
+    return f"ninjasec-oci-replay-{fingerprint}"
+
+
 def main():
     state = json.load(sys.stdin)
     wireguard = state["wireguard"]["value"]
@@ -140,6 +146,8 @@ def main():
     bastion_key = home / "ninjasec_oci_bastion_rsa"
     peer_key_path = home / "ninjasec_oci_ed25519"
     known_hosts = home / "ninjasec_oci_known_hosts"
+    # Isolated deployments reuse the same private IP with different SSH host keys.
+    peer_alias = peer_host_key_alias(peer.id)
     bastion_public = subprocess.check_output(["ssh-keygen", "-y", "-f", str(bastion_key)], text=True).strip()
     session = client.create_session(oci.bastion.models.CreateSessionDetails(
         bastion_id=bastion_id, display_name=f"ninjasec-m105-{suffix}",
@@ -163,6 +171,7 @@ def main():
                      f'{session.id}@host.bastion.us-ashburn-1.oci.oraclecloud.com')
             result = subprocess.run([
                 "ssh", "-i", str(peer_key_path), "-o", f"UserKnownHostsFile={known_hosts}",
+                "-o", f"HostKeyAlias={peer_alias}",
                 "-o", "StrictHostKeyChecking=accept-new", "-o", "BatchMode=yes",
                 "-o", "ConnectTimeout=30", "-o", f"ProxyCommand={proxy}",
                 f"ubuntu@{wireguard['oci_peer_ip']}", "sudo -n bash -s",
